@@ -1,0 +1,291 @@
+﻿ORIGINAL CODE FROM A C# APP
+
+        public bool CleanText(ExceptionBehavior exceptionBehavior)
+        {
+            Text = EditText(InitialText, exceptionBehavior);
+            return HasModified;
+        }
+
+        /// <summary>
+        /// Clean the input text and the behavior to adopted
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="throwException"></param>
+        /// <param name="showEditor"></param>
+        /// <returns></returns>
+        public static string EditText(string input, ExceptionBehavior exceptionBehavior)
+        {
+            if (input.IsNullOrWhiteSpace())
+                return string.Empty;
+
+            string edit = input;
+
+            edit = edit.Replace("&nbsp;", "&#160;");
+
+            edit = edit.Regex("(<font[^>]*>|</font>|<html[^>]*>|</html>|<body[^>]*>|</body>)", "").Regex("<(img|meta|link)[^>]*>", "").Regex("w:st=[\"'](on|off)[\"']", "");
+            
+            edit = edit.Regex(@"<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)>\s+</(div|p|li|h1|h2|h3|h4|h5|h6)>", "<$1$2><br></$1>");
+
+            edit = edit.Regex(@"<(b|h)r[^>]*>", "<$1r/>");
+
+            foreach (XmlHtmlEntity item in XmlHtmlEntity.Html2.Concat(XmlHtmlEntity.Html3).Concat(XmlHtmlEntity.Html4))
+                edit = item.ParseToCHAR(edit);
+
+            XmlDocument doc = new XmlDocument();
+            XmlElement racine;
+
+            if (!edit.Contains("<"))
+            {
+                #region No html
+                racine = doc.CreateElement(("div"));
+                foreach (var item in edit.SplitLine())
+                {
+                    XmlElement para = racine.AppendElement("p");
+                    para.SetAttribute("align", "justify");
+                    if (!string.IsNullOrWhiteSpace(item))
+                        para.AppendText(item);
+                    else
+                        para.AppendElement("br");
+                }
+                #endregion
+            }
+            else
+            {
+                bool invalidXML = true;
+                do
+                {
+                    try
+                    {
+                        doc.LoadXml(edit);
+                        invalidXML = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        invalidXML = true;
+                        switch (exceptionBehavior)
+                        {
+                            case ExceptionBehavior.Throw:
+                                if (ex is XmlException)
+                                    throw new XmlException("Invalide XML Comment.\n" + ex.Message, ex, ((XmlException)ex).LineNumber, ((XmlException)ex).LinePosition);
+                                else
+                                    throw new XmlException("Invalide XML Comment.\n" + ex.Message);
+                                break;
+
+                            case ExceptionBehavior.ShowEditor:
+                                frmInvalideXml frm = new frmInvalideXml(ex.Message, edit);
+                                frm.Focus();
+                                frm.ShowDialog();
+                                edit = frm.XMLedit;
+                                break;
+
+                            default: //ExceptionBehavior.Skip
+                                return input;
+                                break;
+                        }
+                    }
+
+                } while (invalidXML);
+
+
+                if (doc.ChildNodes.Count == 1)
+                    racine = doc.FirstElement();
+                else
+                {
+                    racine = doc.CreateElement(("div"));
+                    foreach (XmlNode item in doc.ChildNodes)
+                        racine.AppendChild(item.CloneNode(true));
+                }
+
+                if (racine.Name != "div")
+                {
+                    XmlElement div = doc.CreateElement("div");
+                    if (racine.Name == "ul" || racine.Name == "ol")
+                    {
+                        foreach (XmlNode item in racine.ChildNodes)
+                            if ((item is XmlElement) && item.Name == "li")
+                                div.AppendElement("div").InnerXml = item.InnerXml;
+                            else
+                                div.AppendChild(item.CloneNode(true));
+                    }
+                    else if (racine.Name == "table")
+                        div = ParseTable(racine);
+                    else
+                        div.InnerXml = racine.InnerXml;
+
+                    racine = div;
+                }
+
+                racine.RemoveAllAttributes();
+                EditElement(racine);
+            }
+
+            if (!racine.HasChildNodes || string.IsNullOrWhiteSpace(racine.InnerXml))
+                racine.AppendElement("br");
+            
+            XmlWriterSettings setting = XmlDocumentWriter.Settings;
+            setting.OmitXmlDeclaration = true;
+            setting.IndentChars = "";
+            setting.Indent = false;
+
+            StringBuilder builder = new StringBuilder(racine.OuterXml.Length);
+            using (XmlWriter writer = XmlWriter.Create(builder, setting))
+            {
+                writer.WriteStartDocument();
+                racine.WriteTo(writer);
+            }
+
+            edit = builder.ToString().Regex(@"\s+/>", "/>").Regex(@"\s+", " ");
+            edit = edit.RegexLoop(@"(<(i|b|strong|em|span)>\s*</(i|b|strong|em|span)>)", " ");
+            edit = edit.Regex("<(div|p)[^>]*/>", "").RegexLoop(@"(<(div|p)([^>]*)>\s*</(div|p)>)", "");
+
+            edit = edit.Regex(@"<(/|)(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)>\s+", "<$1$2$3>").Regex(@"\s+<(/|)(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)>", "<$1$2$3>");
+            edit = edit.Regex(@"(h|b)r/>\s+", "$1r/>").Regex(@"\s+<(h|b)r", "<$1r");
+            edit = edit.Regex("<div align=\"justify\"><(div|p|li|h1|h2|h3|h4|h5|h6)", "<div><$1");
+
+            edit = edit.Regex("<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br/></(div|p|li|h1|h2|h3|h4|h5|h6)>", "<$1$2>"+ char.ConvertFromUtf32(160) + "</$1>");
+
+            edit = edit.Regex("<br/></(div|p|li|h1|h2|h3|h4|h5|h6)>", "</$1>").Regex("<(b|h)r[^>]*/>", "<$1r>");
+
+            edit = edit.Regex("(</i><i>|</b><b>|</em><em>|</strong><strong>)", "").Regex(@"(</i>\s+<i>|</b>\s+<b>|</em>\s+<em>|</strong>\s+<strong>)", " ");
+
+            edit = edit.Regex("(<i></i>|<b></b>|<em></em>|<strong></strong>)", "").Regex(@"(<i>\s+</i>|<b>\s+</b>|<em>\s+</em>|<strong>\s+</strong>)", " ");
+
+            edit = edit.Regex("<(div|p|ul|ol|li)", "\n<$1");
+
+            string[] rslt = edit.SplitLine(StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < rslt.Length; i++)
+                rslt[i] = rslt[i].Trim();
+            
+            return rslt.ToOneString("\n");
+        }
+
+        static void EditElement(XmlElement element)
+        {
+            if (element.Name == "br" || element.Name == "hr")
+                element.RemoveAll();
+            else
+            {
+                string style = element.GetAttribute("style").ToLowerInvariant();
+                string href = element.GetAttribute("href");
+                string align = element.GetAttribute("align").Trim().ToLowerInvariant();
+                element.RemoveAllAttributes();
+
+                if (element.Name == "a" && !string.IsNullOrWhiteSpace(href))
+                    element.SetAttribute("href", href.Trim());
+
+                if (element.Name != "i" && element.Name != "b" && element.Name != "u" &&
+                    element.Name != "em" && element.Name != "strong" && element.Name != "strike")
+                {
+
+                    style = style.Trim(WhiteCharacter.WhiteCharacters.Concat(';')) + ";";
+                    style = style.Regex(@"\s+(:|;)", "$1").Regex(@"(:|;)\s*", "$1 ").Regex(@"\s+", " ");
+
+                    //text-align
+                    bool right = false;
+                    bool center = false;
+                    if (align == "center" || style.RegexIsMatch("text-align[^:]*:[^;]*(center)[^;]*;"))
+                        center = true;
+                    if (align == "right" || style.RegexIsMatch("text-align[^:]*:[^;]*(right)[^;]*;"))
+                        right = true;
+
+                    style = style.Regex("(text-align|text-justify)[^:]*:[^;]*;", "");
+
+                    //underline
+                    bool underline = false;
+                    bool dotted = false;
+                    if (style.RegexIsMatch("text-decoration[^:]*:[^;]*(underline)[^;]*;"))
+                        underline = true;
+                    if (style.RegexIsMatch("text-decoration[^:]*:[^;]*(dotted)[^;]*;"))
+                        dotted = true;
+
+                    style = style.Regex("(text-underline|text-decoration)[^:]*:[^;]*;", "");
+
+                    // font
+                    bool italic = false;
+                    int bold = 400;
+                    if (style.RegexIsMatch("font[^:]*:[^;]*(italic|oblique)[^;]*;"))
+                        italic = true;
+                    if (style.RegexIsMatch("font[^:]*:[^;]*bold[^;]*;"))
+                        bold = 600;
+
+                    System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(style, @"font-weight[^:]*:\s*\d*\s*;");
+                    if (match.Success)
+                        bold = int.Parse(match.Value.Regex("font-weight[^:]*:", "").Trim(WhiteCharacter.WhiteCharacters.Concat(';')));
+
+                    style = style.Regex("font[^:]*:[^;]+;", "");
+
+                    style = style.Regex(@"list-style([^:]*):\s*([^\s]*)[^;]*;", "list-style$1: $2;");
+
+                    #region indesirable
+                    style = style.Regex("(-mso-|-moz-|-webkit-|-qt-)[^:]*:[^;]*;", "").Regex("(mso-|moz-|webkit-|qt-)[^:]*:[^;]*;", "");
+
+                    style = style.Regex(@"(text-transform|list-style-image):\s*(initial|none)\s*;", "");
+
+                    style = style.Regex("(text-indent|line-height|letter-spacing|white-space|word-spacing|word-wrap|overflow)[^:]*:[^;]*;", "");
+
+                    style = style.Regex("(margin|padding|border|box-sizing|outline|orphans|widows|float|display|visibility|text-rendering)[^:]*:[^;]*;", "");
+
+                    style = style.Regex("(page-break|clear|cursor|text-autospace|transition|tab-stops|zoom)[^:]*:[^;]*;", "");
+                    style = style.Regex("vertical-align: baseline;", "");
+
+                    style = style.Regex("(background|opacity|text-shadow|list-style-position)[^:]*:[^;]*;", "");
+
+                    style = style.Regex("(position|top|bottom|left|right):[^;]*;", "");
+
+                    style = style.Regex("(max-|z-|)(width|height|index)[^:]*:[^;]*;", "");
+                    #endregion
+
+                    if (Program.keepColor)
+                        style = style.Regex(@"color\s*:\s*([^;\s]+)\s*;", "color: $1;");
+                    else
+                        style = style.Regex(@"color\s*:\s*[^;]+\s*;", "");
+
+
+                    //set text-align
+                    if (element.Name == "div" || element.Name == "p")
+                    {
+                        if (center)
+                            element.SetAttribute("align", "center");
+                        else if (right)
+                            element.SetAttribute("align", "right");
+                        else
+                            element.SetAttribute("align", "justify");
+                    }
+
+                    //if (!noMargin && element.Name == "p")
+                    //{
+                    //    style += " margin: " + margin + "em 0;";
+                    //}
+
+                    //set font
+                    if (italic)
+                        style += " font-style: italic;";
+                    if (bold > 550)
+                        style += " font-weight: " + bold + ";";
+
+                    //set underline
+                    if (element.Name != "a")
+                    {
+                        if (dotted)
+                            style += "text-decoration: underline dotted;";
+                        else if (underline)
+                            style += "text-decoration: underline;";
+                    }
+
+                    // nettoyage
+                    style = style.Regex(@"\s+(:|;)", "$1").Regex(@"(:|;)\s*", "$1 ");
+                    style = style.Trim(WhiteCharacter.WhiteCharacters.Concat(';', '-'));
+                    if (!string.IsNullOrWhiteSpace(style))
+                        element.SetAttribute("style", style + ";");
+
+                }
+            }
+
+            foreach (var item in element.GetElements())
+            {
+                if (item.Name == "table")
+                    element.ReplaceChild(ParseTable(item), item);
+                else
+                    EditElement(item);
+            }
+        }
