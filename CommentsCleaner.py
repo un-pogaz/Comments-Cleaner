@@ -158,8 +158,7 @@ def CleanHTML(library_config, text):
 	text = RegexLoop(r'<(p|div)([^=]*=[^>]*)\s*align="([^"]*)"', r'<\1 align="\3"\2', text);
 	
 	# align / empty|all
-	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'empty') or
-		(library_config[cfg.KEY_FORCE_JUSTIFY] == 'all')):
+	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'empty') or (library_config[cfg.KEY_FORCE_JUSTIFY] == 'all')):
 		# align for all
 		text = text.replace('<p', '<p align="justify"').replace('<div', '<div align="justify"');
 		text = RegexLoop(r'<(p|div)\s*align="justify"([^>]*align="[^"]*")', r'<\1\2', text);
@@ -173,11 +172,6 @@ def CleanHTML(library_config, text):
 			text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
 		if (library_config[cfg.KEY_FORCE_JUSTIFY] == 'all'):
 			text = RegexLoop(r'align="(left|center|right)"', r'align="justify"', text);
-		
-		# del text-align
-		text = RegexLoop(r'style="([^"]*)text-align\s*:\s*([^;]*)\s*;([^"]*)"', r'style="\1\3"', text);
-		# del align for <li>
-		text = RegexLoop(r'<(ol|ul|li)([^>]*)align="[^"]*"', r'<\1\2', text);
 	
 	# align / none
 	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'none')):
@@ -187,10 +181,16 @@ def CleanHTML(library_config, text):
 		
 		# align center or right or justify
 		text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right|justify)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
-		# del text-align
-		text = RegexLoop(r'style="([^"]*)text-align\s*:\s*([^;]*)\s*;([^"]*)"', r'style="\1\3"', text);
-		# del align for <li>
-		text = RegexLoop(r'<(ol|ul|li)([^>]*)align="[^"]*"', r'<\1\2', text);
+	
+	# align / delete
+	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'del')):
+		text = RegexLoop(r'align="[^"]*"', r'', text);
+	
+	
+	# del text-align
+	text = RegexLoop(r'style="([^"]*)text-align\s*:\s*([^;]*)\s*;([^"]*)"', r'style="\1\3"', text);
+	# del align for <li>
+	text = RegexLoop(r'<(ol|ul|li)([^>]*)align="[^"]*"', r'<\1\2', text);
 	
 	text = RegexLoop(r'align="left"', r'', text);
 	text = RegexLoop(r'<div\s*align="[^"]*"\s*>\s*<p', r'<div>\n<p', text);

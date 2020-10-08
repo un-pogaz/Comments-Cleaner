@@ -29,7 +29,8 @@ SHOW_URL = OrderedDict([('keep', _('Keep URL')),
 
 FORCE_JUSTIFY = OrderedDict([('all', _('Forced justification (ecrase "center" and "right")')),
 							('empty', _('Justification for indeterminate text')),
-							('none', _('No change'))])
+							('none', _('No change')),
+							('del', _('Delete all align'))])
 
 DEFAULT_LIBRARY_VALUES = {
 	KEY_KEEP_URL: 'keep',
