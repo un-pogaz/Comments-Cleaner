@@ -209,7 +209,7 @@ class ImageTitleLayout(QHBoxLayout):
         self.insertStretch(-1)
 
     def update_title_icon(self, icon_name):
-        debug_print ("Icon: ", icon_name)
+        #debug_print ("Icon: ", icon_name)
         pixmap = get_pixmap(icon_name)
         if pixmap is None:
             error_dialog(self.parent(), _('Restart required'),

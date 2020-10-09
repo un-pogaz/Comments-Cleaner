@@ -89,7 +89,7 @@ class ConfigWidget(QWidget):
         post_show3 = library_config.get(KEY_FONT_WEIGHT, DEFAULT_LIBRARY_VALUES[KEY_FONT_WEIGHT])
         self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, post_show3)
         options_group_box_layout.addWidget(self.showCombo3, 6, 1)
-        
+
         # --- Keyboard shortcuts ---
         keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self)
         keyboard_shortcuts_button.setToolTip(_(

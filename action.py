@@ -106,9 +106,9 @@ class CommentCleanerAction(InterfaceAction):
 					_('No book selected for cleaning comments'), show=True)
 		book_ids = self.gui.library_view.get_selected_ids()
 
-		self._do_replace_text (book_ids)
+		self._do_clean_text (book_ids)
 
-	def _do_replace_text (self, book_ids):
+	def _do_clean_text (self, book_ids):
 		dbA = self.gui.current_db
 
 		db = self.gui.current_db.new_api
