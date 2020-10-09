@@ -114,6 +114,8 @@ def CleanHTML(library_config, text):
 	if library_config[cfg.KEY_KEEP_URL] == 'none':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
+	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
+		text = '<div><p>' + RegexLoop(r'[\r\n]+',r'</p><p>', text) + '</p></div>'
 	
 	# uniformise les attribut style
 	text = RegexLoop(r'style="([^"]*[^";])"', r'style="\1;"', text);
