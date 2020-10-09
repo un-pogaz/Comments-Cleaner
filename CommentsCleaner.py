@@ -59,6 +59,10 @@ def CleanBasic(text):
 	text = RegexLoop("(&hellip;|&#8230;)", "…", text);
 	text = RegexLoop("(&rsquo;|&#8217;)", "’", text);
 	
+	# same inline
+	text = RegexLoop(r"<(i|b|em|strong|span)([^>]*)>([^>]*)</\1>\s+<\1\2>", r'<\1\2>\3 ', text);
+	text = RegexLoop(r"<(i|b|em|strong|span)([^>]*)>([^>]*)</\1><\1\2>", r'<\1\2>\3', text);
+	
 	# inline vide
 	innerSpace = r"<(i|b|em|strong)[^>]*>\s+</\1>";
 	innerEmpty = r"<(i|b|em|strong)[^>]*></\1>";
@@ -135,19 +139,28 @@ def CleanHTML(library_config, text):
 		r'(background|opacity|text-shadow|list-style-position)',
 		r'(position|top|bottom|left|right)',
 		r'(max-|z-|)(width|height|index)',
-		r'-{0,2}(mso-|moz-|webkit-|qt-)',
+		r'-{0,2}((?:mso-|moz-|webkit-|qt-)[^:]+)',
 		r'(font-family|font-variant|font-stretch|font-size|line-height)'
 	];
 	
 	for atr in atr_tbl:
-		text = RegexLoop(r'style="([^"]*)'+ atr +'[^:]*:[^;]*;([^"]*)"', r'style="\1\3"', text);
+		text = RegexLoop(r'style="([^"]*)'+ atr +'\s*:[^;]*;([^"]*)"', r'style="\1\3"', text);
 	
 	# font-weight
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(normal|inherit|initial)\s*;([^"]*)"', r'style="\1\3"', text);
-	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(?P<name>\d)[1-9]\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: \g<name>00;\3"', text);
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(bold)\s*;([^"]*)"', r'style="\1font-weight: 600\3"', text);
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 100;\3"', text);
+	
+	if library_config[cfg.KEY_FONT_WEIGHT] == 'none':
+		n=None;
+	elif library_config[cfg.KEY_FONT_WEIGHT] == 'bold':
+		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: xxx;\2"', text);
+		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*xxx\s*;([^"]*)"', r'style="\1 font-weight: 600;\2"', text);
+		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1\2"', text);
+	else: #trunc
+		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: \g<name>xx;\3"', text);
+		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(?P<name>\d)xx\s*;([^"]*)"', r'style="\1 font-weight: \g<name>00;\3"', text);
 	
 	# font-style
 	text = RegexLoop(r'style="([^"]*)font-style\s*:\s*(normal|inherit|initial)\s*;([^"]*)"', r'style="\1\3"', text);

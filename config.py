@@ -20,9 +20,10 @@ PREFS_KEY_SETTINGS = 'settings'
 
 PLUGIN_ICONS = ['images/plugin.png']
 
-STORE_NAME = 'Options'
-KEY_KEEP_URL = 'keep'
-KEY_FORCE_JUSTIFY = 'empty'
+STORE_NAME = 'Options';
+KEY_KEEP_URL = 'keepUrl';
+KEY_FORCE_JUSTIFY = 'ForceJustify';
+KEY_FONT_WEIGHT = 'FontWeight';
 
 SHOW_URL = OrderedDict([('keep', _('Keep URL')),
 						('none', _('Delete URL'))])
@@ -32,9 +33,15 @@ FORCE_JUSTIFY = OrderedDict([('all', _('Forced justification (ecrase "center" an
 							('none', _('No change')),
 							('del', _('Delete all align'))])
 
+FONT_WEIGHT = OrderedDict([
+						('trunc', _('Truncate the value to the hundred')),
+						('bold', _('Rounded to Bold (value 600)')),
+						('none', _('No change'))])
+
 DEFAULT_LIBRARY_VALUES = {
 	KEY_KEEP_URL: 'keep',
-	KEY_FORCE_JUSTIFY: 'empty'
+	KEY_FORCE_JUSTIFY: 'empty',
+	KEY_FONT_WEIGHT: 'bold',
 }
 
 def get_library_config(db):
@@ -78,6 +85,11 @@ class ConfigWidget(QWidget):
         self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, post_show3)
         options_group_box_layout.addWidget(self.showCombo2, 4, 1)
         
+        options_group_box_layout.addWidget(QLabel(_('Weights:'), self), 5, 1)
+        post_show3 = library_config.get(KEY_FONT_WEIGHT, DEFAULT_LIBRARY_VALUES[KEY_FONT_WEIGHT])
+        self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, post_show3)
+        options_group_box_layout.addWidget(self.showCombo3, 6, 1)
+        
         # --- Keyboard shortcuts ---
         keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self)
         keyboard_shortcuts_button.setToolTip(_(
@@ -92,6 +104,7 @@ class ConfigWidget(QWidget):
 
         library_config[KEY_KEEP_URL] = self.showCombo1.selected_key()
         library_config[KEY_FORCE_JUSTIFY] = self.showCombo2.selected_key()
+        library_config[KEY_FONT_WEIGHT] = self.showCombo3.selected_key()
 
         set_library_config(db, library_config)
 
