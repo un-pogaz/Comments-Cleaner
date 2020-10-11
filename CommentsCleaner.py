@@ -66,13 +66,24 @@ def CleanBasic(text):
 	text = RegexLoop(r'^( *)\t(\s*<)', r'\1  \2', text);
 	
 	
-	# attribut style
-	text = RegexLoop(r'style="([^"]*);\s+;([^"]*)"', r'style="\1;\2"', text);
-	text = RegexLoop(r'style="([^"]*)(;|:)\s{2,}([^"]*)"', r'style="\1\2 \3"', text);
-	text = RegexLoop(r'style="([^"]*)\s+(;|:)([^"]*)"', r'style="\1\2\3"', text);
+	# style: del double ;
+	text = RegexLoop(r' style="([^"]*);\s+;([^"]*)"', r' style="\1;\2"', text);
+	# style: clean space before : ;
+	text = RegexLoop(r' style="([^"]*)\s+(;|:)([^"]*)"', r' style="\1\2\3"', text);
+	# style: clean space after : ;
+	text = RegexLoop(r' style="([^"]*(?:;|:))\s{2,}([^"]*)"', r' style="\1 \2"', text);
+	# style: insert space after : ;
+	text = RegexLoop(r' style="([^"]*(?:;|:))([^ "])', r' style="\1 \2', text);
 	
-	text = RegexLoop(r'style="([^"]*);\s*"', r'style="\1"', text);
-	text = RegexLoop(r'style="\s*"', r'', text);
+	# style: remove last ;
+	text = RegexLoop(r' style="([^"]*);\s*"', r' style="\1"', text);
+	# style: remove empty
+	text = RegexLoop(r' style="\s*"', r'', text);
+	
+	
+	# clean space in attribut
+	text = RegexLoop(r' ([^"=<>]+)="\s+([^"]*)"', r' \1="\2"', text);
+	text = RegexLoop(r' ([^"=<>]+)="([^"]*)\s+"', r' \1="\2"', text);
 	
 	#strip span
 	text = RegexLoop(r'<span\s*>(.*?)</span>', r'\1', text);
@@ -90,23 +101,31 @@ def CleanBasic(text):
 def CleanHTML(text):
 	text = CleanBasic(text);
 	
+	# Hyperlink
 	if cfg.prefs[cfg.KEY_KEEP_URL] == 'none':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
+	# if no tag = plain text
 	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
-		text = '<div><p>' + RegexLoop(r'[\r\n]+',r'</p><p>', text) + '</p></div>'
+		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
+		text = RegexLoop(r'[\r\n]',r'<br>', text);
 	
-	# uniformise les attribut style
-	text = RegexLoop(r'style="([^"]*[^";])"', r'style="\1;"', text);
-	
-	text = RegexLoop(r'(<font[^>]*>|</font>|<html[^>]*>|</html>|<body[^>]*>|</body>)', r'', text);
-	text = RegexLoop(r'<(img|meta|link)[^>]*>', r'', text);
-	
-	text = RegexLoop(r'(id|class)=".*?"', r'', text);
+	# invalid tag
+	text = RegexLoop(r'</?(font|html|body|img|meta|link)[^>]*>', r'', text);
 	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)[^>]*>\s+</(div|p|li|h1|h2|h3|h4|h5|h6)>', r'', text);
+	
+	# remove namespaced attribut
+	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
+	
+	# useless
+	text = RegexLoop(r'(id|class)=".*?"', r'', text);
+	
+	# management of <br>
 	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
 	text = RegexLoop(r'<(b|h)r>\s+', r'<\1r>', text);
 	text = RegexLoop(r'\s+<(b|h)r>', r'<\1r>', text);
+	text = RegexLoop(r'<span([^>]*)><(b|h)r>', r'<\2r><span\1>', text);
+	text = RegexLoop(r'<(b|h)r></span>', r'</span><\1r>', text);
 	
 	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br></(div|p|li|h1|h2|h3|h4|h5|h6)>', "<\1\2>\u00A0</\1>", text);
 	text = RegexLoop(r'<br></(div|p|li|h1|h2|h3|h4|h5|h6)>', r'</\1>', text);
@@ -114,94 +133,132 @@ def CleanHTML(text):
 	
 	text = RegexLoop(r'<p([^>]*)>([^>]*)<br><br>', r'<p\1>\2</p><p\1>', text);
 	
-	atr_tbl = [
-		r'(background-color)',
-		r'(color)',
-		r'(text-indent|letter-spacing|white-space|word-spacing|word-wrap|overflow)',
-		r'(margin|padding|border|box-sizing|outline|orphans|widows|float|display|visibility|text-rendering)',
-		r'(page-break|clear|cursor|text-autospace|transition|tab-stops|zoom)',
-		r'(background|opacity|text-shadow|list-style-position)',
-		r'(position|top|bottom|left|right)',
-		r'(max-|z-|)(width|height|index)',
-		r'-{0,2}((?:mso-|moz-|webkit-|qt-)[^:]+)',
-		r'(font-family|font-variant|font-stretch|font-size|line-height)'
-	];
 	
-	for atr in atr_tbl:
-		text = RegexLoop(r'style="([^"]*)'+ atr +'\s*:[^;]*;([^"]*)"', r'style="\1\3"', text);
-	
-	# font-weight
-	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(normal|inherit|initial)\s*;([^"]*)"', r'style="\1\3"', text);
-	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(bold)\s*;([^"]*)"', r'style="\1font-weight: 600\3"', text);
-	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 900;\3"', text);
-	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 100;\3"', text);
-	
-	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'none':
-		n=None;
-	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
-		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: xxx;\2"', text);
-		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*xxx\s*;([^"]*)"', r'style="\1 font-weight: 600;\2"', text);
-		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1\2"', text);
-	else: #trunc
-		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: \g<name>xx;\3"', text);
-		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(?P<name>\d)xx\s*;([^"]*)"', r'style="\1 font-weight: \g<name>00;\3"', text);
-	
-	# font-style
-	text = RegexLoop(r'style="([^"]*)font-style\s*:\s*(normal|inherit|initial)\s*;([^"]*)"', r'style="\1\3"', text);
-	text = RegexLoop(r'style="([^"]*)font-style\s*:\s*(oblique(?:\s+\d+deg))\s*;([^"]*)"', r'style="\1font-style: italic;\3"', text);
+	# style standardization:  insert ; at the end
+	text = RegexLoop(r' style="([^"]*[^";])"', r' style="\1;"', text);
+	# style standardization: insert space at the start
+	text = text.replace(' style="', ' style=" ');
 	
 	
-	# align
-	text = RegexLoop(r'<(p|div)([^=]*=[^>]*)\s*align="([^"]*)"', r'<\1 align="\3"\2', text);
+	text = CleanAlign(text);
 	
-	# align / empty|all
-	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty') or (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all')):
-		# align for all
-		text = text.replace('<p', '<p align="justify"').replace('<div', '<div align="justify"');
-		text = RegexLoop(r'<(p|div)\s*align="justify"([^>]*align="[^"]*")', r'<\1\2', text);
-		text = RegexLoop(r'<div\s*align="[^"]*"\s*>\s*<p', r'<div>\n<p', text);
-		
-		# align only
-		text = RegexLoop(r'align="\s*(?!justify|center|right)[^"]*"', r'align="justify"', text);
-		
-		# align center or right
-		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
-			text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
-		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
-			text = RegexLoop(r'align="(left|center|right)"', r'align="justify"', text);
-	
-	# align / none
-	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'none')):
-		# align left
-		text = text.replace('<p', '<p align="left"').replace('<div', '<div align="left"');
-		text = RegexLoop(r'<(p|div)\s*align="left"([^>]*align="[^"]*")', r'<\1\2', text);
-		
-		# align center or right or justify
-		text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right|justify)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
-	
-	# align / delete
-	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'del')):
-		text = RegexLoop(r'align="[^"]*"', r'', text);
+	text = CleanStyle(text);
 	
 	
-	# del text-align
-	text = RegexLoop(r'style="([^"]*)text-align\s*:\s*([^;]*)\s*;([^"]*)"', r'style="\1\3"', text);
-	# del align for <li>
-	text = RegexLoop(r'<(ol|ul|li)([^>]*)align="[^"]*"', r'<\1\2', text);
-	
-	text = RegexLoop(r'align="left"', r'', text);
-	text = RegexLoop(r'<div\s*align="[^"]*"\s*>\s*<p', r'<div>\n<p', text);
-	# clean
-	
+	# remove empty hyperllink
 	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
-	text = RegexLoop(r'style="\s+([^"]*)"', r'style="\1"', text);
-	text = RegexLoop(r'style="([^"]*)\s+"', r'style="\1"', text);
+	# remove empty attribut
+	text = RegexLoop(r' ([^"=<>]+)="\s*"', r'', text);
+	
+	text = AlignFirst(text);
 	
 	#
 	
 	text = CleanBasic(text)
 	return text;
 
+
+def AlignFirst(text):
+	# align first
+	text = RegexLoop(r'<([^\s])([^=>]*=[^>]*)\s+align="([^"]*)"', r'<\1 align="\3"\2', text);
+	return text;
+
+def CleanAlign(text):
+	
+	text = AlignFirst(text);
+	
+	# set align
+	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'del')):
+		# del align
+		text = RegexLoop(r' align="[^"]*"', r'', text);
+		
+	else: # empty / all / none
+		
+		tags = 'p|div|h1|h2|h3|h4|h5|h6';
+		
+		# insert align left for all
+		for tag in tags.split('|'):
+			text = text.replace('<'+tag, '<'+tag+' align="left"');
+		
+		# insert align left for all
+		text = RegexLoop(r'<('+tags+') align="left"( align="[^"]*")', r'<\1\2', text);
+		
+		# swap text-align to align
+		text = RegexLoop(r' align="[^"]*"([^>]*)style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' align="\3"\1style="\2\4"', text);
+		
+		# clean space in attribut
+		text = RegexLoop(r' align="\s+([^"]*)"', r' align="\1"', text);
+		text = RegexLoop(r' align="([^"]*)\s+"', r' align="\1"', text);
+		
+		# align valide value
+		text = RegexLoop(r' align="(?!left|justify|center|right)[^"]*"', r' align="left"', text);
+		
+		# set align prefs
+		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
+			text = RegexLoop(r' align="left"', r' align="justify"', text);
+		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
+			text = RegexLoop(r' align="(left|center|right)"', r' align="justify"', text);
+		
+	
+	# del text-align
+	text = RegexLoop(r' style="([^"]*) text-align\s*:\s*([^;]*)\s*;([^"]*)"', r' style="\1\3"', text);
+	
+	# del align left (default value)
+	text = RegexLoop(r' align="left"', r'', text);
+	
+	text = AlignFirst(text);
+	
+	# del attibut for <div> with <p>
+	text = RegexLoop(r'<div align="[^"]*"[^>]>\s*<p', r'<div>\n<p', text);
+	
+	# del align for <li>
+	text = RegexLoop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text);
+	
+	# del justify for <h1>
+	text = RegexLoop(r'<(h1|h2|h3|h4|h5|h6) align="justify"', r'<\1', text);
+	
+	text = RegexLoop(r' align="left"', r'', text);
+	text = RegexLoop(r'<div align="[^"]*"\s*>\s*<p', r'<div>\n<p', text);
+	
+	return text;
+
+
+def CleanStyle(text):
+	
+	text = text.replace(' style="',' x-style="" style=" ');
+	
+	rule_all = 'text-align font-weight font-style text-decoration text-decoration-line';
+	#remove space
+	rule_tbl = RegexSimple(r'^\s*(.*?)\s*$', r'\1', RegexLoop(r'\s{2,}', r' ', rule_all + ' ' + cfg.prefs[cfg.KEY_CSS_KEEP]));
+	# split to table and remove duplicate
+	rule_tbl = list(dict.fromkeys(rule_tbl.split(' ')));
+	
+	for rule in rule_tbl:
+		text = RegexLoop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text);
+	
+	text = RegexLoop(r' x-style="([^"]*)" style="[^"]*"', r' style="\1"', text);
+	
+	# font-weight
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(normal|inherit|initial)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(bold)\s*;([^"]*)"', r' style="\1font-weight: 600\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
+	
+	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'none':
+		n=None;
+	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1\2"', text);
+	else: #trunc
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>xx;\3"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)xx\s*;([^"]*)"', r' style="\1 font-weight: \g<name>00;\3"', text);
+	
+	# font-style
+	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-style:\s*(oblique(?:\s+\d+deg))\s*;([^"]*)"', r' style="\1 font-style: italic;\3"', text);
+	
+	return text;
 
 def main():
 	print("I reached main when I should not have\n");

@@ -24,7 +24,7 @@ class ActionCommentCleaner(InterfaceActionBase):
     description             = _('Remove the scraps CSS in comments')
     supported_platforms     = ['windows', 'osx', 'linux']
     author                  = 'un_pogaz'
-    version                 = (0, 4, 0)
+    version                 = (0, 5, 0)
     minimum_calibre_version = (2, 0, 0)
 
     #: This field defines the GUI plugin class that contains all the code
