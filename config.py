@@ -42,8 +42,8 @@ SHOW_URL = OrderedDict([
 					('del', _('Delete URL'))])
 
 FORCE_JUSTIFY = OrderedDict([
-						('all', _('Forced justification (ecrase "center" and "right")')),
-						('empty', _('Justification for indeterminate text')),
+						('all', _('Force the justification (ecrase "center" and "right")')),
+						('empty', _('Justification for indeterminate text (keep "center" and "right")')),
 						('none', _('No change')),
 						('del', _('Delete all align'))])
 
@@ -55,6 +55,10 @@ FONT_WEIGHT = OrderedDict([
 DOUBLE_BR = OrderedDict([
 						('new', _('Create a new paragraph')),
 						('none', _('No change'))])
+
+
+CSS_KEEP_TIP = _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
+
 
 class ConfigWidget(QWidget):
 
@@ -98,7 +102,7 @@ class ConfigWidget(QWidget):
 		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 1);
 		self.keepCSS = QLineEdit(self);
 		self.keepCSS.setText(prefs[KEY_CSS_KEEP]);
-		self.keepCSS.setToolTip(_('CSS rules kept in addition to the basic one. Rules separated by a space.'));
+		self.keepCSS.setToolTip(CSS_KEEP_TIP);
 		options_group_box_layout.addWidget(self.keepCSS, 21, 1);
 		
 		# --- Keyboard shortcuts ---

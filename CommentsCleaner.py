@@ -210,8 +210,6 @@ def CleanAlign(text):
 	# del align left (default value)
 	text = RegexLoop(r' align="left"', r'', text);
 	
-	text = AlignFirst(text);
-	
 	# del attibut for <div> with <p>
 	text = RegexLoop(r'<div align="[^"]*"[^>]>\s*<p', r'<div>\n<p', text);
 	
