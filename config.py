@@ -11,33 +11,20 @@ from collections import OrderedDict
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit
 from calibre.utils.config import JSONConfig
 
-from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop
+from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
 import copy, os
 
-
 PLUGIN_ICONS = ['images/plugin.png']
 
-KEY_KEEP_URL = 'KeepUrl';
-KEY_FORCE_JUSTIFY = 'ForceJustify';
-KEY_FONT_WEIGHT = 'FontWeight';
-KEY_CSS_KEEP = 'CSStoKeep';
+class KEY:
+	KEEP_URL = 'KeepUrl';
+	FORCE_JUSTIFY = 'ForceJustify';
+	FONT_WEIGHT = 'FontWeight';
+	CSS_KEEP = 'CSStoKeep';
+	DOUBLE_BR = 'DoubleBR';
 
-KEY_DOUBLE_BR = 'DoubleBR';
-
-# This is where all preferences for this plugin are stored
-prefs = JSONConfig('plugins/Comment Cleaner')
-
-# Set defaults
-prefs.defaults[KEY_KEEP_URL] = 'keep'
-prefs.defaults[KEY_FORCE_JUSTIFY] = 'empty'
-prefs.defaults[KEY_FONT_WEIGHT] = 'bold'
-prefs.defaults[KEY_DOUBLE_BR] = 'new'
-
-prefs.defaults[KEY_CSS_KEEP] = ''
-
-
-SHOW_URL = OrderedDict([
+KEEP_URL = OrderedDict([
 					('keep', _('Keep URL')),
 					('del', _('Delete URL'))])
 
@@ -60,6 +47,16 @@ DOUBLE_BR = OrderedDict([
 CSS_KEEP_TIP = _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
 
 
+# This is where all preferences for this plugin are stored
+PREFS = JSONConfig('plugins/Comment Cleaner')
+
+# Set defaults
+PREFS.defaults[KEY.KEEP_URL] = 'keep'
+PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
+PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
+PREFS.defaults[KEY.DOUBLE_BR] = 'new'
+PREFS.defaults[KEY.CSS_KEEP] = ''
+
 class ConfigWidget(QWidget):
 
 	def __init__(self, plugin_action):
@@ -80,19 +77,19 @@ class ConfigWidget(QWidget):
 		options_group_box.setLayout(options_group_box_layout);
 		
 		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 1, 1);
-		self.showCombo1 = KeyValueComboBox(self, SHOW_URL, prefs[KEY_KEEP_URL]);
+		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
 		options_group_box_layout.addWidget(self.showCombo1, 2, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1);
-		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, prefs[KEY_FORCE_JUSTIFY]);
+		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
 		options_group_box_layout.addWidget(self.showCombo2, 4, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('Weights:'), self), 5, 1);
-		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, prefs[KEY_FONT_WEIGHT]);
+		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT]);
 		options_group_box_layout.addWidget(self.showCombo3, 6, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self), 7, 1);
-		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, prefs[KEY_DOUBLE_BR]);
+		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
 		options_group_box_layout.addWidget(self.showCombo4, 8, 1);
 		
 		
@@ -101,7 +98,7 @@ class ConfigWidget(QWidget):
 		
 		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 1);
 		self.keepCSS = QLineEdit(self);
-		self.keepCSS.setText(prefs[KEY_CSS_KEEP]);
+		self.keepCSS.setText(PREFS[KEY.CSS_KEEP]);
 		self.keepCSS.setToolTip(CSS_KEEP_TIP);
 		options_group_box_layout.addWidget(self.keepCSS, 21, 1);
 		
@@ -114,15 +111,12 @@ class ConfigWidget(QWidget):
 
 	def save_settings(self):
 		
-		prefs[KEY_KEEP_URL] = self.showCombo1.selected_key();
-		prefs[KEY_FORCE_JUSTIFY] = self.showCombo2.selected_key();
-		prefs[KEY_FONT_WEIGHT] = self.showCombo3.selected_key();
+		PREFS[KEY.KEEP_URL] = self.showCombo1.selected_key();
+		PREFS[KEY.FORCE_JUSTIFY] = self.showCombo2.selected_key();
+		PREFS[KEY.FONT_WEIGHT] = self.showCombo3.selected_key();
+		PREFS[KEY.DOUBLE_BR] = self.showCombo4.selected_key();
 		
-		#remove space and invalid character
-		css_rule = RegexSimple(r'^\s*(.*?)\s*$', r'\1', RegexLoop(r'(,|;|:|\s{2,})', r' ', RegexLoop(r'[.*!()?+<>\\]', r'', self.keepCSS.text().lower()))); 
-		# split to table and remove duplicate
-		css_rule = list(dict.fromkeys(css_rule.split(' ')));
-		prefs[KEY_CSS_KEEP] = ' '.join(css_rule); # join in a string
+		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.keepCSS.text());
 		
 
 	def edit_shortcuts(self):

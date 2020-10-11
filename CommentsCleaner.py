@@ -8,8 +8,8 @@ __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
 import sys, os
-import calibre_plugins.comments_cleaner.config as cfg
-from calibre_plugins.comments_cleaner.common_utils import debug_print, RegexSimple, RegexSearch, RegexLoop
+from calibre_plugins.comments_cleaner.config import KEY, PREFS
+from calibre_plugins.comments_cleaner.common_utils import debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
 
 def CleanBasic(text):
@@ -104,7 +104,7 @@ def CleanHTML(text):
 	text = RegexLoop(r'(id|class)=".*?"', r'', text);
 	
 	# Hyperlink
-	if cfg.prefs[cfg.KEY_KEEP_URL] == 'del':
+	if PREFS[KEY.KEEP_URL] == 'del':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
 	# if no tag = plain text
@@ -133,7 +133,7 @@ def CleanHTML(text):
 	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br>', r'<\1\2>', text);
 	
 	# Multiple Line Return
-	if cfg.prefs[cfg.KEY_DOUBLE_BR] == 'new':
+	if PREFS[KEY.DOUBLE_BR] == 'new':
 		text = RegexLoop(r'<p([^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
 	
 	
@@ -171,7 +171,7 @@ def CleanAlign(text):
 	text = AlignFirst(text);
 	
 	# set align
-	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'del')):
+	if ((PREFS[KEY.FORCE_JUSTIFY] == 'del')):
 		# del align
 		text = RegexLoop(r' align="[^"]*"', r'', text);
 		
@@ -197,9 +197,9 @@ def CleanAlign(text):
 		text = RegexLoop(r' align="(?!left|justify|center|right)[^"]*"', r' align="left"', text);
 		
 		# set align prefs
-		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
+		if (PREFS[KEY.FORCE_JUSTIFY] == 'empty'):
 			text = RegexLoop(r' align="left"', r' align="justify"', text);
-		elif (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
+		elif (PREFS[KEY.FORCE_JUSTIFY] == 'all'):
 			text = RegexLoop(r' align="(left|center|right)"', r' align="justify"', text);
 		#else: 'none'
 		
@@ -230,10 +230,7 @@ def CleanStyle(text):
 	text = text.replace(' style="',' x-style="" style=" ');
 	
 	rule_all = 'text-align font-weight font-style text-decoration text-decoration-line';
-	#remove space
-	rule_tbl = RegexSimple(r'^\s*(.*?)\s*$', r'\1', RegexLoop(r'\s{2,}', r' ', rule_all + ' ' + cfg.prefs[cfg.KEY_CSS_KEEP]));
-	# split to table and remove duplicate
-	rule_tbl = list(dict.fromkeys(rule_tbl.split(' ')));
+	rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]);
 	
 	for rule in rule_tbl:
 		text = RegexLoop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text);
@@ -246,11 +243,11 @@ def CleanStyle(text):
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
 	
-	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
+	if PREFS[KEY.FONT_WEIGHT] == 'bold':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1\2"', text);
-	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'trunc':
+	elif PREFS[KEY.FONT_WEIGHT] == 'trunc':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>xx;\3"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)xx\s*;([^"]*)"', r' style="\1 font-weight: \g<name>00;\3"', text);
 	#else: 'none'

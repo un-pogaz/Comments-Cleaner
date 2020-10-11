@@ -9,9 +9,9 @@ __docformat__ = 'restructuredtext en'
 
 from functools import partial
 try:
-	from PyQt5.Qt import QToolButton, QMenu, QModelIndex
+	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QModelIndex
 except ImportError:
-	from PyQt4.Qt import QToolButton, QMenu
+	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog
 
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
@@ -19,7 +19,7 @@ from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 from calibre.library import current_library_name
 
-import calibre_plugins.comments_cleaner.config as cfg
+from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS
 from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, RegexSimple, RegexSearch, RegexLoop
 
 from calibre_plugins.comments_cleaner.CommentsCleaner import *
@@ -30,7 +30,7 @@ class CommentCleanerAction(InterfaceAction):
 
 	name = 'Comments Cleaner';
 	# Create our top-level menu/toolbar action (text, icon_path, tooltip, keyboard shortcut)
-	action_spec = ('Comments Cleaner', None, _('Remove the scraps CCS in comments'), None);
+	action_spec = ('Comments Cleaner', None, _('Remove the scraps CSS in HTML comments'), None);
 	popup_type = QToolButton.MenuButtonPopup;
 	action_type = 'current';
 	dont_add_to = frozenset(['context-menu-device']);
@@ -41,23 +41,15 @@ class CommentCleanerAction(InterfaceAction):
 		self.menu_actions = [];
 		
 		# Read the plugin icons and store for potential sharing with the config widget
-		icon_resources = self.load_resources(cfg.PLUGIN_ICONS);
+		icon_resources = self.load_resources(PLUGIN_ICONS);
 		set_plugin_icon_resources(self.name, icon_resources);
 		
 		self.build_menus();
 		
 		# Assign our menu to this action and an icon
 		self.qaction.setMenu(self.menu);
-		self.qaction.setIcon(get_icon(cfg.PLUGIN_ICONS[0]));
+		self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]));
 		self.qaction.triggered.connect(self.toolbar_triggered);
-
-	def library_changed(self, db):
-		# We need to reapply keyboard shortcuts after switching libraries
-		debug_print ("CommentCleaner: library changed (", current_library_name(), ")");
-		self.reactivate_menus();
-
-	def location_selected(self, loc):
-		self.is_library_selected = loc == 'library';
 
 	def build_menus(self):
 		m = self.menu;
@@ -66,7 +58,7 @@ class CommentCleanerAction(InterfaceAction):
 		candidate = self.gui.library_path;
 		db = LibraryDatabase (candidate);
 		
-		ac = create_menu_action_unique(self, m, _('&Comments Cleaner'), cfg.PLUGIN_ICONS[0],
+		ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
 									triggered=partial(self._clean_comment),
 									shortcut_name=_('&Comments Cleaner'))
 		self.menu_actions.append (ac);
@@ -109,16 +101,23 @@ class CommentCleanerAction(InterfaceAction):
 		id_aux = {};
 		lis_aux_id = [];
 		
+		debug_print('Launch cleaning for '+ str(len(book_ids)) +' book.');
+		
 		# For each book, update the metadata
-		for id in book_ids:
-			miA = dbA.get_metadata(id, index_is_id=True, get_cover=False);
+		for book_id in book_ids:
+			
+			miA = dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
 			comment = miA.get("comments");
 			
 			if comment is not None:
-				debug_print ('Text in:\n' +comment+ '\n');
-				id_aux[id] = CleanHTML(comment);
-				debug_print ('Text out:\n' +id_aux[id]+ '\n');
-				lis_aux_id.append (id);
+				debug_print('Text in::\n' +comment+ '\n');
+				id_aux[book_id] = CleanHTML(comment);
+				debug_print ('Text out::\n' +id_aux[book_id]+ '\n');
+				lis_aux_id.append(book_id);
+			
+			
+		
 		
 		dbA.new_api.set_field('comments', {id:id_aux[id] for id in lis_aux_id});
 		self.gui.iactions['Edit Metadata'].refresh_gui(book_ids, covers_changed=False);
+		

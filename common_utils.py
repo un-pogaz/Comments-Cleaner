@@ -335,3 +335,15 @@ def RegexLoop(pattern, repl, string):
 	
 	return string;
 
+def CSS_CleanRules(css):
+	#remove space and invalid character
+	css = RegexLoop(r'[.*!()?+<>\\]', r'', css.lower());
+	css = RegexLoop(r'(,|;|:|\n|\r|\s{2,})', r' ', css);
+	css = RegexSimple(r'^\s*(.*?)\s*$', r'\1', css); 
+	# split to table and remove duplicate
+	css = list(dict.fromkeys(css.split(' ')));
+	# sort
+	css.sort();
+	# join in a string
+	css = ' '.join(css);
+	return css;
