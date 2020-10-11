@@ -19,14 +19,12 @@ from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 from calibre.library import current_library_name
 
-from calibre_plugins.comments_cleaner.common_utils import (set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print)
 import calibre_plugins.comments_cleaner.config as cfg
+from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, RegexSimple, RegexSearch, RegexLoop
 
 from calibre_plugins.comments_cleaner.CommentsCleaner import *
 
-import os, re, sys, time
-
-PLUGIN_ICONS = ['images/plugin.png']
+import os, sys, time
 
 class CommentCleanerAction(InterfaceAction):
 
@@ -43,14 +41,14 @@ class CommentCleanerAction(InterfaceAction):
 		self.menu_actions = []
 
 		# Read the plugin icons and store for potential sharing with the config widget
-		icon_resources = self.load_resources(PLUGIN_ICONS)
+		icon_resources = self.load_resources(cfg.PLUGIN_ICONS)
 		set_plugin_icon_resources(self.name, icon_resources)
 
 		self.build_menus()
 
 		# Assign our menu to this action and an icon
 		self.qaction.setMenu(self.menu)
-		self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]))
+		self.qaction.setIcon(get_icon(cfg.PLUGIN_ICONS[0]))
 		self.qaction.triggered.connect(self.toolbar_triggered)
 
 	def library_changed(self, db):
@@ -68,7 +66,7 @@ class CommentCleanerAction(InterfaceAction):
 		candidate = self.gui.library_path
 		db = LibraryDatabase (candidate)
 
-		ac = create_menu_action_unique(self, m, _('&Comments Cleaner'), PLUGIN_ICONS[0],
+		ac = create_menu_action_unique(self, m, _('&Comments Cleaner'), cfg.PLUGIN_ICONS[0],
 								  triggered=partial(self._clean_comment),
 								  shortcut_name=_('&Comments Cleaner'))
 		self.menu_actions.append (ac)
@@ -109,27 +107,24 @@ class CommentCleanerAction(InterfaceAction):
 		self._do_clean_text (book_ids)
 
 	def _do_clean_text (self, book_ids):
-		dbA = self.gui.current_db
-
-		db = self.gui.current_db.new_api
 		
-		library_config = cfg.get_library_config(dbA)
-
-		# Para cada uno de los libros actualiza los metadatos
-
+		dbA = self.gui.current_db
+		
+		# For each book, update the metadata
+		
 		id_aux = {}
 		
 		lis_aux_id = []
-
+		
 		for id in book_ids:
 			miA = dbA.get_metadata(id, index_is_id=True, get_cover=False)
 			texto = miA.get("comments")
-
+			
 			if texto is not None:
 				debug_print ('Text in:\n' +texto+ '\n')
-				id_aux[id] = CleanHTML(library_config, texto)
+				id_aux[id] = CleanHTML(texto)
 				debug_print ('Text out:\n' +id_aux[id]+ '\n')
 				lis_aux_id.append (id)
-
+		
 		dbA.new_api.set_field('comments', {id:id_aux[id] for id in lis_aux_id})
 		self.gui.iactions['Edit Metadata'].refresh_gui(book_ids, covers_changed=False)

@@ -7,30 +7,10 @@ from __future__ import (unicode_literals, division, absolute_import,
 __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
-import sys, os, re
+import sys, os
 import calibre_plugins.comments_cleaner.config as cfg
+from calibre_plugins.comments_cleaner.common_utils import debug_print, RegexSimple, RegexSearch, RegexLoop
 
-reFlag = re.MULTILINE + re.DOTALL;
-
-try:
-	reFlag = re.ASCII + re.MULTILINE + re.DOTALL;
-except :
-	reFlag = re.MULTILINE + re.DOTALL;
-	pass; # calibre 5 // re.ASCII for Python3 only
-
-
-def RegexSimple(pattern, repl, string):
-	return re.sub(pattern, repl, string, 0, reFlag);
-
-def RegexSearch(pattern, string):
-	return re.search(pattern, string, reFlag);
-
-def RegexLoop(pattern, repl, string):
-	
-	while RegexSearch(pattern, string):
-		string = RegexSimple(pattern, repl, string);
-	
-	return string;
 
 
 def CleanBasic(text):
@@ -107,11 +87,10 @@ def CleanBasic(text):
 	
 	return text;
 
-
-def CleanHTML(library_config, text):
+def CleanHTML(text):
 	text = CleanBasic(text);
 	
-	if library_config[cfg.KEY_KEEP_URL] == 'none':
+	if cfg.prefs[cfg.KEY_KEEP_URL] == 'none':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
 	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
@@ -157,9 +136,9 @@ def CleanHTML(library_config, text):
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r'style="\1font-weight: 100;\3"', text);
 	
-	if library_config[cfg.KEY_FONT_WEIGHT] == 'none':
+	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'none':
 		n=None;
-	elif library_config[cfg.KEY_FONT_WEIGHT] == 'bold':
+	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
 		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1 font-weight: xxx;\2"', text);
 		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*xxx\s*;([^"]*)"', r'style="\1 font-weight: 600;\2"', text);
 		text = RegexLoop(r'style="([^"]*)font-weight\s*:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r'style="\1\2"', text);
@@ -176,7 +155,7 @@ def CleanHTML(library_config, text):
 	text = RegexLoop(r'<(p|div)([^=]*=[^>]*)\s*align="([^"]*)"', r'<\1 align="\3"\2', text);
 	
 	# align / empty|all
-	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'empty') or (library_config[cfg.KEY_FORCE_JUSTIFY] == 'all')):
+	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty') or (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all')):
 		# align for all
 		text = text.replace('<p', '<p align="justify"').replace('<div', '<div align="justify"');
 		text = RegexLoop(r'<(p|div)\s*align="justify"([^>]*align="[^"]*")', r'<\1\2', text);
@@ -186,13 +165,13 @@ def CleanHTML(library_config, text):
 		text = RegexLoop(r'align="\s*(?!justify|center|right)[^"]*"', r'align="justify"', text);
 		
 		# align center or right
-		if (library_config[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
+		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
 			text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
-		if (library_config[cfg.KEY_FORCE_JUSTIFY] == 'all'):
+		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
 			text = RegexLoop(r'align="(left|center|right)"', r'align="justify"', text);
 	
 	# align / none
-	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'none')):
+	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'none')):
 		# align left
 		text = text.replace('<p', '<p align="left"').replace('<div', '<div align="left"');
 		text = RegexLoop(r'<(p|div)\s*align="left"([^>]*align="[^"]*")', r'<\1\2', text);
@@ -201,7 +180,7 @@ def CleanHTML(library_config, text):
 		text = RegexLoop(r'align="[^"]*"([^>]*)style="([^"]*)text-align\s*:\s*(center|right|justify)\s*;([^"]*)"', r'align="\3"\1style="\2\4"', text);
 	
 	# align / delete
-	if ((library_config[cfg.KEY_FORCE_JUSTIFY] == 'del')):
+	if ((cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'del')):
 		text = RegexLoop(r'align="[^"]*"', r'', text);
 	
 	
