@@ -12,7 +12,6 @@ import calibre_plugins.comments_cleaner.config as cfg
 from calibre_plugins.comments_cleaner.common_utils import debug_print, RegexSimple, RegexSearch, RegexLoop
 
 
-
 def CleanBasic(text):
 	
 	text = RegexLoop(r'(&#x202F;|&#8239;)', '\u202F', text);
@@ -101,8 +100,11 @@ def CleanBasic(text):
 def CleanHTML(text):
 	text = CleanBasic(text);
 	
+	# useless
+	text = RegexLoop(r'(id|class)=".*?"', r'', text);
+	
 	# Hyperlink
-	if cfg.prefs[cfg.KEY_KEEP_URL] == 'none':
+	if cfg.prefs[cfg.KEY_KEEP_URL] == 'del':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
 	# if no tag = plain text
@@ -110,15 +112,14 @@ def CleanHTML(text):
 		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'[\r\n]',r'<br>', text);
 	
-	# invalid tag
-	text = RegexLoop(r'</?(font|html|body|img|meta|link)[^>]*>', r'', text);
-	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)[^>]*>\s+</(div|p|li|h1|h2|h3|h4|h5|h6)>', r'', text);
+	text = RegexLoop(r'<div([^>]*)>(.*?)<div([^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
 	
 	# remove namespaced attribut
 	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
 	
-	# useless
-	text = RegexLoop(r'(id|class)=".*?"', r'', text);
+	# invalid tag
+	text = RegexLoop(r'</?(font|html|body|img|meta|link)[^>]*>', r'', text);
+	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)[^>]*>\s+</(div|p|li|h1|h2|h3|h4|h5|h6)>', r'', text);
 	
 	# management of <br>
 	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
@@ -127,11 +128,13 @@ def CleanHTML(text):
 	text = RegexLoop(r'<span([^>]*)><(b|h)r>', r'<\2r><span\1>', text);
 	text = RegexLoop(r'<(b|h)r></span>', r'</span><\1r>', text);
 	
-	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br></(div|p|li|h1|h2|h3|h4|h5|h6)>', "<\1\2>\u00A0</\1>", text);
+	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)>(<br>)+</(div|p|li|h1|h2|h3|h4|h5|h6)>', "<\1\2>\u00A0</\1>", text);
 	text = RegexLoop(r'<br></(div|p|li|h1|h2|h3|h4|h5|h6)>', r'</\1>', text);
 	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br>', r'<\1\2>', text);
 	
-	text = RegexLoop(r'<p([^>]*)>([^>]*)<br><br>', r'<p\1>\2</p><p\1>', text);
+	# Multiple Line Return
+	if cfg.prefs[cfg.KEY_DOUBLE_BR] == 'new':
+		text = RegexLoop(r'<p([^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
 	
 	
 	# style standardization:  insert ; at the end
@@ -154,7 +157,7 @@ def CleanHTML(text):
 	
 	#
 	
-	text = CleanBasic(text)
+	text = CleanBasic(text);
 	return text;
 
 
@@ -196,8 +199,9 @@ def CleanAlign(text):
 		# set align prefs
 		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'empty'):
 			text = RegexLoop(r' align="left"', r' align="justify"', text);
-		if (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
+		elif (cfg.prefs[cfg.KEY_FORCE_JUSTIFY] == 'all'):
 			text = RegexLoop(r' align="(left|center|right)"', r' align="justify"', text);
+		#else: 'none'
 		
 	
 	# del text-align
@@ -244,15 +248,14 @@ def CleanStyle(text):
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
 	
-	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'none':
-		n=None;
-	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
+	if cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'bold':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1\2"', text);
-	else: #trunc
+	elif cfg.prefs[cfg.KEY_FONT_WEIGHT] == 'trunc':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>xx;\3"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)xx\s*;([^"]*)"', r' style="\1 font-weight: \g<name>00;\3"', text);
+	#else: 'none'
 	
 	# font-style
 	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial)\s*;([^"]*)"', r' style="\1\3"', text);

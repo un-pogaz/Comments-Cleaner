@@ -23,8 +23,7 @@ KEY_FORCE_JUSTIFY = 'ForceJustify';
 KEY_FONT_WEIGHT = 'FontWeight';
 KEY_CSS_KEEP = 'CSStoKeep';
 
-KEY_TEXT_DECORATION = 'TextDecoration';
-KEY_TEXT_UNDERLINE = 'TextUnderline'
+KEY_DOUBLE_BR = 'DoubleBR';
 
 # This is where all preferences for this plugin are stored
 prefs = JSONConfig('plugins/Comment Cleaner')
@@ -33,68 +32,81 @@ prefs = JSONConfig('plugins/Comment Cleaner')
 prefs.defaults[KEY_KEEP_URL] = 'keep'
 prefs.defaults[KEY_FORCE_JUSTIFY] = 'empty'
 prefs.defaults[KEY_FONT_WEIGHT] = 'bold'
+prefs.defaults[KEY_DOUBLE_BR] = 'new'
+
 prefs.defaults[KEY_CSS_KEEP] = ''
 
 
-SHOW_URL = OrderedDict([('keep', _('Keep URL')),
-						('none', _('Delete URL'))])
+SHOW_URL = OrderedDict([
+					('keep', _('Keep URL')),
+					('del', _('Delete URL'))])
 
-FORCE_JUSTIFY = OrderedDict([('all', _('Forced justification (ecrase "center" and "right")')),
-							('empty', _('Justification for indeterminate text')),
-							('none', _('No change')),
-							('del', _('Delete all align'))])
+FORCE_JUSTIFY = OrderedDict([
+						('all', _('Forced justification (ecrase "center" and "right")')),
+						('empty', _('Justification for indeterminate text')),
+						('none', _('No change')),
+						('del', _('Delete all align'))])
 
 FONT_WEIGHT = OrderedDict([
 						('trunc', _('Truncate the value to the hundred')),
 						('bold', _('Rounded to Bold (value 600)')),
 						('none', _('No change'))])
 
+DOUBLE_BR = OrderedDict([
+						('new', _('Create a new paragraph')),
+						('none', _('No change'))])
+
 class ConfigWidget(QWidget):
 
 	def __init__(self, plugin_action):
-		QWidget.__init__(self)
+		QWidget.__init__(self);
 		
-		self.plugin_action = plugin_action
-		layout = QVBoxLayout(self)
-		self.setLayout(layout)
+		self.plugin_action = plugin_action;
+		layout = QVBoxLayout(self);
+		self.setLayout(layout);
 		
-		title_layout = ImageTitleLayout(self, PLUGIN_ICONS[0], _('Comments Cleaner Options'))
-		layout.addLayout(title_layout)
+		title_layout = ImageTitleLayout(self, PLUGIN_ICONS[0], _('Comments Cleaner Options'));
+		layout.addLayout(title_layout);
 		
 		
 		# --- options ---
-		options_group_box = QGroupBox(_(' '), self)
-		layout.addWidget(options_group_box)
-		options_group_box_layout = QGridLayout()
-		options_group_box.setLayout(options_group_box_layout)
+		options_group_box = QGroupBox(_(' '), self);
+		layout.addWidget(options_group_box);
+		options_group_box_layout = QGridLayout();
+		options_group_box.setLayout(options_group_box_layout);
 		
-		options_group_box_layout.addWidget(QLabel(_('URL:'), self), 1, 1)
-		self.showCombo1 = KeyValueComboBox(self, SHOW_URL, prefs[KEY_KEEP_URL])
-		options_group_box_layout.addWidget(self.showCombo1, 2, 1)
+		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 1, 1);
+		self.showCombo1 = KeyValueComboBox(self, SHOW_URL, prefs[KEY_KEEP_URL]);
+		options_group_box_layout.addWidget(self.showCombo1, 2, 1);
 		
-		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1)
-		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, prefs[KEY_FORCE_JUSTIFY])
-		options_group_box_layout.addWidget(self.showCombo2, 4, 1)
+		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1);
+		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, prefs[KEY_FORCE_JUSTIFY]);
+		options_group_box_layout.addWidget(self.showCombo2, 4, 1);
 		
-		options_group_box_layout.addWidget(QLabel(_('Weights:'), self), 5, 1)
-		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, prefs[KEY_FONT_WEIGHT])
-		options_group_box_layout.addWidget(self.showCombo3, 6, 1)
+		options_group_box_layout.addWidget(QLabel(_('Weights:'), self), 5, 1);
+		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, prefs[KEY_FONT_WEIGHT]);
+		options_group_box_layout.addWidget(self.showCombo3, 6, 1);
+		
+		options_group_box_layout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self), 7, 1);
+		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, prefs[KEY_DOUBLE_BR]);
+		options_group_box_layout.addWidget(self.showCombo4, 8, 1);
 		
 		
+		
+		options_group_box_layout.addWidget(QLabel(_(' '), self), 19, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 1);
 		self.keepCSS = QLineEdit(self);
 		self.keepCSS.setText(prefs[KEY_CSS_KEEP]);
-		self.keepCSS.setToolTip('CSS rules kept in addition to the basic one. Rules separated by a space.');
+		self.keepCSS.setToolTip(_('CSS rules kept in addition to the basic one. Rules separated by a space.'));
 		options_group_box_layout.addWidget(self.keepCSS, 21, 1);
 		
 		# --- Keyboard shortcuts ---
-		keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self)
-		keyboard_shortcuts_button.setToolTip(_(
-					'Edit the keyboard shortcuts associated with this plugin'))
-		keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
-		layout.addWidget(keyboard_shortcuts_button)
-		layout.addStretch(1)
+		keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self);
+		keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'));
+		keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts);
+		layout.addWidget(keyboard_shortcuts_button);
+		layout.addStretch(1);
 
 	def save_settings(self):
 		
@@ -110,8 +122,8 @@ class ConfigWidget(QWidget):
 		
 
 	def edit_shortcuts(self):
-		self.save_settings ()
-		self.plugin_action.build_menus ()
-		d = KeyboardConfigDialog(self.plugin_action.gui, self.plugin_action.action_spec[0])
+		self.save_settings();
+		self.plugin_action.build_menus();
+		d = KeyboardConfigDialog(self.plugin_action.gui, self.plugin_action.action_spec[0]);
 		if d.exec_() == d.Accepted:
-			self.plugin_action.gui.keyboard.finalize()
+			self.plugin_action.gui.keyboard.finalize();

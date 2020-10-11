@@ -65,7 +65,8 @@ def debug_print(*args):
 	if BASE_TIME is None:
 		BASE_TIME = time.time()
 	if DEBUG:
-		prints('DEBUG CommentsCleaner: %6.1f'%(time.time()-BASE_TIME), *args)
+		prints('DEBUG CommentsCleaner: ', *args)
+		#prints('DEBUG CommentsCleaner: %6.1f'%(time.time()-BASE_TIME), *args)
 
 def set_plugin_icon_resources(name, resources):
 	'''

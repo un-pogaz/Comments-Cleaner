@@ -21,10 +21,10 @@ class ActionCommentCleaner(InterfaceActionBase):
     calibre utilities to run without needing to load the GUI libraries.
     '''
     name                    = 'Comments Cleaner'
-    description             = _('Remove the scraps CSS in comments')
+    description             = _('Remove the scraps CSS in HTML comments')
     supported_platforms     = ['windows', 'osx', 'linux']
     author                  = 'un_pogaz'
-    version                 = (0, 5, 0)
+    version                 = (0, 4, 0)
     minimum_calibre_version = (2, 0, 0)
 
     #: This field defines the GUI plugin class that contains all the code
