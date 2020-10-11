@@ -129,8 +129,11 @@ def CleanHTML(library_config, text):
 	text = RegexLoop(r'<(b|h)r>\s+', r'<\1r>', text);
 	text = RegexLoop(r'\s+<(b|h)r>', r'<\1r>', text);
 	
-	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)(([^>]*))><br/></(div|p|li|h1|h2|h3|h4|h5|h6)>', "<\1\2>\u00A0</\1>", text);
-	text = RegexLoop(r'<br/></(div|p|li|h1|h2|h3|h4|h5|h6)>', r'</\1>', text);
+	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br></(div|p|li|h1|h2|h3|h4|h5|h6)>', "<\1\2>\u00A0</\1>", text);
+	text = RegexLoop(r'<br></(div|p|li|h1|h2|h3|h4|h5|h6)>', r'</\1>', text);
+	text = RegexLoop(r'<(div|p|li|h1|h2|h3|h4|h5|h6)([^>]*)><br>', r'<\1\2>', text);
+	
+	text = RegexLoop(r'<p([^>]*)>([^>]*)<br><br>', r'<p\1>\2</p><p\1>', text);
 	
 	atr_tbl = [
 		r'(background-color)',
