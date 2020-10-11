@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, division, absolute_import,
 						print_function)
-from datetime import datetime
 
+__license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
+from datetime import datetime
 from functools import partial
 try:
 	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QModelIndex

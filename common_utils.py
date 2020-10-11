@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import (unicode_literals, division, absolute_import,
 						print_function)
-import six
 
 __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import os, time, re
+import os, time, re, six
 
 try:
 	from PyQt5 import QtWidgets as QtGui
