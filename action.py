@@ -14,6 +14,7 @@ try:
 except ImportError:
 	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog
 
+
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
 from calibre.gui2 import error_dialog
@@ -27,8 +28,15 @@ from calibre_plugins.comments_cleaner.CommentsCleaner import *
 
 import os, sys, time
 
-class CommentCleanerAction(InterfaceAction):
+try:
+	debug_print("Comments Cleaner::action.py - loading translations")
+	load_translations()
+except NameError:
+	debug_print("Comments Cleaner::action.py - exception when loading translations")
+	pass # load_translations() added in calibre 1.9
 
+class CommentCleanerAction(InterfaceAction):
+	
 	name = 'Comments Cleaner';
 	# Create our top-level menu/toolbar action (text, icon_path, tooltip, keyboard shortcut)
 	action_spec = ('Comments Cleaner', None, _('Remove the scraps CSS in HTML comments'), None);
@@ -61,7 +69,7 @@ class CommentCleanerAction(InterfaceAction):
 		
 		ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
 									triggered=partial(self._clean_comment),
-									shortcut_name=_('&Comments Cleaner'))
+									shortcut_name='Comments Cleaner')
 		self.menu_actions.append (ac);
 		
 		self.menu.addSeparator();

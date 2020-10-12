@@ -15,6 +15,13 @@ from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, Keyb
 
 import copy, os
 
+try:
+	debug_print("Comments Cleaner::config.py - loading translations")
+	load_translations()
+except NameError:
+	debug_print("Comments Cleaner::config.py - exception when loading translations")
+	pass # load_translations() added in calibre 1.9
+
 PLUGIN_ICONS = ['images/plugin.png']
 
 class KEY:
@@ -57,9 +64,6 @@ ID_CLASS = OrderedDict([
 						('none', _('No change'))])
 
 
-CSS_KEEP_TIP = _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
-
-
 # This is where all preferences for this plugin are stored
 PREFS = JSONConfig('plugins/Comment Cleaner')
 
@@ -86,7 +90,7 @@ class ConfigWidget(QWidget):
 		
 		
 		# --- options ---
-		options_group_box = QGroupBox(_(' '), self);
+		options_group_box = QGroupBox(' ', self);
 		layout.addWidget(options_group_box);
 		options_group_box_layout = QGridLayout();
 		options_group_box.setLayout(options_group_box_layout);
@@ -117,12 +121,12 @@ class ConfigWidget(QWidget):
 		
 		
 		
-		options_group_box_layout.addWidget(QLabel(_(' '), self), 19, 1);
+		options_group_box_layout.addWidget(QLabel(' ', self), 19, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 1);
 		self.keepCSS = QLineEdit(self);
 		self.keepCSS.setText(PREFS[KEY.CSS_KEEP]);
-		self.keepCSS.setToolTip(CSS_KEEP_TIP);
+		self.keepCSS.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'));
 		options_group_box_layout.addWidget(self.keepCSS, 21, 1);
 		
 		# --- Keyboard shortcuts ---

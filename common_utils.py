@@ -10,6 +10,11 @@ __docformat__ = 'restructuredtext en'
 import os, time, re, six
 
 try:
+	load_translations()
+except NameError:
+	pass # load_translations() added in calibre 1.9
+
+try:
 	from PyQt5 import QtWidgets as QtGui
 	from PyQt5.Qt import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
 						  QTableWidgetItem, QFont, QLineEdit, QComboBox,

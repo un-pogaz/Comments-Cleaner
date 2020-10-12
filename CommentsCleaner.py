@@ -38,6 +38,9 @@ def CleanBasic(text):
 	text = RegexLoop("(&hellip;|&#8230;)", "…", text);
 	text = RegexLoop("(&rsquo;|&#8217;)", "’", text);
 	
+	text = RegexLoop(r'<(/?)i\d+([^>]*)>', r'<\1em\2>', text);
+	text = RegexLoop(r'<(/?)b\d+([^>]*)>', r'<\1strong\2>', text);
+	
 	# same inline
 	text = RegexLoop(r"<(i|b|em|strong|span)([^>]*)>([^>]*)</\1>\s+<\1\2>", r'<\1\2>\3 ', text);
 	text = RegexLoop(r"<(i|b|em|strong|span)([^>]*)>([^>]*)</\1><\1\2>", r'<\1\2>\3', text);
@@ -98,6 +101,15 @@ def CleanBasic(text):
 	return text;
 
 def CleanHTML(text):
+	
+	# if no tag = plain text
+	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
+		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
+		text = RegexLoop(r'[\r\n]',r'<br>', text)
+		text = RegexLoop(r'(_|\*){2}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{2}',r'<strong>\2</strong>', text);
+		text = RegexLoop(r'(_|\*){1}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{1}',r'<em>\2</em>', text);
+	
+	
 	text = CleanBasic(text);
 	
 	# ID and CLASS attributs
@@ -118,11 +130,6 @@ def CleanHTML(text):
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
 	
 	text = OrderedAttributs(text);
-	
-	# if no tag = plain text
-	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
-		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
-		text = RegexLoop(r'[\r\n]',r'<br>', text);
 	
 	text = RegexLoop(r'<div([^>]*)>(.*?)<div([^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
 	

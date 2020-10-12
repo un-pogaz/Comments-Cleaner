@@ -1,0 +1,155 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-10-12 17:31+0200\n"
+"PO-Revision-Date: 2020-10-12 14:49+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SearchPath-0: action.py\n"
+"X-Poedit-SearchPath-1: config.py\n"
+"X-Poedit-SearchPath-2: __init__.py\n"
+"X-Poedit-SearchPath-3: common_utils.py\n"
+
+#: __init__.py:29 action.py:42
+msgid "Remove the scraps CSS in HTML comments"
+msgstr ""
+
+#: action.py:70
+msgid "&Clean the selecteds Comments"
+msgstr ""
+
+#: action.py:76
+msgid "&Customize plugin"
+msgstr ""
+
+#: action.py:96 action.py:101
+msgid "No selected book"
+msgstr ""
+
+#: action.py:96 action.py:101
+msgid "No book selected for cleaning comments"
+msgstr ""
+
+#: common_utils.py:223
+msgid "Restart required"
+msgstr ""
+
+#: common_utils.py:224
+msgid "Title image not found - you must restart Calibre before using this plugin!"
+msgstr ""
+
+#: common_utils.py:293
+msgid "Keyboard shortcut dialog"
+msgstr ""
+
+#: common_utils.py:295
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: config.py:37
+msgid "Keep URL"
+msgstr ""
+
+#: config.py:38
+msgid "Delete URL"
+msgstr ""
+
+#: config.py:41
+msgid "Force the justification (ecrase \"center\" and \"right\")"
+msgstr ""
+
+#: config.py:42
+msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
+msgstr ""
+
+#: config.py:43 config.py:49 config.py:53 config.py:58 config.py:64
+msgid "No change"
+msgstr ""
+
+#: config.py:44
+msgid "Delete all align"
+msgstr ""
+
+#: config.py:47
+msgid "Truncate the value to the hundred"
+msgstr ""
+
+#: config.py:48
+msgid "Rounded to Bold (value 600)"
+msgstr ""
+
+#: config.py:52
+msgid "Create a new paragraph"
+msgstr ""
+
+#: config.py:56
+msgid "Converte to a paragraph"
+msgstr ""
+
+#: config.py:57
+msgid "Converte to a paragraph but keep the bold"
+msgstr ""
+
+#: config.py:61
+msgid "Delete \"id\" attribut"
+msgstr ""
+
+#: config.py:62
+msgid "Delete \"class\" attribut"
+msgstr ""
+
+#: config.py:63
+msgid "Delete \"id\" and \"class\" attribut"
+msgstr ""
+
+#: config.py:90
+msgid "Comments Cleaner Options"
+msgstr ""
+
+#: config.py:100
+msgid "Hyperlink:"
+msgstr ""
+
+#: config.py:104
+msgid "Justification:"
+msgstr ""
+
+#: config.py:108
+msgid "Weights:"
+msgstr ""
+
+#: config.py:112
+msgid "Multiple Line Return in a paragraph:"
+msgstr ""
+
+#: config.py:116
+msgid "Headings:"
+msgstr ""
+
+#: config.py:120
+msgid "ID & CLASS attributs:"
+msgstr ""
+
+#: config.py:128
+msgid "CSS rule to keep:"
+msgstr ""
+
+#: config.py:131
+msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
+msgstr ""
+
+#: config.py:135
+msgid "Keyboard shortcuts..."
+msgstr ""
+
+#: config.py:136
+msgid "Edit the keyboard shortcuts associated with this plugin"
+msgstr ""

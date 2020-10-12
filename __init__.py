@@ -10,6 +10,11 @@ __docformat__ = 'restructuredtext en'
 # The class that all Interface Action plugin wrappers must inherit from
 from calibre.customize import InterfaceActionBase
 
+try:
+    load_translations()
+except NameError:
+    pass # load_translations() added in calibre 1.9
+
 class ActionCommentCleaner(InterfaceActionBase):
     '''
     This class is a simple wrapper that provides information about the actual
@@ -24,7 +29,7 @@ class ActionCommentCleaner(InterfaceActionBase):
     description             = _('Remove the scraps CSS in HTML comments')
     supported_platforms     = ['windows', 'osx', 'linux']
     author                  = 'un_pogaz'
-    version                 = (1, 1, 0)
+    version                 = (1, 2, 0)
     minimum_calibre_version = (2, 0, 0)
 
     #: This field defines the GUI plugin class that contains all the code
