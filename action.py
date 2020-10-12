@@ -21,7 +21,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.library import current_library_name
 
 from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS
-from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, RegexSimple, RegexSearch, RegexLoop
+from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop
 
 from calibre_plugins.comments_cleaner.CommentsCleaner import *
 
@@ -111,9 +111,9 @@ class CommentCleanerAction(InterfaceAction):
 			comment = miA.get("comments");
 			
 			if comment is not None:
-				debug_print('Text in::\n' +comment+ '\n');
+				debug_text('Text out', comment);
 				id_aux[book_id] = CleanHTML(comment);
-				debug_print ('Text out::\n' +id_aux[book_id]+ '\n');
+				debug_text('Text out', id_aux[book_id]);
 				lis_aux_id.append(book_id);
 			
 			

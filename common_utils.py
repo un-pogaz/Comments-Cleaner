@@ -43,7 +43,7 @@ except ImportError:
 	convert_qvariant = lambda x: x
 else:
 	is_qt4 = True
-
+	
 	def convert_qvariant(x):
 		vt = x.type()
 		if vt == x.String:
@@ -66,6 +66,9 @@ def debug_print(*args):
 	if DEBUG:
 		prints('DEBUG CommentsCleaner: ', *args)
 		#prints('DEBUG CommentsCleaner: %6.1f'%(time.time()-BASE_TIME), *args)
+
+def debug_text(pre, text):
+	debug_print(pre+':::\n'+text+'\n');
 
 def set_plugin_icon_resources(name, resources):
 	'''
@@ -99,13 +102,13 @@ def get_pixmap(icon_name):
 	Any icons belonging to the plugin must be prefixed with 'images/'
 	'''
 	global plugin_icon_resources, plugin_name
-
+	
 	if not icon_name.startswith('images/'):
 		# We know this is definitely not an icon belonging to this plugin
 		pixmap = QPixmap()
 		pixmap.load(I(icon_name))
 		return pixmap
-
+	
 	# Check to see whether the icon exists as a Calibre resource
 	# This will enable skinning if the user stores icons within a folder like:
 	# ...\AppData\Roaming\calibre\resources\images\Plugin Name\
@@ -169,7 +172,7 @@ def create_menu_action_unique(ia, parent_menu, menu_text, image=None, tooltip=No
 
 	if shortcut_name is None:
 		shortcut_name = menu_text.replace('&','')
-
+	
 	ac = ia.create_menu_action(parent_menu, unique_name, menu_text, icon=None, shortcut=shortcut,
 		description=tooltip, triggered=triggered, shortcut_name=shortcut_name)
 	if shortcut == False and not orig_shortcut == False:
@@ -200,7 +203,7 @@ class ImageTitleLayout(QHBoxLayout):
 		self.title_image_label = QLabel(parent)
 		self.update_title_icon(icon_name)
 		self.addWidget(self.title_image_label)
-
+		
 		title_font = QFont()
 		title_font.setPointSize(16)
 		shelf_label = QLabel(title, parent)
@@ -287,16 +290,16 @@ class KeyboardConfigDialog(SizePersistedDialog):
 		self.setWindowTitle(_('Keyboard shortcuts'))
 		layout = QVBoxLayout(self)
 		self.setLayout(layout)
-
+		
 		self.keyboard_widget = ShortcutConfig(self)
 		layout.addWidget(self.keyboard_widget)
 		self.group_name = group_name
-
+		
 		button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
 		button_box.accepted.connect(self.commit)
 		button_box.rejected.connect(self.reject)
 		layout.addWidget(button_box)
-
+		
 		# Cause our dialog size to be restored from prefs or created on first usage
 		self.resize_dialog()
 		self.initialize()
@@ -342,7 +345,7 @@ def CSS_CleanRules(css):
 	# split to table and remove duplicate
 	css = list(dict.fromkeys(css.split(' ')));
 	# sort
-	css.sort();
+	css = sorted(css);
 	# join in a string
 	css = ' '.join(css);
 	return css;

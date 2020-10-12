@@ -23,6 +23,8 @@ class KEY:
 	FONT_WEIGHT = 'FontWeight';
 	CSS_KEEP = 'CSStoKeep';
 	DOUBLE_BR = 'DoubleBR';
+	HEADINGS = 'Headings';
+	ID_CLASS = 'ID_Class';
 
 KEEP_URL = OrderedDict([
 					('keep', _('Keep URL')),
@@ -43,6 +45,17 @@ DOUBLE_BR = OrderedDict([
 						('new', _('Create a new paragraph')),
 						('none', _('No change'))])
 
+HEADINGS = OrderedDict([
+						('conv', _('Converte to a paragraph')),
+						('bolder', _('Converte to a paragraph but keep the bold')),
+						('none', _('No change'))])
+
+ID_CLASS = OrderedDict([
+						('id', _('Delete "id" attribut')),
+						('class', _('Delete "class" attribut')),
+						('id_class', _('Delete "id" and "class" attribut')),
+						('none', _('No change'))])
+
 
 CSS_KEEP_TIP = _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
 
@@ -56,6 +69,8 @@ PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
 PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
 PREFS.defaults[KEY.CSS_KEEP] = ''
+PREFS.defaults[KEY.HEADINGS] = 'keep'
+PREFS.defaults[KEY.ID_CLASS] = 'id_class'
 
 class ConfigWidget(QWidget):
 
@@ -92,6 +107,14 @@ class ConfigWidget(QWidget):
 		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
 		options_group_box_layout.addWidget(self.showCombo4, 8, 1);
 		
+		options_group_box_layout.addWidget(QLabel(_('Headings:'), self), 9, 1);
+		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
+		options_group_box_layout.addWidget(self.showCombo5, 10, 1);
+		
+		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 11, 1);
+		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
+		options_group_box_layout.addWidget(self.showCombo6, 12, 1);
+		
 		
 		
 		options_group_box_layout.addWidget(QLabel(_(' '), self), 19, 1);
@@ -115,6 +138,8 @@ class ConfigWidget(QWidget):
 		PREFS[KEY.FORCE_JUSTIFY] = self.showCombo2.selected_key();
 		PREFS[KEY.FONT_WEIGHT] = self.showCombo3.selected_key();
 		PREFS[KEY.DOUBLE_BR] = self.showCombo4.selected_key();
+		PREFS[KEY.HEADINGS] = self.showCombo5.selected_key();
+		PREFS[KEY.ID_CLASS] = self.showCombo6.selected_key();
 		
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.keepCSS.text());
 		

@@ -9,7 +9,7 @@ __docformat__ = 'restructuredtext en'
 
 import sys, os
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
-from calibre_plugins.comments_cleaner.common_utils import debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
+from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
 
 def CleanBasic(text):
@@ -100,12 +100,24 @@ def CleanBasic(text):
 def CleanHTML(text):
 	text = CleanBasic(text);
 	
-	# useless
-	text = RegexLoop(r'(id|class)=".*?"', r'', text);
+	# ID and CLASS attributs
+	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
+		text = RegexLoop(r' id="[^"]*"', r'', text);
+	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
+		text = RegexLoop(r' class="[^"]*"', r'', text);
+	
+	# Headings
+	if PREFS[KEY.HEADINGS] == 'bolder':
+		text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3;font-weight: bold;"\4>', text);
+		text = RegexLoop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text);
+	if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
+		text = RegexLoop(r'<(/?)h\d+([^>]*)>', r'<\1p\2>', text);
 	
 	# Hyperlink
 	if PREFS[KEY.KEEP_URL] == 'del':
 		text = RegexLoop(r'<a.*?>(.*?)</a>', r'\1', text);
+	
+	text = OrderedAttributs(text);
 	
 	# if no tag = plain text
 	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
@@ -153,22 +165,23 @@ def CleanHTML(text):
 	# remove empty attribut
 	text = RegexLoop(r' ([^"=<>]+)="\s*"', r'', text);
 	
-	text = AlignFirst(text);
+	text = OrderedAttributs(text);
 	
 	#
 	
 	text = CleanBasic(text);
 	return text;
 
-
-def AlignFirst(text):
-	# align first
-	text = RegexLoop(r'<([^\s])([^=>]*=[^>]*)\s+align="([^"]*)"', r'<\1 align="\3"\2', text);
+# Ordered the attributs
+def OrderedAttributs(text):
+	attributs = 'align|style|class|id|href'
+	for attribut in reversed(sorted(attributs.split('|'))):
+		text = RegexLoop(r'<([^\s])([^=>]*=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3"\2', text);
 	return text;
 
 def CleanAlign(text):
 	
-	text = AlignFirst(text);
+	text = OrderedAttributs(text);
 	
 	# set align
 	if ((PREFS[KEY.FORCE_JUSTIFY] == 'del')):
@@ -230,7 +243,7 @@ def CleanStyle(text):
 	text = text.replace(' style="',' x-style="" style=" ');
 	
 	rule_all = 'text-align font-weight font-style text-decoration text-decoration-line';
-	rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]);
+	rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ');
 	
 	for rule in rule_tbl:
 		text = RegexLoop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text);
