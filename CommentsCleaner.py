@@ -106,8 +106,8 @@ def CleanHTML(text):
 	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
 		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'[\r\n]',r'<br>', text)
-		text = RegexLoop(r'(_|\*){2}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{2}',r'<strong>\2</strong>', text);
-		text = RegexLoop(r'(_|\*){1}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{1}',r'<em>\2</em>', text);
+		#text = RegexLoop(r'(_|\*){2}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{2}',r'<strong>\2</strong>', text);
+		#text = RegexLoop(r'(_|\*){1}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{1}',r'<em>\2</em>', text);
 	
 	
 	text = CleanBasic(text);
