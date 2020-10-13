@@ -21,7 +21,7 @@ def CleanBasic(text):
 	text = text.replace('\r\n', '\n').replace('\r', '\n');
 	text = RegexLoop(r'( |\t|\n\n)+\n', '\n', text);
 	
-	text = RegexLoop(r'\s<(p|div|h\d|li|ul|ol|blockquote)', r'<\1', text);
+	text = RegexLoop(r'\s+<(/)?(p|div|h\d|li|ul|ol|blockquote)', r'<\1\2', text);
 	text = RegexLoop(r'><(p|div|h\d|li|ul|ol|blockquote)', r'>\n<\1', text);
 	
 	# entity
@@ -104,10 +104,11 @@ def CleanHTML(text):
 	
 	# if no tag = plain text
 	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
-		text = '<div><p>' + RegexLoop(r'[\r\n]{2,}',r'</p><p>', text) + '</p></div>';
-		text = RegexLoop(r'[\r\n]',r'<br>', text)
-		#text = RegexLoop(r'(_|\*){2}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{2}',r'<strong>\2</strong>', text);
-		#text = RegexLoop(r'(_|\*){1}((?:(?!\\\1\1|\1\\\1|<br>).)*?)\1{1}',r'<em>\2</em>', text);
+		text = text.replace('\r\n', '\n').replace('\r', '\n');
+		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
+		text = RegexLoop(r'\n',r'<br>', text);
+		text = RegexLoop(r'<p>\s+', r'<p>', text);
+		text = RegexLoop(r'\s+</p>', r'</p>', text);
 	
 	
 	text = CleanBasic(text);
@@ -191,7 +192,7 @@ def CleanAlign(text):
 	text = OrderedAttributs(text);
 	
 	# set align
-	if ((PREFS[KEY.FORCE_JUSTIFY] == 'del')):
+	if (PREFS[KEY.FORCE_JUSTIFY] == 'del'):
 		# del align
 		text = RegexLoop(r' align="[^"]*"', r'', text);
 		
@@ -225,7 +226,7 @@ def CleanAlign(text):
 		
 	
 	# del text-align
-	text = RegexLoop(r' style="([^"]*) text-align\s*:\s*([^;]*)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' style="\1\3"', text);
 	
 	# del align left (default value)
 	text = RegexLoop(r' align="left"', r'', text);
@@ -239,14 +240,12 @@ def CleanAlign(text):
 	# del justify for <h1>
 	text = RegexLoop(r'<(h1|h2|h3|h4|h5|h6) align="justify"', r'<\1', text);
 	
-	text = RegexLoop(r' align="left"', r'', text);
-	text = RegexLoop(r'<div align="[^"]*"\s*>\s*<p', r'<div>\n<p', text);
-	
 	return text;
 
 
 def CleanStyle(text):
 	
+	text = RegexLoop(r' x-style="[^"]*"', r'', text);
 	text = text.replace(' style="',' x-style="" style=" ');
 	
 	rule_all = 'text-align font-weight font-style text-decoration text-decoration-line';

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-12 17:31+0200\n"
+"POT-Creation-Date: 2020-10-13 10:38+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -110,46 +110,46 @@ msgstr ""
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr ""
 
-#: config.py:90
+#: config.py:88
 msgid "Comments Cleaner Options"
 msgstr ""
 
-#: config.py:100
+#: config.py:98
 msgid "Hyperlink:"
 msgstr ""
 
-#: config.py:104
+#: config.py:102
 msgid "Justification:"
 msgstr ""
 
-#: config.py:108
+#: config.py:106
 msgid "Weights:"
 msgstr ""
 
-#: config.py:112
+#: config.py:110
 msgid "Multiple Line Return in a paragraph:"
 msgstr ""
 
-#: config.py:116
+#: config.py:114
 msgid "Headings:"
 msgstr ""
 
-#: config.py:120
+#: config.py:118
 msgid "ID & CLASS attributs:"
 msgstr ""
 
-#: config.py:128
+#: config.py:126
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:131
+#: config.py:129
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:135
+#: config.py:133
 msgid "Keyboard shortcuts..."
 msgstr ""
 
-#: config.py:136
+#: config.py:134
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""
