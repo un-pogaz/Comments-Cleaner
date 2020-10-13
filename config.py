@@ -65,7 +65,7 @@ ID_CLASS = OrderedDict([
 
 
 # This is where all preferences for this plugin are stored
-PREFS = JSONConfig('plugins/Comments Cleaner')
+PREFS = JSONConfig('plugins/Comment Cleaner')
 
 # Set defaults
 PREFS.defaults[KEY.KEEP_URL] = 'keep'
