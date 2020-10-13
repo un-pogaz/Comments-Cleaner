@@ -103,30 +103,48 @@ class CommentCleanerAction(InterfaceAction):
 		
 		self._do_clean_text (book_ids);
 
-	def _do_clean_text (self, book_ids):
+	def _do_clean_text(self, book_ids):
 		
-		dbA = self.gui.current_db;
+		self.dbA = self.gui.current_db;
 		
-		id_aux = {};
-		lis_aux_id = [];
+		books_dic = {};
+		
+		# Count of cleaned comments
+		books_clean = 0;
 		
 		debug_print('Launch cleaning for '+ str(len(book_ids)) +' book.');
 		
-		# For each book, update the metadata
+		# For each book, clean the comments
 		for book_id in book_ids:
 			
-			miA = dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
-			comment = miA.get("comments");
+			miA = self.dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
+			comment = miA.get('comments');
 			
 			if comment is not None:
-				debug_text('Text out', comment);
-				id_aux[book_id] = CleanHTML(comment);
-				debug_text('Text out', id_aux[book_id]);
-				lis_aux_id.append(book_id);
+				debug_text('Text in ['+str(book_id)+']', comment);
+				comment_out = CleanHTML(comment);
+				if comment == comment_out:
+					debug_print('Unchanged text :::\n');
+				else:
+					debug_text('Text out', comment_out);
+					books_dic[book_id] = comment_out;
 			
+			# If the number of books cleaned is too large,
+			# update the DB and create a new dictionary.
+			if ((len(books_dic) > 0) and (len(books_dic) % 2500 == 0)):
+				books_clean += len(books_dic);
+				self._update_comments_field(books_dic);
+				books_dic = {};
 			
 		
+		books_clean += len(books_dic);
+		self._update_comments_field(books_dic);
+		debug_print('Cleaning performed for '+ str(books_clean) +' book.\n');
+		self.dbA = None;
 		
-		dbA.new_api.set_field('comments', {id:id_aux[id] for id in lis_aux_id});
-		self.gui.iactions['Edit Metadata'].refresh_gui(book_ids, covers_changed=False);
-		
+
+	def _update_comments_field(self, books_dic):
+		if len(books_dic) > 0:
+			debug_print('Update the database for ('+len(books_dic)+') books.');
+			self.dbA.new_api.set_field('comments', {id:books_dic[id] for id in books_dic.keys()});
+			self.gui.iactions['Edit Metadata'].refresh_gui(books_dic.keys(), covers_changed=False);
