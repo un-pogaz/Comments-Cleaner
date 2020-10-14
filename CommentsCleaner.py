@@ -39,8 +39,8 @@ def CleanBasic(text):
 	text = RegexLoop("(&hellip;|&#8230;)", "…", text);
 	text = RegexLoop("(&rsquo;|&#8217;)", "’", text);
 	
-	text = RegexLoop(r'<(/?)i( |[^>]*)>', r'<\1em\2>', text);
-	text = RegexLoop(r'<(/?)b( |[^>]*)>', r'<\1strong\2>', text);
+	text = RegexLoop(r'<(/?)i(| [^>]*)>', r'<\1em\2>', text);
+	text = RegexLoop(r'<(/?)b(| [^>]*)>', r'<\1strong\2>', text);
 	
 	
 	# inline empty 
