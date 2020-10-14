@@ -32,6 +32,7 @@ class KEY:
 	DOUBLE_BR = 'DoubleBR';
 	HEADINGS = 'Headings';
 	ID_CLASS = 'ID_Class';
+	MARKDOWN = 'Markdown';
 
 KEEP_URL = OrderedDict([
 					('keep', _('Keep URL')),
@@ -63,6 +64,10 @@ ID_CLASS = OrderedDict([
 						('id_class', _('Delete "id" and "class" attribut')),
 						('none', _('No change'))])
 
+MARKDOWN = OrderedDict([
+						('try', _('Try to convert any valid string')),
+						('none', _('No change'))])
+
 
 # This is where all preferences for this plugin are stored
 PREFS = JSONConfig('plugins/Comment Cleaner')
@@ -73,8 +78,9 @@ PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
 PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
 PREFS.defaults[KEY.CSS_KEEP] = ''
-PREFS.defaults[KEY.HEADINGS] = 'keep'
+PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
+PREFS.defaults[KEY.MARKDOWN] = 'try'
 
 class ConfigWidget(QWidget):
 
@@ -95,9 +101,6 @@ class ConfigWidget(QWidget):
 		options_group_box_layout = QGridLayout();
 		options_group_box.setLayout(options_group_box_layout);
 		
-		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 1, 1);
-		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
-		options_group_box_layout.addWidget(self.showCombo1, 2, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1);
 		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
@@ -115,10 +118,18 @@ class ConfigWidget(QWidget):
 		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
 		options_group_box_layout.addWidget(self.showCombo5, 10, 1);
 		
-		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 11, 1);
-		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
-		options_group_box_layout.addWidget(self.showCombo6, 12, 1);
+		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 11, 1);
+		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
+		options_group_box_layout.addWidget(self.showCombo1, 12, 1);
 		
+		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 13, 1);
+		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
+		options_group_box_layout.addWidget(self.showCombo6, 14, 1);
+		
+		options_group_box_layout.addWidget(QLabel(_('Markdown:'), self), 15, 1);
+		self.showCombo7 = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN]);
+		options_group_box_layout.addWidget(self.showCombo7, 16, 1);
+		self.showCombo7.setToolTip(_('Conversion from a Markdown format will only be done if the comment is NOT an HTML format.'));
 		
 		
 		options_group_box_layout.addWidget(QLabel(' ', self), 19, 1);
@@ -144,6 +155,7 @@ class ConfigWidget(QWidget):
 		PREFS[KEY.DOUBLE_BR] = self.showCombo4.selected_key();
 		PREFS[KEY.HEADINGS] = self.showCombo5.selected_key();
 		PREFS[KEY.ID_CLASS] = self.showCombo6.selected_key();
+		PREFS[KEY.MARKDOWN] = self.showCombo7.selected_key();
 		
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.keepCSS.text());
 		

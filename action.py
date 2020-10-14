@@ -145,6 +145,6 @@ class CommentCleanerAction(InterfaceAction):
 
 	def _update_comments_field(self, books_dic):
 		if len(books_dic) > 0:
-			debug_print('Update the database for ('+len(books_dic)+') books.');
+			debug_print('Update the database for '+str(len(books_dic))+' books.');
 			self.dbA.new_api.set_field('comments', {id:books_dic[id] for id in books_dic.keys()});
 			self.gui.iactions['Edit Metadata'].refresh_gui(books_dic.keys(), covers_changed=False);

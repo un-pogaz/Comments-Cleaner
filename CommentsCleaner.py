@@ -105,8 +105,12 @@ def CleanHTML(text):
 		text = text.replace('\r\n', '\n').replace('\r', '\n');
 		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'\n',r'<br>', text);
-		text = RegexLoop(r'<p>\s+', r'<p>', text);
-		text = RegexLoop(r'\s+</p>', r'</p>', text);
+		text = RegexLoop(r'(<p>|<br>)\s+', r'\1', text);
+		text = RegexLoop(r'\s+(<p>|<br>)', r'\1', text);
+		# Markdown
+		if PREFS[KEY.MARKDOWN] == 'try':
+			text = CleanMarkdown(text);
+		
 	
 	
 	text = CleanBasic(text);
@@ -275,6 +279,57 @@ def CleanStyle(text):
 	# font-style
 	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial)\s*;([^"]*)"', r' style="\1\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-style:\s*(oblique(?:\s+\d+deg))\s*;([^"]*)"', r' style="\1 font-style: italic;\3"', text);
+	
+	return text;
+
+
+# Try to convert Markdown to HTML
+def CleanMarkdown(text): # key word: TRY!
+	# image
+	text = RegexLoop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)',r'<img alt"\1" src="\2">', text);
+	# hyperlink
+	text = RegexLoop( r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)',r'<a href="\2">\1</a>', text);
+	
+	# heading 1 & 2
+	for h, n in [('=', '1'),('-', '2')]:
+		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)', r'</p><h'+n+r'>\2</h'+n+r'><p>', text);
+		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        , r'</p><h'+n+r'>\2</h'+n+r'>'   , text);
+		text = RegexLoop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)',     r'<h'+n+r'>\2</h'+n+r'><p>', text);
+	
+	# heading
+	for h in rang(1, 6):
+		h = str(h);
+		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text);
+		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text);
+		text = RegexLoop(         r'(<p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)',     r'<h'+h+r'>\2</h'+h+r'><p>', text);
+	
+	
+	# u liste
+	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+(.*?)(<br>|</p><p>)', r'</p><ul><li>\2</li></ul><p>', text);
+	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+(.*?)(</p>)'        , r'</p><ul><li>\2</li></ul>'   , text);
+	text = RegexLoop(         r'(<p>)(?:\*|-)\s+(.*?)(<br>|</p><p>)'    , r'<ul><li>\2</li></ul><p>', text);
+	text = RegexLoop(         r'(<p>)(?:\*|-)\s+(.*?)(</p>)'            , r'<ul><li>\2</li></ul>'   , text);
+	text = RegexLoop(r'</li></ul><ul><li>', r'</li><li>', text);
+	
+	# o liste
+	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+(.*?)(<br>|</p><p>)', r'</p><ol><li>\2</li></ol><p>', text);
+	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+(.*?)(</p>)'        , r'</p><ol><li>\2</li></ol>'   , text);
+	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+(.*?)(<br>|</p><p>)',     r'<ol><li>\2</li></ol><p>', text);
+	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+(.*?)(</p>)'        ,     r'<ol><li>\2</li></ol>'   , text);
+	text = RegexLoop(r'</li></ol><ol><li>', r'</li><li>', text);
+	
+	# <hr>
+	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*){2,}(<br>|</p><p>)', r'</p><hr><p>', text);
+	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*){2,}(</p>)'        , r'</p><hr>'   , text);
+	text = RegexLoop(         r'(<p>)(?:-|\*){2,}(<br>|</p><p>)', r'<hr><p>'    , text);
+	
+	# bold
+	text = RegexLoop(r'([^\\])((?:_|\*){2})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<strong>\3</strong>', text);
+	# italic
+	text = RegexLoop(r'([^\\])((?:_|\*){1})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<em>\3</em>', text);
+	
+	# 
+	text = RegexLoop(r'\\(_|\*)',r'\1', text);
 	
 	return text;
 
