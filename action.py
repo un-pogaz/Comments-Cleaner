@@ -138,11 +138,8 @@ class CleanerProgressDialog(QProgressDialog):
 		self.setAutoClose(True);
 		self.setAutoReset(False);
 		
+		self.hide();
 		debug_print('Launch cleaning for '+ str(self.maximum()) +' book.');
-		if self.maximum() < 50:
-			self.hide();
-		else:
-			self.show();
 		
 		QTimer.singleShot(0, self._do_clean_comments);
 		self.exec_();
@@ -157,15 +154,14 @@ class CleanerProgressDialog(QProgressDialog):
 
 	def _do_clean_comments(self):
 		
-		if self.wasCanceled():
-			self.close();
-		
 		# set value and label
 		self.setValue(self.value() + 1);
 		self.setLabelText(_('Book %d of %d') % (self.value(), self.maximum()));
 		
 		if self.maximum() > 50:
 			self.show();
+		else:
+			self.hide();
 		
 		
 		# get the current book id
@@ -175,6 +171,10 @@ class CleanerProgressDialog(QProgressDialog):
 		miA = self.dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
 		comment = miA.get('comments');
 		
+		if self.wasCanceled():
+			self.close();
+			return;
+			
 		# process the comment
 		if comment is not None:
 			debug_text('Text in (book: '+str(self.value())+'/'+str(self.maximum())+')[id: '+str(book_id)+']', comment);

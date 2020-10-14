@@ -47,8 +47,8 @@ def CleanBasic(text):
 	inlineSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>\s+</\1>';
 	inlineEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)></\1>';
 	# same inline
-	sameSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>([^>]*)</\1>\s+<\1\2>';
-	sameEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)>([^>]*)</\1><\1\2>';
+	sameSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>([^<]*)</\1>\s+<\1\2>';
+	sameEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)>([^<]*)</\1><\1\2>';
 	
 	while (RegexSearch(inlineSpace, text) or
 		RegexSearch(inlineEmpty, text) or
@@ -102,7 +102,7 @@ def CleanBasic(text):
 def CleanHTML(text):
 	
 	# if no tag = plain text
-	if not(RegexSearch(r'<(p|div)[^>]*>', text)):
+	if not(RegexSearch(r'<(p|div)(| [^>]*)>', text)):
 		text = text.replace('\r\n', '\n').replace('\r', '\n');
 		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'\n',r'<br>', text);
@@ -129,37 +129,39 @@ def CleanHTML(text):
 		text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3;font-weight: bold;"\4>', text);
 		text = RegexLoop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text);
 	if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
-		text = RegexLoop(r'<(/?)h\d+([^>]*)>', r'<\1p\2>', text);
+		text = RegexLoop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text);
 	
 	# Hyperlink
 	if PREFS[KEY.KEEP_URL] == 'del':
-		text = RegexLoop(r'<a[^>]*>(.*?)</a>', r'\1', text);
+		text = RegexLoop(r'<a(| [^>]*)>(.*?)</a>', r'\1', text);
+	
+	text = RegexLoop(r'<a>(.*?)</a>', r'\1', text);
 	
 	# remove namespaced attribut
 	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
 	
 	
 	# Convert <div> after a <div> in <p>
-	text = RegexLoop(r'<div([^>]*)>(.*?)<div([^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
+	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
 	
 	# invalid tag
 	text = RegexLoop(r'</?(font|html|body|img|meta|link)[^>]*>', r'', text);
-	text = RegexLoop(r'<(p|div|li|h\d)[^>]*>\s+</\1>', r'', text);
+	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)>\s+</\1>', r'', text);
 	
 	# management of <br>
 	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
 	text = RegexLoop(r'<(b|h)r>\s+', r'<\1r>', text);
 	text = RegexLoop(r'\s+<(b|h)r>', r'<\1r>', text);
-	text = RegexLoop(r'<span([^>]*)><(b|h)r>', r'<\2r><span\1>', text);
+	text = RegexLoop(r'<span(| [^>]*)><(b|h)r>', r'<\2r><span\1>', text);
 	text = RegexLoop(r'<(b|h)r></span>', r'</span><\1r>', text);
 	
-	text = RegexLoop(r'<(p|div|li|h\d)([^>]*)>(<br>)+</\1>', "<\1\2>\u00A0</\1>", text);
+	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)>(<br>)+</\1>', "<\1\2>\u00A0</\1>", text);
 	text = RegexLoop(r'<br></(p|div|li|h\d)>', r'</\1>', text);
-	text = RegexLoop(r'<(p|div|li|h\d)([^>]*)><br>', r'<\1\2>', text);
+	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)><br>', r'<\1\2>', text);
 	
 	# Multiple Line Return
 	if PREFS[KEY.DOUBLE_BR] == 'new':
-		text = RegexLoop(r'<p([^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
 	
 	
 	# style standardization:  insert ; at the end
