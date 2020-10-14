@@ -8,6 +8,7 @@ __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
 import sys, os
+
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
@@ -43,11 +44,11 @@ def CleanBasic(text):
 	
 	
 	# inline empty 
-	inlineSpace = r'<(i|b|em|strong|span)[^>]*>\s+</\1>';
-	inlineEmpty = r'<(i|b|em|strong|span)[^>]*></\1>';
+	inlineSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>\s+</\1>';
+	inlineEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)></\1>';
 	# same inline
-	sameSpace = r'<(i|b|em|strong|span)([^>]*)>([^>]*)</\1>\s+<\1\2>';
-	sameEmpty = r'<(i|b|em|strong|span)([^>]*)>([^>]*)</\1><\1\2>';
+	sameSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>([^>]*)</\1>\s+<\1\2>';
+	sameEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)>([^>]*)</\1><\1\2>';
 	
 	while (RegexSearch(inlineSpace, text) or
 		RegexSearch(inlineEmpty, text) or
@@ -112,6 +113,8 @@ def CleanHTML(text):
 			text = CleanMarkdown(text);
 		
 	
+	
+	text = OrderedAttributs(text);
 	
 	text = CleanBasic(text);
 	
@@ -197,7 +200,7 @@ def CleanAlign(text):
 	text = OrderedAttributs(text);
 	
 	# set align
-	if (PREFS[KEY.FORCE_JUSTIFY] == 'del'):
+	if PREFS[KEY.FORCE_JUSTIFY] == 'del':
 		# del align
 		text = RegexLoop(r' align="[^"]*"', r'', text);
 		
@@ -223,9 +226,9 @@ def CleanAlign(text):
 		text = RegexLoop(r' align="(?!left|justify|center|right)[^"]*"', r' align="left"', text);
 		
 		# set align prefs
-		if (PREFS[KEY.FORCE_JUSTIFY] == 'empty'):
+		if PREFS[KEY.FORCE_JUSTIFY] == 'empty':
 			text = RegexLoop(r' align="left"', r' align="justify"', text);
-		elif (PREFS[KEY.FORCE_JUSTIFY] == 'all'):
+		elif PREFS[KEY.FORCE_JUSTIFY] == 'all':
 			text = RegexLoop(r' align="(left|center|right)"', r' align="justify"', text);
 		#else: 'none'
 		

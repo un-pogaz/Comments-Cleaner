@@ -7,13 +7,20 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
-from datetime import datetime
+import os, sys, time
+
+try:
+	load_translations()
+except NameError:
+	pass # load_translations() added in calibre 1.9
+
 from functools import partial
 try:
-	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QModelIndex
+	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer, QModelIndex
 except ImportError:
-	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog
+	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer
 
+from datetime import datetime
 
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
@@ -25,15 +32,6 @@ from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS
 from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop
 
 from calibre_plugins.comments_cleaner.CommentsCleaner import *
-
-import os, sys, time
-
-try:
-	debug_print("Comments Cleaner::action.py - loading translations")
-	load_translations()
-except NameError:
-	debug_print("Comments Cleaner::action.py - exception when loading translations")
-	pass # load_translations() added in calibre 1.9
 
 class CommentCleanerAction(InterfaceAction):
 	
@@ -94,57 +92,116 @@ class CommentCleanerAction(InterfaceAction):
 	def _clean_comment(self):
 		if not self.is_library_selected:
 			return error_dialog(self.gui, _('No selected book'), _('No book selected for cleaning comments'), show=True);
-			return
+			return;
 		
 		rows = self.gui.library_view.selectionModel().selectedRows();
-		if not rows or len(rows) == 0 :
+		if not rows or len(rows) == 0:
 			return error_dialog(self.gui, _('No selected book'), _('No book selected for cleaning comments'), show=True);
 		book_ids = self.gui.library_view.get_selected_ids();
 		
-		self._do_clean_text (book_ids);
+		cpgb = CleanerProgressDialog(self.gui, book_ids);
+		if cpgb.wasCanceled():
+			debug_print('Cleaning comments as cancelled. No change.');
+		else:
+			cpgb._update_comments_field();
+			debug_print('Cleaning launched for '+ str(cpgb.maximum()) +' book.');
+			debug_print('Cleaning performed for '+ str(cpgb.books_clean) +' comments.\n');
+		
+		cpgb.close();
+		cpgb = None;
+		
 
-	def _do_clean_text(self, book_ids):
+
+
+class CleanerProgressDialog(QProgressDialog):
+	
+	def __init__(self, gui, book_ids):
 		
-		self.dbA = self.gui.current_db;
-		
-		books_dic = {};
-		
+		# DB API
+		self.dbA = gui.current_db;
+		# liste of book id
+		self.book_ids = book_ids;
+		# book comment dic
+		self.books_dic = {};
 		# Count of cleaned comments
-		books_clean = 0;
+		self.books_clean = 0;
 		
-		debug_print('Launch cleaning for '+ str(len(book_ids)) +' book.');
 		
-		# For each book, clean the comments
-		for book_id in book_ids:
-			
-			miA = self.dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
-			comment = miA.get('comments');
-			
-			if comment is not None:
-				debug_text('Text in ['+str(book_id)+']', comment);
-				comment_out = CleanHTML(comment);
-				if comment == comment_out:
-					debug_print('Unchanged text :::\n');
-				else:
-					debug_text('Text out', comment_out);
-					books_dic[book_id] = comment_out;
-			
-			# If the number of books cleaned is too large,
-			# update the DB and create a new dictionary.
-			if ((len(books_dic) > 0) and (len(books_dic) % 2500 == 0)):
-				books_clean += len(books_dic);
-				self._update_comments_field(books_dic);
-				books_dic = {};
-			
+		QProgressDialog.__init__(self, '', _('Cancel'), 0, len(self.book_ids), gui);
+		self.gui = gui;
 		
-		books_clean += len(books_dic);
-		self._update_comments_field(books_dic);
-		debug_print('Cleaning performed for '+ str(books_clean) +' book.\n');
-		self.dbA = None;
+		self.setValue(0);
+		self.setMinimumWidth(500);
+		
+		self.setWindowTitle(_('Comments Cleaner Progress'));
+		self.setWindowIcon(get_icon(PLUGIN_ICONS[0]));
+		self.setAutoClose(True);
+		self.setAutoReset(False);
+		
+		debug_print('Launch cleaning for '+ str(self.maximum()) +' book.');
+		if self.maximum() < 50:
+			self.hide();
+		else:
+			self.show();
+		
+		QTimer.singleShot(0, self._do_clean_comments);
+		self.exec_();
 		
 
-	def _update_comments_field(self, books_dic):
-		if len(books_dic) > 0:
-			debug_print('Update the database for '+str(len(books_dic))+' books.');
-			self.dbA.new_api.set_field('comments', {id:books_dic[id] for id in books_dic.keys()});
-			self.gui.iactions['Edit Metadata'].refresh_gui(books_dic.keys(), covers_changed=False);
+	def close(self):
+		self.dbA = None;
+		self.book_ids = None;
+		self.books_dic = None;
+		self.books_clean = None;
+		super(CleanerProgressDialog, self).close();
+
+	def _do_clean_comments(self):
+		
+		if self.wasCanceled():
+			self.close();
+		
+		# set value and label
+		self.setValue(self.value() + 1);
+		self.setLabelText(_('Book %d of %d') % (self.value(), self.maximum()));
+		
+		if self.maximum() > 50:
+			self.show();
+		
+		
+		# get the current book id
+		book_id = self.book_ids[self.value()-1]
+		
+		# get the comment
+		miA = self.dbA.get_metadata(book_id, index_is_id=True, get_cover=False);
+		comment = miA.get('comments');
+		
+		# process the comment
+		if comment is not None:
+			debug_text('Text in (book: '+str(self.value())+'/'+str(self.maximum())+')[id: '+str(book_id)+']', comment);
+			comment_out = CleanHTML(comment);
+			if comment == comment_out:
+				debug_print('Unchanged text :::\n');
+			else:
+				debug_text('Text out', comment_out);
+				self.books_dic[book_id] = comment_out;
+		
+		## If the number of books cleaned is too large,
+		## update the DB and create a new dictionary.
+		#if len(self.books_dic) > 0 and len(self.books_dic) % 5000 == 0:
+		#	self._update_comments_field();
+		#	self.books_dic = {};
+		
+		if self.value() >= self.maximum():
+			self.hide();
+		else:
+			QTimer.singleShot(0, self._do_clean_comments);
+
+	def _update_comments_field(self):
+		if len(self.books_dic) > 0:
+			if len(self.books_dic) > 1000:
+				debug_print('Update the database for '+str(len(self.books_dic))+' books...');
+			
+			self.books_clean += len(self.books_dic);
+			self.dbA.new_api.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()});
+			self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False);
+			

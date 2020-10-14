@@ -7,20 +7,19 @@ __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
+import copy, os
+
+try:
+	load_translations()
+except NameError:
+	pass # load_translations() added in calibre 1.9
+
 from collections import OrderedDict
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit
 from calibre.utils.config import JSONConfig
 
 from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
-import copy, os
-
-try:
-	debug_print("Comments Cleaner::config.py - loading translations")
-	load_translations()
-except NameError:
-	debug_print("Comments Cleaner::config.py - exception when loading translations")
-	pass # load_translations() added in calibre 1.9
 
 PLUGIN_ICONS = ['images/plugin.png']
 
