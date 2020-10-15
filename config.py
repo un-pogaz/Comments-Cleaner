@@ -101,6 +101,10 @@ class ConfigWidget(QWidget):
 		options_group_box.setLayout(options_group_box_layout);
 		
 		
+		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 1, 1);
+		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
+		options_group_box_layout.addWidget(self.showCombo1, 2, 1);
+		
 		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1);
 		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
 		options_group_box_layout.addWidget(self.showCombo2, 4, 1);
@@ -116,10 +120,6 @@ class ConfigWidget(QWidget):
 		options_group_box_layout.addWidget(QLabel(_('Headings:'), self), 9, 1);
 		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
 		options_group_box_layout.addWidget(self.showCombo5, 10, 1);
-		
-		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 11, 1);
-		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
-		options_group_box_layout.addWidget(self.showCombo1, 12, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 13, 1);
 		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
