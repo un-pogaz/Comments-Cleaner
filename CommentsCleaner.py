@@ -85,8 +85,9 @@ def CleanBasic(text):
 	#strip span
 	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
 	
-	# remplace les triple point invalide
-	text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
+	## remplace les triple point invalide
+	#text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
+	text = RegexSimple(r'\.\s*\.\s*\.', r'...', text);
 	
 	# xml format
 	text = RegexLoop(r'<([^<>]+)\s{2,}([^<>]+)>', r'<\1 \2>', text);
