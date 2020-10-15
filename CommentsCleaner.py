@@ -129,7 +129,7 @@ def CleanHTML(text):
 	
 	# Hyperlink
 	if PREFS[KEY.KEEP_URL] == 'del':
-		text = RegexLoop(r'<a(| [^>]*)>(.*?)</a>', r'\1', text);
+		text = RegexLoop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text);
 	
 	text = RegexLoop(r'<a>(.*?)</a>', r'\1', text);
 	
