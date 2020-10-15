@@ -30,7 +30,7 @@ def CleanBasic(text):
 	text = RegexLoop("&#60;", "&lt;", text);
 	text = RegexLoop("&#62;", "&gt;", text);
 	
-	text = RegexLoop("(&#160;|&nbsp;)", r'\u00A0', text);
+	text = RegexLoop("(&#160;|&nbsp;)", '\u00A0', text);
 	
 	text = RegexLoop("(&mdash;|&#8212;)", "—", text);
 	text = RegexLoop("(&ndash;|&#8211;)", "–", text);
@@ -62,7 +62,7 @@ def CleanBasic(text):
 		text = RegexLoop(sameEmpty, r'<\1\2>\3', text);
 	
 	# double espace et tab dans paragraphe
-	text = RegexLoop(r'(<(p|h\d).*?>.*?)(\t| {2,})', r'\1 ', text);
+	text = RegexLoop(r'(<(p|h\d)( |[^>]*)>.*?)(\t| {2,})', r'\1 ', text);
 	# tab pour l'indentation
 	text = RegexLoop(r'^( *)\t(\s*<)', r'\1  \2', text);
 	
@@ -87,7 +87,7 @@ def CleanBasic(text):
 	text = RegexLoop(r' ([^"=<>]+)="([^"]*)\s+"', r' \1="\2"', text);
 	
 	#strip span
-	text = RegexLoop(r'<span\s*>(.*?)</span>', r'\1', text);
+	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
 	
 	# remplace les triple point invalide
 	text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
@@ -244,9 +244,9 @@ def CleanAlign(text):
 	# del justify for <h1>
 	text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
 	
+	
 	# del text-align left (default value)
 	text = RegexLoop(r' align="left"', r'', text);
-	
 	
 	return text;
 
@@ -302,7 +302,7 @@ def CleanMarkdown(text): # key word: TRY!
 		text = RegexLoop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)',     r'<h'+n+r'>\2</h'+n+r'><p>', text);
 	
 	# heading
-	for h in rang(1, 6):
+	for h in range(1, 6):
 		h = str(h);
 		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text);
 		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text);
