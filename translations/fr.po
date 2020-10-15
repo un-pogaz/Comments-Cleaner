@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-13 10:38+0200\n"
-"PO-Revision-Date: 2020-10-13 10:38+0200\n"
+"POT-Creation-Date: 2020-10-15 13:28+0200\n"
+"PO-Revision-Date: 2020-10-15 13:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,25 +17,43 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:29 action.py:42
+#: __init__.py:31 action.py:40
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
-#: action.py:70
+#: action.py:68
 msgid "&Clean the selecteds Comments"
 msgstr "&Nettoyer les commentaires sélectionnés"
 
-#: action.py:76
+#: action.py:74
 msgid "&Customize plugin"
 msgstr "&Personnaliser l'extension"
 
-#: action.py:96 action.py:101
+#: action.py:94 action.py:99
 msgid "No selected book"
 msgstr "Aucun livre sélectionné"
 
-#: action.py:96 action.py:101
+#: action.py:94 action.py:99
 msgid "No book selected for cleaning comments"
 msgstr "Aucun livre sélectionné pour le nettoyage"
+
+#: action.py:131
+msgid "Cancel"
+msgstr "Annuler"
+
+#: action.py:134
+msgid "Comments Cleaner Progress"
+msgstr "Progression de Comments Cleaner"
+
+#: action.py:166
+#, python-format
+msgid "Book %d of %d"
+msgstr "Livre %d sur %d"
+
+#: action.py:197
+#, python-format
+msgid "Update the library for %d books..."
+msgstr "Mise a jour de la bibliothèque pour %d livres..."
 
 #: common_utils.py:223
 msgid "Restart required"
@@ -70,6 +88,7 @@ msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justification pour le texte indéterminé (conserver \"center\" et \"right\")"
 
 #: config.py:43 config.py:49 config.py:53 config.py:58 config.py:64
+#: config.py:68
 msgid "No change"
 msgstr "Aucune modification"
 
@@ -109,46 +128,58 @@ msgstr "Supprimer les attributs \"class\""
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Supprimer les attributs \"class\" et \"id\""
 
-#: config.py:88
+#: config.py:67
+msgid "Try to convert any valid string"
+msgstr "Essayer de convertir toute chaîne de caractères valide"
+
+#: config.py:93
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:98
+#: config.py:104
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:102
+#: config.py:108
 msgid "Justification:"
 msgstr "Justification :"
 
-#: config.py:106
+#: config.py:112
 msgid "Weights:"
 msgstr "Gras :"
 
-#: config.py:110
+#: config.py:116
 msgid "Multiple Line Return in a paragraph:"
 msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:114
+#: config.py:120
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:118
+#: config.py:124
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:126
+#: config.py:128
+msgid "Markdown:"
+msgstr "Markdown :"
+
+#: config.py:131
+msgid "Conversion from a Markdown format will only be done if the comment is NOT an HTML format."
+msgstr "La conversion depuis un format Markdown ne se fera que si le commentaire n'est PAS un format HTML."
+
+#: config.py:136
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:129
+#: config.py:139
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:133
+#: config.py:143
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:134
+#: config.py:144
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
