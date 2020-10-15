@@ -121,9 +121,9 @@ class ConfigWidget(QWidget):
 		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
 		options_group_box_layout.addWidget(self.showCombo5, 10, 1);
 		
-		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 13, 1);
+		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 11, 1);
 		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
-		options_group_box_layout.addWidget(self.showCombo6, 14, 1);
+		options_group_box_layout.addWidget(self.showCombo6, 12, 1);
 		
 		options_group_box_layout.addWidget(QLabel(_('Markdown:'), self), 15, 1);
 		self.showCombo7 = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN]);
