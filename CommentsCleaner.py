@@ -16,7 +16,7 @@ from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_tex
 def CleanBasic(text):
 	
 	text = RegexLoop(r'(&#x202F;|&#8239;)', '\u202F', text);
-	text = RegexLoop(r'(&#xA0;|&#160;)', '\u00A0', text);
+	text = RegexLoop(r'(&#xA0;|&#160;|&nbsp;)', '\u00A0', text);
 	
 	# line
 	text = text.replace('\r\n', '\n').replace('\r', '\n');
@@ -29,8 +29,6 @@ def CleanBasic(text):
 	text = RegexLoop("&#38;", "&amp;", text);
 	text = RegexLoop("&#60;", "&lt;", text);
 	text = RegexLoop("&#62;", "&gt;", text);
-	
-	text = RegexLoop("(&#160;|&nbsp;)", '\u00A0', text);
 	
 	text = RegexLoop("(&mdash;|&#8212;)", "—", text);
 	text = RegexLoop("(&ndash;|&#8211;)", "–", text);
@@ -62,9 +60,7 @@ def CleanBasic(text):
 		text = RegexLoop(sameEmpty, r'<\1\2>\3', text);
 	
 	# double espace et tab dans paragraphe
-	text = RegexLoop(r'(<(p|h\d)( |[^>]*)>.*?)(\t| {2,})', r'\1 ', text);
-	# tab pour l'indentation
-	text = RegexLoop(r'^( *)\t(\s*<)', r'\1  \2', text);
+	text = RegexLoop(r'(<(p|h\d)( |[^>]*)>(?:(?!</\2).)*?)(\t|\n| {2,})', r'\1 ', text);
 	
 	
 	# style: del double ;
@@ -300,6 +296,7 @@ def CleanMarkdown(text): # key word: TRY!
 		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)', r'</p><h'+n+r'>\2</h'+n+r'><p>', text);
 		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        , r'</p><h'+n+r'>\2</h'+n+r'>'   , text);
 		text = RegexLoop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)',     r'<h'+n+r'>\2</h'+n+r'><p>', text);
+		text = RegexLoop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        ,     r'<h'+n+r'>\2</h'+n+r'>'   , text);
 	
 	# heading
 	for h in range(1, 6):
@@ -307,6 +304,7 @@ def CleanMarkdown(text): # key word: TRY!
 		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text);
 		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text);
 		text = RegexLoop(         r'(<p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)',     r'<h'+h+r'>\2</h'+h+r'><p>', text);
+		text = RegexLoop(         r'(<p>)#{'+h+r'}\s*(.*?)(</p>)'        ,     r'<h'+h+r'>\2</h'+h+r'>',    text);
 	
 	
 	# u liste
@@ -333,7 +331,7 @@ def CleanMarkdown(text): # key word: TRY!
 	# italic
 	text = RegexLoop(r'([^\\])((?:_|\*){1})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<em>\3</em>', text);
 	
-	# 
+	#
 	text = RegexLoop(r'\\(_|\*)',r'\1', text);
 	
 	return text;
