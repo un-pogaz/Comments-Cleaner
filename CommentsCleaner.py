@@ -7,23 +7,19 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
-import sys, os
+import sys, os, distutils.util as util
 
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
 
+nbsp = '\u00A0'
 
 def CleanBasic(text):
 	
 	text = RegexLoop(r'(&#x202F;|&#8239;)', '\u202F', text);
 	text = RegexLoop(r'(&#xA0;|&#160;|&nbsp;)', '\u00A0', text);
 	
-	# line
-	text = text.replace('\r\n', '\n').replace('\r', '\n');
-	text = RegexLoop(r'( |\t|\n\n)+\n', '\n', text);
-	
-	text = RegexLoop(r'\s+<(/?)(p|div|h\d|li|ul|ol|blockquote)', r'<\1\2', text);
-	text = RegexLoop(r'><(p|div|h\d|li|ul|ol|blockquote)', r'>\n<\1', text);
+	text = XMLformat(text);
 	
 	# entity
 	text = RegexLoop("&#38;", "&amp;", text);
@@ -37,16 +33,36 @@ def CleanBasic(text):
 	text = RegexLoop("(&hellip;|&#8230;)", "…", text);
 	text = RegexLoop("(&rsquo;|&#8217;)", "’", text);
 	
+	
 	text = RegexLoop(r'<(/?)i(| [^>]*)>', r'<\1em\2>', text);
 	text = RegexLoop(r'<(/?)b(| [^>]*)>', r'<\1strong\2>', text);
+	text = RegexLoop(r'<(/?)del(| [^>]*)>', r'<\1s\2>', text);
+	
+	# invalid tag
+	text = RegexLoop(r'</?(font|html|body|img|meta|link)(|\s[^>]*)>', r'', text);
 	
 	
-	# inline empty 
-	inlineSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>\s+</\1>';
-	inlineEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)></\1>';
+	# remove namespaced attribut
+	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
+	
+	# clean space in attribut
+	text = RegexLoop(r' ([^"=<>]+)="\s+([^"]*)"', r' \1="\2"', text);
+	text = RegexLoop(r' ([^"=<>]+)="([^"]*)\s+"', r' \1="\2"', text);
+	
+	
+	# management of <br>
+	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
+	text = RegexLoop(r'(\s|'+nbsp+r')+<(b|h)r>', r'<\2r>', text);
+	text = RegexLoop(r'<(b|h)r>(\s|'+nbsp+r')+', r'<\1r>', text);
+	text = RegexLoop(r'<((?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*))><(b|h)r>', r'<\2r><\1>', text);
+	text = RegexLoop(r'<(b|h)r></(i|b|em|strong|sup|sub|u|s|span|a)>', r'</\2><\1r>', text);
+	
+	# empty inline
+	inlineSpace = r'<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)>\s+</\1>';
+	inlineEmpty = r'<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)></\1>';
 	# same inline
-	sameSpace = r'<(i|b|em|strong|span|a)( |[^>]*)>([^<]*)</\1>\s+<\1\2>';
-	sameEmpty = r'<(i|b|em|strong|span|a)( |[^>]*)>([^<]*)</\1><\1\2>';
+	sameSpace = r'<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)>([^<]*)</\1>\s+<\1\2>';
+	sameEmpty = r'<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)>([^<]*)</\1><\1\2>';
 	
 	while (RegexSearch(inlineSpace, text) or
 		RegexSearch(inlineEmpty, text) or
@@ -56,11 +72,33 @@ def CleanBasic(text):
 		text = RegexLoop(inlineSpace, r' ', text);
 		text = RegexLoop(inlineEmpty, r'', text);
 		
-		text = RegexLoop(sameSpace, r'<\1\2>\3  ', text);
+		text = RegexLoop(sameSpace, r'<\1\2>\3 ', text);
 		text = RegexLoop(sameEmpty, r'<\1\2>\3', text);
 	
-	# double espace et tab dans paragraphe
-	text = RegexLoop(r'(<(p|h\d)( |[^>]*)>(?:(?!</\2).)*?)(\t|\n| {2,})', r'\1 ', text);
+	text = RegexSimple(r'((?:<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)>)+)', r' \1', text);
+	text = RegexSimple(r'((?:</(i|b|em|strong|sup|sub|u|s|span|a)>)+)', r'\1 ', text);
+	
+	# space inline
+	text = RegexLoop(r'\s+((?:<(i|b|em|strong|sup|sub|u|s|span|a)(| [^>]*)>)+)\s+', r' \1', text);
+	text = RegexLoop(r'\s+((?:</(i|b|em|strong|sup|sub|u|s|span|a)>)+)\s+', r'\1 ', text);
+	
+	
+	#empty block
+	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul|dt|dd|dl)(| [^>]*)>\s*</\1>', r'', text);
+	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul|dt|dd|dl)(| [^>]*)/>', r'', text);
+	
+	
+	# double space and tab in <p>
+	text = RegexLoop(r'(<(p|h\d)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n| {2,})', r'\1 ', text);
+	
+	# space and <br> before/after <p>
+	rgx = r'((?:</?(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li|dt|dd)(?:| [^>]*)>)((?:</?(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
+	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)*'+rgx+r'(\s|'+nbsp+r'|<br>)+', r'\1\2\3', text);
+	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)+'+rgx+r'(\s|'+nbsp+r'|<br>)*', r'\1\2\3', text);
+	# restore empty <p>
+	text = RegexLoop(r'<(p|div|h\d|li|dt|dd)(| [^>]*)>(<(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:i|b|em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>\3'+nbsp+r'\4</\1>', text);
+	
+	text = RegexLoop(r'><(p|div|h\d|li|ol|ul|dt|dd)', r'>\n<\1', text);
 	
 	
 	# style: del double ;
@@ -74,23 +112,31 @@ def CleanBasic(text):
 	
 	# style: remove last ;
 	text = RegexLoop(r' style="([^"]*);\s*"', r' style="\1"', text);
-	# style: remove empty
-	text = RegexLoop(r' style="\s*"', r'', text);
 	
 	
-	# clean space in attribut
-	text = RegexLoop(r' ([^"=<>]+)="\s+([^"]*)"', r' \1="\2"', text);
-	text = RegexLoop(r' ([^"=<>]+)="([^"]*)\s+"', r' \1="\2"', text);
+	# remove empty attribut
+	text = RegexLoop(r' ([^"=<>]+)="\s*"', r'', text);
 	
 	#strip span
 	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
 	
-	## remplace les triple point invalide
-	#text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
-	text = RegexSimple(r'\.\s*\.\s*\.', r'...', text);
 	
-	# xml format
-	text = RegexLoop(r'<([^<>]+)\s{2,}([^<>]+)>', r'<\1 \2>', text);
+	# replaces the invalid triple point
+	#text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
+	text = RegexLoop(r'\.\s+\.\s*\.', r'...', text);
+	text = RegexLoop(r'\.\s*\.\s+\.', r'...', text);
+	
+	text = XMLformat(text);
+	
+	return text;
+
+def XMLformat(text):
+	# to linux line
+	text = text.replace('\r\n', '\n').replace('\r', '\n');
+	text = RegexLoop(r'( |\t|\n)+\n', '\n', text);
+	
+	# XML format
+	text = RegexLoop(r'<([^<>]+)(?:\s{2,}|\n|\t)([^<>]+)>', r'<\1 \2>', text);
 	text = RegexLoop(r'\s+(|/|\?)\s*>', r'\1>', text);
 	text = RegexLoop(r'<\s*(|/|!|\?)\s+', r'<\1', text);
 	
@@ -98,28 +144,57 @@ def CleanBasic(text):
 
 def CleanHTML(text):
 	
+	text = XMLformat(text);
+	
 	# if no tag = plain text
 	if not(RegexSearch(r'<(p|div)(| [^>]*)>', text)):
-		text = text.replace('\r\n', '\n').replace('\r', '\n');
 		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'\n',r'<br>', text);
 		text = RegexLoop(r'(<p>|<br>)\s+', r'\1', text);
 		text = RegexLoop(r'\s+(<p>|<br>)', r'\1', text);
 		# Markdown
-		if PREFS[KEY.MARKDOWN] == 'try':
+		if PREFS[KEY.MARKDOWN] == 'try' and not(util.strtobool(PREFS[KEY.FORMATTING])):
 			text = CleanMarkdown(text);
 		
 	
-	
-	text = OrderedAttributs(text);
-	
 	text = CleanBasic(text);
+	
+	# If <div> is not the racine tag
+	if not RegexSearch(r'<div(| [^>]*)>\s*<(p|div|h\d)(| [^>]*)>', text):
+		text = '<div>'+text+'</div>';
+	
+	
+	# Del empty <div>
+	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>',r'<div>\2', text);
+	
+	# Convert <div> after a <div> in <p>
+	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
+	
+	# Del empty <p> at the start/end
+	text = RegexLoop(r'<div(| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</p>',r'<div>', text);
+	text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</p>\s*</div>',r'</div>', text);
+	
+	if util.strtobool(PREFS[KEY.FORMATTING]):
+		return RemoveFormatting(text);
+	
+	
+	# Markdown
+	if PREFS[KEY.MARKDOWN] == 'always':
+		text = CleanMarkdown(text);
+	
+	
+	# Multiple Line Return
+	if PREFS[KEY.DOUBLE_BR] == 'new':
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
 	
 	# ID and CLASS attributs
 	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
 		text = RegexLoop(r' id="[^"]*"', r'', text);
 	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
 		text = RegexLoop(r' class="[^"]*"', r'', text);
+	
+	text = RegexLoop(r' (dir)="[^"]*"', r'', text);
+	
 	
 	# Headings
 	if PREFS[KEY.HEADINGS] == 'bolder':
@@ -132,33 +207,8 @@ def CleanHTML(text):
 	if PREFS[KEY.KEEP_URL] == 'del':
 		text = RegexLoop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text);
 	
-	text = RegexLoop(r'<a>(.*?)</a>', r'\1', text);
-	
-	# remove namespaced attribut
-	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
-	
-	
-	# Convert <div> after a <div> in <p>
-	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
-	
-	# invalid tag
-	text = RegexLoop(r'</?(font|html|body|img|meta|link)[^>]*>', r'', text);
-	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)>\s+</\1>', r'', text);
-	
-	# management of <br>
-	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
-	text = RegexLoop(r'<(b|h)r>\s+', r'<\1r>', text);
-	text = RegexLoop(r'\s+<(b|h)r>', r'<\1r>', text);
-	text = RegexLoop(r'<span(| [^>]*)><(b|h)r>', r'<\2r><span\1>', text);
-	text = RegexLoop(r'<(b|h)r></span>', r'</span><\1r>', text);
-	
-	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)>(<br>)+</\1>', "<\1\2>\u00A0</\1>", text);
-	text = RegexLoop(r'<br></(p|div|li|h\d)>', r'</\1>', text);
-	text = RegexLoop(r'<(p|div|li|h\d)(| [^>]*)><br>', r'<\1\2>', text);
-	
-	# Multiple Line Return
-	if PREFS[KEY.DOUBLE_BR] == 'new':
-		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
+	# remove empty hyperllink
+	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
 	
 	
 	# style standardization:  insert ; at the end
@@ -172,20 +222,15 @@ def CleanHTML(text):
 	text = CleanStyle(text);
 	
 	
-	# remove empty hyperllink
-	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
-	# remove empty attribut
-	text = RegexLoop(r' ([^"=<>]+)="\s*"', r'', text);
 	
 	text = OrderedAttributs(text);
 	
 	# del attibuts for <div> with <p>
-	text = RegexLoop(r'<div[^>]+>\s*<p', r'<div>\n<p', text);
+	text = RegexLoop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text);
 	
 	#
 	
-	text = CleanBasic(text);
-	return text;
+	return CleanBasic(text);
 
 # Ordered the attributs
 def OrderedAttributs(text):
@@ -205,7 +250,7 @@ def CleanAlign(text):
 		
 	else: # empty / all / none
 		
-		tags = 'p|div|h1|h2|h3|h4|h5|h6';
+		tags = 'p|div|h1|h2|h3|h4|h5|h6|dt|dd';
 		
 		# insert align left for all
 		for tag in tags.split('|'):
@@ -336,6 +381,18 @@ def CleanMarkdown(text): # key word: TRY!
 	text = RegexLoop(r'\\(_|\*)',r'\1', text);
 	
 	return text;
+
+
+def RemoveFormatting(text):
+	
+	text = RegexLoop(r'</?(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text);
+	
+	text = RegexLoop(r'<(/?)(h\d|li|pre|dt|dd)(|\s[^>]*)>', r'<\1p>', text);
+	
+	text = RegexLoop(r'<p\s[^>]*>', r'<p>', text);
+	
+	return CleanBasic(text);
+
 
 def main():
 	print("I reached main when I should not have\n");
