@@ -7,7 +7,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy, os
+import copy, os, distutils.util as util
 
 try:
 	load_translations()
@@ -15,7 +15,7 @@ except NameError:
 	pass # load_translations() added in calibre 1.9
 
 from collections import OrderedDict
-from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit
+from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 from calibre.utils.config import JSONConfig
 
 from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
@@ -32,6 +32,7 @@ class KEY:
 	HEADINGS = 'Headings';
 	ID_CLASS = 'ID_Class';
 	MARKDOWN = 'Markdown';
+	FORMATTING = 'RemoveFormatting';
 
 KEEP_URL = OrderedDict([
 					('keep', _('Keep URL')),
@@ -64,7 +65,8 @@ ID_CLASS = OrderedDict([
 						('none', _('No change'))])
 
 MARKDOWN = OrderedDict([
-						('try', _('Try to convert any valid string')),
+						('always', _('Convert in all comments (not recomanded)')),
+						('try', _('Convert only from a plain text comment')),
 						('none', _('No change'))])
 
 
@@ -80,10 +82,11 @@ PREFS.defaults[KEY.CSS_KEEP] = ''
 PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
 PREFS.defaults[KEY.MARKDOWN] = 'try'
+PREFS.defaults[KEY.FORMATTING] = 'false'
 
 class ConfigWidget(QWidget):
 
-	def __init__(self, plugin_action):
+	def __init__(self, plugin_action):		
 		QWidget.__init__(self);
 		
 		self.plugin_action = plugin_action;
@@ -101,43 +104,52 @@ class ConfigWidget(QWidget):
 		options_group_box.setLayout(options_group_box_layout);
 		
 		
-		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self), 1, 1);
+		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self));
 		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
-		options_group_box_layout.addWidget(self.showCombo1, 2, 1);
+		options_group_box_layout.addWidget(self.showCombo1);
 		
-		options_group_box_layout.addWidget(QLabel(_('Justification:'), self), 3, 1);
-		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
-		options_group_box_layout.addWidget(self.showCombo2, 4, 1);
-		
-		options_group_box_layout.addWidget(QLabel(_('Weights:'), self), 5, 1);
-		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT]);
-		options_group_box_layout.addWidget(self.showCombo3, 6, 1);
-		
-		options_group_box_layout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self), 7, 1);
-		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
-		options_group_box_layout.addWidget(self.showCombo4, 8, 1);
-		
-		options_group_box_layout.addWidget(QLabel(_('Headings:'), self), 9, 1);
+		options_group_box_layout.addWidget(QLabel(_('Headings:'), self));
 		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
-		options_group_box_layout.addWidget(self.showCombo5, 10, 1);
+		options_group_box_layout.addWidget(self.showCombo5);
 		
-		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 11, 1);
+		options_group_box_layout.addWidget(QLabel(_('Weights:'), self));
+		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT]);
+		options_group_box_layout.addWidget(self.showCombo3);
+		
+		options_group_box_layout.addWidget(QLabel(_('Justification:'), self));
+		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
+		options_group_box_layout.addWidget(self.showCombo2);
+		
+		options_group_box_layout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self));
+		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
+		options_group_box_layout.addWidget(self.showCombo4);
+		
+		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self));
 		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
-		options_group_box_layout.addWidget(self.showCombo6, 12, 1);
+		options_group_box_layout.addWidget(self.showCombo6);
 		
-		options_group_box_layout.addWidget(QLabel(_('Markdown:'), self), 15, 1);
+		options_group_box_layout.addWidget(QLabel(_('Markdown:'), self));
 		self.showCombo7 = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN]);
-		options_group_box_layout.addWidget(self.showCombo7, 16, 1);
-		self.showCombo7.setToolTip(_('Conversion from a Markdown format will only be done if the comment is NOT an HTML format.'));
+		options_group_box_layout.addWidget(self.showCombo7);
+		self.showCombo7.setToolTip(_('Try to convert any Markdown strings to HTML.'));
 		
 		
-		options_group_box_layout.addWidget(QLabel(' ', self), 19, 1);
+		options_group_box_layout.addWidget(QLabel(' ', self));
 		
-		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 1);
+		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self));
 		self.keepCSS = QLineEdit(self);
 		self.keepCSS.setText(PREFS[KEY.CSS_KEEP]);
 		self.keepCSS.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'));
-		options_group_box_layout.addWidget(self.keepCSS, 21, 1);
+		options_group_box_layout.addWidget(self.keepCSS);
+		
+		
+		self.checkBox_cleanAll = QCheckBox(_('Remove all formatting'), self);
+		self.checkBox_cleanAll.stateChanged.connect(self.checkBox_click);
+		self.checkBox_cleanAll.setChecked(util.strtobool(PREFS[KEY.FORMATTING]));
+		layout.addWidget(self.checkBox_cleanAll);
+		
+		layout.addWidget(QLabel(' ', self));
+		
 		
 		# --- Keyboard shortcuts ---
 		keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self);
@@ -158,6 +170,10 @@ class ConfigWidget(QWidget):
 		
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.keepCSS.text());
 		
+		PREFS[KEY.FORMATTING] = str(self.checkBox_cleanAll.checkState() > 0).lower()
+		
+		debug_print('Save settings: {0}\n'.format(PREFS));
+		
 
 	def edit_shortcuts(self):
 		self.save_settings();
@@ -165,3 +181,25 @@ class ConfigWidget(QWidget):
 		d = KeyboardConfigDialog(self.plugin_action.gui, self.plugin_action.action_spec[0]);
 		if d.exec_() == d.Accepted:
 			self.plugin_action.gui.keyboard.finalize();
+
+
+	def checkBox_click(self, num):
+		
+		if self.checkBox_cleanAll.checkState():
+			self.showCombo1.setEnabled(False);
+			self.showCombo2.setEnabled(False);
+			self.showCombo3.setEnabled(False);
+			self.showCombo4.setEnabled(False);
+			self.showCombo5.setEnabled(False);
+			self.showCombo6.setEnabled(False);
+			self.showCombo7.setEnabled(False);
+			self.keepCSS.setEnabled(False);
+		else:
+			self.showCombo1.setEnabled(True);
+			self.showCombo2.setEnabled(True);
+			self.showCombo3.setEnabled(True);
+			self.showCombo4.setEnabled(True);
+			self.showCombo5.setEnabled(True);
+			self.showCombo6.setEnabled(True);
+			self.showCombo7.setEnabled(True);
+			self.keepCSS.setEnabled(True);

@@ -28,10 +28,10 @@ from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 from calibre.library import current_library_name
 
-from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS
+from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS, PREFS
 from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop
 
-from calibre_plugins.comments_cleaner.CommentsCleaner import *
+from calibre_plugins.comments_cleaner.CommentsCleaner import CleanHTML
 
 class CommentCleanerAction(InterfaceAction):
 	
@@ -41,7 +41,7 @@ class CommentCleanerAction(InterfaceAction):
 	popup_type = QToolButton.MenuButtonPopup;
 	action_type = 'current';
 	dont_add_to = frozenset(['context-menu-device']);
-
+	
 	def genesis(self):
 		self.is_library_selected = True;
 		self.menu = QMenu(self.gui);
@@ -75,16 +75,16 @@ class CommentCleanerAction(InterfaceAction):
 		self.menu_actions.append (ac);
 		
 		self.gui.keyboard.finalize();
-
+	
 	def reactivate_menus(self):
 		candidate = self.gui.library_path;
 		db = LibraryDatabase (candidate);
-
+	
 	def toolbar_triggered(self):
 		self._clean_comment();
 		#self.show_configuration();
-
-
+	
+	
 	def show_configuration(self):
 		self.interface_action_base_plugin.do_user_config(self.gui);
 		self.reactivate_menus();
@@ -100,16 +100,9 @@ class CommentCleanerAction(InterfaceAction):
 		book_ids = self.gui.library_view.get_selected_ids();
 		
 		cpgb = CleanerProgressDialog(self.gui, book_ids);
-		if cpgb.wasCanceled():
-			debug_print('Cleaning comments as cancelled. No change.');
-		else:
-			debug_print('Cleaning launched for %d book.' % cpgb.book_count);
-			debug_print('Cleaning performed for %d comments.\n' % cpgb.books_clean);
-		
 		cpgb.close();
 		cpgb = None;
 		
-
 
 
 class CleanerProgressDialog(QProgressDialog):
@@ -142,17 +135,22 @@ class CleanerProgressDialog(QProgressDialog):
 		self.setAutoReset(False);
 		
 		self.hide();
-		debug_print('Launch cleaning for %d book.' % self.book_count);
+		debug_print('Launch cleaning for {0} book.'.format(self.book_count));
+		debug_print(str(PREFS)+'\n');
 		
 		QTimer.singleShot(0, self._do_clean_comments);
 		self.exec_();
 		
+		if self.wasCanceled():
+			debug_print('Cleaning comments as cancelled. No change.');
+		else:
+			debug_print('Cleaning launched for {0} book.'.format(self.book_count));
+			debug_print('Cleaning performed for {0} comments.'.format(self.books_clean));
+			debug_print('Settings: {0}\n'.format(PREFS));
 
 	def close(self):
 		self.dbA = None;
-		self.book_ids = None;
 		self.books_dic = None;
-		self.books_clean = None;
 		super(CleanerProgressDialog, self).close();
 
 	def _do_clean_comments(self):
@@ -163,7 +161,7 @@ class CleanerProgressDialog(QProgressDialog):
 			
 			# update Progress
 			self.setValue(num);
-			self.setLabelText(_('Book %d of %d') % (num, self.book_count));
+			self.setLabelText(_('Book {0} of {1}').format(num, self.book_count));
 			
 			if self.book_count < 100:
 				self.hide();
@@ -190,11 +188,11 @@ class CleanerProgressDialog(QProgressDialog):
 			
 			
 		
-		
-		if len(self.books_dic) > 0:
+		books_dic_count = len(self.books_dic)
+		if books_dic_count > 0:
 			
-			debug_print('Update the database for %d books...' % len(self.books_dic));
-			self.setLabelText(_('Update the library for %d books...') % len(self.books_dic));
+			debug_print('Update the database for {0} books...\n'.format(books_dic_count));
+			self.setLabelText(_('Update the library for {0} books...').format(books_dic_count));
 			
 			self.books_clean += len(self.books_dic);
 			self.dbA.new_api.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()});
