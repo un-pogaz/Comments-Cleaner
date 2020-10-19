@@ -171,8 +171,8 @@ def CleanHTML(text):
 	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
 	
 	# Del empty <p> at the start/end
-	text = RegexLoop(r'<div(| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</p>',r'<div>', text);
-	text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</p>\s*</div>',r'</div>', text);
+	text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>(<(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*'+nbsp+r'(</(?:i|b|em|strong|sup|sub|u|s|span|a)>)*</\1>',r'<div>', text);
+	text = RegexLoop(r'<(p|h\d)(| [^>]*)>(<(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*'+nbsp+r'(</(?:i|b|em|strong|sup|sub|u|s|span|a)>)*</\1>\s*</div>',r'</div>', text);
 	
 	if util.strtobool(PREFS[KEY.FORMATTING]):
 		return RemoveFormatting(text);
@@ -182,11 +182,6 @@ def CleanHTML(text):
 	if PREFS[KEY.MARKDOWN] == 'always':
 		text = CleanMarkdown(text);
 	
-	
-	# Multiple Line Return
-	if PREFS[KEY.DOUBLE_BR] == 'new':
-		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
-	
 	# ID and CLASS attributs
 	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
 		text = RegexLoop(r' id="[^"]*"', r'', text);
@@ -194,6 +189,19 @@ def CleanHTML(text):
 		text = RegexLoop(r' class="[^"]*"', r'', text);
 	
 	text = RegexLoop(r' (dir)="[^"]*"', r'', text);
+	
+	
+	# Multiple Line Return
+	if PREFS[KEY.DOUBLE_BR] == 'new':
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
+	elif PREFS[KEY.DOUBLE_BR] == 'empty':
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text);
+	
+	# Empty paragraph
+	if PREFS[KEY.EMPTY_PARA] == 'merge':
+		text = RegexLoop(r'(?:<p(| [^>]*)>'+nbsp+r'</p>\s*){2,}', r'<p\1>'+nbsp+r'</p>', text);
+	elif PREFS[KEY.EMPTY_PARA] == 'del':
+		text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
 	
 	
 	# Headings

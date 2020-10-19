@@ -29,6 +29,7 @@ class KEY:
 	FONT_WEIGHT = 'FontWeight';
 	CSS_KEEP = 'CSStoKeep';
 	DOUBLE_BR = 'DoubleBR';
+	EMPTY_PARA = 'EmptyParagraph';
 	HEADINGS = 'Headings';
 	ID_CLASS = 'ID_Class';
 	MARKDOWN = 'Markdown';
@@ -50,8 +51,14 @@ FONT_WEIGHT = OrderedDict([
 						('none', _('No change'))])
 
 DOUBLE_BR = OrderedDict([
+						('empty', _('Create a empty paragraph')),
 						('new', _('Create a new paragraph')),
 						('none', _('No change'))])
+
+EMPTY_PARA = OrderedDict([
+						('merge', _('Merge in a single empty paragraph')),
+						('none', _('No change')),
+						('del', _('Delete empty paragraph'))])
 
 HEADINGS = OrderedDict([
 						('conv', _('Converte to a paragraph')),
@@ -78,6 +85,7 @@ PREFS.defaults[KEY.KEEP_URL] = 'keep'
 PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
 PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
+PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 PREFS.defaults[KEY.CSS_KEEP] = ''
 PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
@@ -105,48 +113,52 @@ class ConfigWidget(QWidget):
 		
 		
 		options_group_box_layout.addWidget(QLabel(_('Hyperlink:'), self));
-		self.showCombo1 = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
-		options_group_box_layout.addWidget(self.showCombo1);
+		self.comboBoxKEEP_URL = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL]);
+		options_group_box_layout.addWidget(self.comboBoxKEEP_URL);
 		
 		options_group_box_layout.addWidget(QLabel(_('Headings:'), self));
-		self.showCombo5 = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
-		options_group_box_layout.addWidget(self.showCombo5);
+		self.comboBoxHEADINGS = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS]);
+		options_group_box_layout.addWidget(self.comboBoxHEADINGS);
 		
 		options_group_box_layout.addWidget(QLabel(_('Weights:'), self));
-		self.showCombo3 = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT]);
-		options_group_box_layout.addWidget(self.showCombo3);
+		self.comboBoxFONT_WEIGHT = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT]);
+		options_group_box_layout.addWidget(self.comboBoxFONT_WEIGHT);
 		
 		options_group_box_layout.addWidget(QLabel(_('Justification:'), self));
-		self.showCombo2 = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
-		options_group_box_layout.addWidget(self.showCombo2);
+		self.comboBoxFORCE_JUSTIFY = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
+		options_group_box_layout.addWidget(self.comboBoxFORCE_JUSTIFY);
 		
 		options_group_box_layout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self));
-		self.showCombo4 = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
-		options_group_box_layout.addWidget(self.showCombo4);
+		self.comboBoxDOUBLE_BR = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
+		options_group_box_layout.addWidget(self.comboBoxDOUBLE_BR);
+		
+		options_group_box_layout.addWidget(QLabel(_('Multiple empty paragraph:'), self));
+		self.comboBoxEMPTY_PARA = KeyValueComboBox(self, EMPTY_PARA, PREFS[KEY.EMPTY_PARA]);
+		options_group_box_layout.addWidget(self.comboBoxEMPTY_PARA);
 		
 		options_group_box_layout.addWidget(QLabel(_('ID & CLASS attributs:'), self));
-		self.showCombo6 = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
-		options_group_box_layout.addWidget(self.showCombo6);
+		self.comboBoxID_CLASS = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
+		options_group_box_layout.addWidget(self.comboBoxID_CLASS);
 		
 		options_group_box_layout.addWidget(QLabel(_('Markdown:'), self));
-		self.showCombo7 = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN]);
-		options_group_box_layout.addWidget(self.showCombo7);
-		self.showCombo7.setToolTip(_('Try to convert any Markdown strings to HTML.'));
+		self.comboBoxMARKDOWN = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN]);
+		options_group_box_layout.addWidget(self.comboBoxMARKDOWN);
+		self.comboBoxMARKDOWN.setToolTip(_('Try to convert any Markdown strings to HTML.'));
 		
 		
 		options_group_box_layout.addWidget(QLabel(' ', self));
 		
 		options_group_box_layout.addWidget(QLabel(_('CSS rule to keep:'), self));
-		self.keepCSS = QLineEdit(self);
-		self.keepCSS.setText(PREFS[KEY.CSS_KEEP]);
-		self.keepCSS.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'));
-		options_group_box_layout.addWidget(self.keepCSS);
+		self.lineEditCSS_KEEP = QLineEdit(self);
+		self.lineEditCSS_KEEP.setText(PREFS[KEY.CSS_KEEP]);
+		self.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'));
+		options_group_box_layout.addWidget(self.lineEditCSS_KEEP);
 		
 		
-		self.checkBox_cleanAll = QCheckBox(_('Remove all formatting'), self);
-		self.checkBox_cleanAll.stateChanged.connect(self.checkBox_click);
-		self.checkBox_cleanAll.setChecked(util.strtobool(PREFS[KEY.FORMATTING]));
-		layout.addWidget(self.checkBox_cleanAll);
+		self.checkBoxCLEAN_ALL = QCheckBox(_('Remove all formatting'), self);
+		self.checkBoxCLEAN_ALL.stateChanged.connect(self.checkBox_click);
+		self.checkBoxCLEAN_ALL.setChecked(util.strtobool(PREFS[KEY.FORMATTING]));
+		layout.addWidget(self.checkBoxCLEAN_ALL);
 		
 		layout.addWidget(QLabel(' ', self));
 		
@@ -160,17 +172,18 @@ class ConfigWidget(QWidget):
 
 	def save_settings(self):
 		
-		PREFS[KEY.KEEP_URL] = self.showCombo1.selected_key();
-		PREFS[KEY.FORCE_JUSTIFY] = self.showCombo2.selected_key();
-		PREFS[KEY.FONT_WEIGHT] = self.showCombo3.selected_key();
-		PREFS[KEY.DOUBLE_BR] = self.showCombo4.selected_key();
-		PREFS[KEY.HEADINGS] = self.showCombo5.selected_key();
-		PREFS[KEY.ID_CLASS] = self.showCombo6.selected_key();
-		PREFS[KEY.MARKDOWN] = self.showCombo7.selected_key();
+		PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key();
+		PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key();
+		PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key();
+		PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key();
+		PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key();
+		PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key();
+		PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key();
+		PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key();
 		
-		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.keepCSS.text());
+		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text());
 		
-		PREFS[KEY.FORMATTING] = str(self.checkBox_cleanAll.checkState() > 0).lower()
+		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.checkState() > 0).lower()
 		
 		debug_print('Save settings: {0}\n'.format(PREFS));
 		
@@ -185,21 +198,21 @@ class ConfigWidget(QWidget):
 
 	def checkBox_click(self, num):
 		
-		if self.checkBox_cleanAll.checkState():
-			self.showCombo1.setEnabled(False);
-			self.showCombo2.setEnabled(False);
-			self.showCombo3.setEnabled(False);
-			self.showCombo4.setEnabled(False);
-			self.showCombo5.setEnabled(False);
-			self.showCombo6.setEnabled(False);
-			self.showCombo7.setEnabled(False);
-			self.keepCSS.setEnabled(False);
+		if self.checkBoxCLEAN_ALL.checkState():
+			self.comboBoxKEEP_URL.setEnabled(False);
+			self.comboBoxFORCE_JUSTIFY.setEnabled(False);
+			self.comboBoxFONT_WEIGHT.setEnabled(False);
+			self.comboBoxDOUBLE_BR.setEnabled(False);
+			self.comboBoxHEADINGS.setEnabled(False);
+			self.comboBoxID_CLASS.setEnabled(False);
+			self.comboBoxMARKDOWN.setEnabled(False);
+			self.lineEditCSS_KEEP.setEnabled(False);
 		else:
-			self.showCombo1.setEnabled(True);
-			self.showCombo2.setEnabled(True);
-			self.showCombo3.setEnabled(True);
-			self.showCombo4.setEnabled(True);
-			self.showCombo5.setEnabled(True);
-			self.showCombo6.setEnabled(True);
-			self.showCombo7.setEnabled(True);
-			self.keepCSS.setEnabled(True);
+			self.comboBoxKEEP_URL.setEnabled(True);
+			self.comboBoxFORCE_JUSTIFY.setEnabled(True);
+			self.comboBoxFONT_WEIGHT.setEnabled(True);
+			self.comboBoxDOUBLE_BR.setEnabled(True);
+			self.comboBoxHEADINGS.setEnabled(True);
+			self.comboBoxID_CLASS.setEnabled(True);
+			self.comboBoxMARKDOWN.setEnabled(True);
+			self.lineEditCSS_KEEP.setEnabled(True);

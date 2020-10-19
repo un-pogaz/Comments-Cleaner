@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-15 13:28+0200\n"
-"PO-Revision-Date: 2020-10-15 13:28+0200\n"
+"POT-Creation-Date: 2020-10-19 17:56+0200\n"
+"PO-Revision-Date: 2020-10-19 17:59+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -37,23 +37,23 @@ msgstr "Aucun livre sélectionné"
 msgid "No book selected for cleaning comments"
 msgstr "Aucun livre sélectionné pour le nettoyage"
 
-#: action.py:131
+#: action.py:124
 msgid "Cancel"
 msgstr "Annuler"
 
-#: action.py:134
+#: action.py:127
 msgid "Comments Cleaner Progress"
 msgstr "Progression de Comments Cleaner"
 
-#: action.py:166
-#, python-format
-msgid "Book %d of %d"
-msgstr "Livre %d sur %d"
+#: action.py:164
+#, python-brace-format
+msgid "Book {0} of {1}"
+msgstr "Livre {0} sur {1}"
 
-#: action.py:197
-#, python-format
-msgid "Update the library for %d books..."
-msgstr "Mise a jour de la bibliothèque pour %d livres..."
+#: action.py:195
+#, python-brace-format
+msgid "Update the library for {0} books..."
+msgstr "Mise a jour de la bibliothèque pour {0} livres..."
 
 #: common_utils.py:223
 msgid "Restart required"
@@ -71,115 +71,139 @@ msgstr "Raccourcis clavier"
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: config.py:37
+#: config.py:39
 msgid "Keep URL"
 msgstr "Conserver les URL"
 
-#: config.py:38
+#: config.py:40
 msgid "Delete URL"
 msgstr "Supprimer les URL"
 
-#: config.py:41
+#: config.py:43
 msgid "Force the justification (ecrase \"center\" and \"right\")"
 msgstr "Forcer la justification (écrasée  \"center\" et \"right\")"
 
-#: config.py:42
+#: config.py:44
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justification pour le texte indéterminé (conserver \"center\" et \"right\")"
 
-#: config.py:43 config.py:49 config.py:53 config.py:58 config.py:64
-#: config.py:68
+#: config.py:45 config.py:51 config.py:56 config.py:60 config.py:66
+#: config.py:72 config.py:77
 msgid "No change"
 msgstr "Aucune modification"
 
-#: config.py:44
+#: config.py:46
 msgid "Delete all align"
 msgstr "Supprimer tous les align"
 
-#: config.py:47
+#: config.py:49
 msgid "Truncate the value to the hundred"
 msgstr "Tronquer la valeur a la centaine"
 
-#: config.py:48
+#: config.py:50
 msgid "Rounded to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
-#: config.py:52
+#: config.py:54
+msgid "Create a empty paragraph"
+msgstr "Crée un paragraphe vide"
+
+#: config.py:55
 msgid "Create a new paragraph"
 msgstr "Crée un nouveau paragraphe"
 
-#: config.py:56
+#: config.py:59
+msgid "Merge in a single empty paragraph"
+msgstr "Fusionner en un seul paragraphe vide"
+
+#: config.py:61
+msgid "Delete empty paragraph"
+msgstr "Supprimer les paragraphes vide"
+
+#: config.py:64
 msgid "Converte to a paragraph"
 msgstr "Convertir en paragraphe"
 
-#: config.py:57
+#: config.py:65
 msgid "Converte to a paragraph but keep the bold"
 msgstr "Convertir en paragraphe mais conserver le gras"
 
-#: config.py:61
+#: config.py:69
 msgid "Delete \"id\" attribut"
 msgstr "Supprimer les attributs \"id\""
 
-#: config.py:62
+#: config.py:70
 msgid "Delete \"class\" attribut"
 msgstr "Supprimer les attributs \"class\""
 
-#: config.py:63
+#: config.py:71
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Supprimer les attributs \"class\" et \"id\""
 
-#: config.py:67
-msgid "Try to convert any valid string"
-msgstr "Essayer de convertir toute chaîne de caractères valide"
+#: config.py:75
+msgid "Convert in all comments (not recomanded)"
+msgstr "Converti dans tous les commentaires (non recommandé)"
 
-#: config.py:93
+#: config.py:76
+msgid "Convert only from a plain text comment"
+msgstr "Converti uniqument les commentaires en text brut"
+
+#: config.py:104
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:104
+#: config.py:115
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:108
-msgid "Justification:"
-msgstr "Justification :"
-
-#: config.py:112
-msgid "Weights:"
-msgstr "Gras :"
-
-#: config.py:116
-msgid "Multiple Line Return in a paragraph:"
-msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
-
-#: config.py:120
+#: config.py:119
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:124
+#: config.py:123
+msgid "Weights:"
+msgstr "Gras :"
+
+#: config.py:127
+msgid "Justification:"
+msgstr "Justification :"
+
+#: config.py:131
+msgid "Multiple Line Return in a paragraph:"
+msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
+
+#: config.py:135
+msgid "Multiple empty paragraph:"
+msgstr "Multiple paragraphes vide :"
+
+#: config.py:139
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:128
+#: config.py:143
 msgid "Markdown:"
 msgstr "Markdown :"
 
-#: config.py:131
-msgid "Conversion from a Markdown format will only be done if the comment is NOT an HTML format."
-msgstr "La conversion depuis un format Markdown ne se fera que si le commentaire n'est PAS un format HTML."
+#: config.py:146
+msgid "Try to convert any Markdown strings to HTML."
+msgstr "Essayer de convertir toute chaîne de caractères Markdown en HTML."
 
-#: config.py:136
+#: config.py:151
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:139
+#: config.py:154
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:143
+#: config.py:158
+msgid "Remove all formatting"
+msgstr "Effacer toute mise en forme"
+
+#: config.py:167
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:144
+#: config.py:168
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"

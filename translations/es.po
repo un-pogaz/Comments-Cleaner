@@ -1,127 +1,179 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-11 17:31-0300\n"
-"PO-Revision-Date: 2020-10-12 17:06+0200\n"
-"Language: es\n"
+"POT-Creation-Date: 2020-10-12 17:01+0200\n"
+"PO-Revision-Date: 2020-10-13 20:32-0300\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
 "X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language: es\n"
+"X-Poedit-SearchPath-0: action.py\n"
+"X-Poedit-SearchPath-1: config.py\n"
+"X-Poedit-SearchPath-2: __init__.py\n"
+"X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: action.py:34 __init__.py:24
+#: __init__.py:29 action.py:42
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Eliminar el CSS para el bloc de notas en los comentarios HTML"
 
-#: action.py:62
+#: action.py:70
 msgid "&Clean the selecteds Comments"
 msgstr "&Limpiar los comentarios seleccionados"
 
-#: action.py:68
+#: action.py:76
 msgid "&Customize plugin"
 msgstr "&Personalizar complemento"
 
-#: action.py:88 action.py:93
+#: action.py:96 action.py:101
 msgid "No selected book"
 msgstr "Ningún libro seleccionado"
 
-#: action.py:88 action.py:93
+#: action.py:96 action.py:101
 msgid "No book selected for cleaning comments"
-msgstr "Ningún libro seleccionado para limpieza de comentarios"
+msgstr "Ningún libro seleccionado para comentarios de limpieza"
 
-#: common_utils.py:215
+#: common_utils.py:225
 msgid "Restart required"
 msgstr "Reinicio requerido"
 
-#: common_utils.py:216
-msgid "Title image not found - you must restart Calibre before using this plugin!"
-msgstr "No se encontró la imagen del título - debe reiniciar Calibre antes de usar este complemento!"
+#: common_utils.py:226
+msgid ""
+"Title image not found - you must restart Calibre before using this plugin!"
+msgstr ""
+"No se encontró la imagen del título: debe reiniciar Calibre antes de usar "
+"este complemento."
 
-#: common_utils.py:285
+#: common_utils.py:295
 msgid "Keyboard shortcut dialog"
 msgstr "Diálogo de método abreviado de teclado"
 
-#: common_utils.py:287
+#: common_utils.py:297
 msgid "Keyboard shortcuts"
-msgstr "Atajos de teclado"
+msgstr "Keyboard shortcuts"
 
-#: config.py:28
+#: config.py:38
 msgid "Keep URL"
 msgstr "Mantener URL"
 
-#: config.py:29
+#: config.py:39
 msgid "Delete URL"
 msgstr "Eliminar URL"
 
-#: config.py:32
+#: config.py:42
 msgid "Force the justification (ecrase \"center\" and \"right\")"
 msgstr "Forzar la justificación (ecrase \"centro\" y \"derecha\")"
 
-#: config.py:33
-msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
-msgstr "Justificación para texto indeterminado (mantenga \"centro\" y \"derecha\")"
-
-#: config.py:34 config.py:40 config.py:44
-msgid "No change"
-msgstr "Ningún cambio"
-
-#: config.py:35
-msgid "Delete all align"
-msgstr "Eliminar todo alinear"
-
-#: config.py:38
-msgid "Truncate the value to the hundred"
-msgstr "TTruncar el valor a cien"
-
-#: config.py:39
-msgid "Rounded to Bold (value 600)"
-msgstr "Redondeado de Negrita (valor 600)"
-
 #: config.py:43
+msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
+msgstr ""
+"Justificación para texto indeterminado (mantenga \"centro\" y \"derecha\")"
+
+#: config.py:44 config.py:50 config.py:54 config.py:59 config.py:65
+#: config.py:70
+msgid "No change"
+msgstr "sin cambios"
+
+#: config.py:45
+msgid "Delete all align"
+msgstr "Eliminar todo alineado"
+
+#: config.py:48
+msgid "Truncate the value to the hundred"
+msgstr "Truncar el valor a cien"
+
+#: config.py:49
+msgid "Rounded to Bold (value 600)"
+msgstr "Redondeado Negrita a (valor 600)"
+
+#: config.py:53
 msgid "Create a new paragraph"
 msgstr "Crea un nuevo párrafo"
 
-#: config.py:47
-msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
-msgstr "Reglas CSS personalizadas para mantener además de las básicas. Reglas separadas por un espacio."
+#: config.py:57
+msgid "Converte to a paragraph"
+msgstr "Convertir a párrafo"
+
+#: config.py:58
+msgid "Converte to a paragraph but keep the bold"
+msgstr "Convertir a un párrafo pero mantener el negrita"
+
+#: config.py:62
+msgid "Delete \"id\" attribut"
+msgstr "Eliminar atributo \"id\""
+
+#: config.py:63
+msgid "Delete \"class\" attribut"
+msgstr "Eliminar el atributo \"clase\""
+
+#: config.py:64
+msgid "Delete \"id\" and \"class\" attribut"
+msgstr "Eliminar el atributo \"id\" y \"class\""
 
 #: config.py:69
+msgid "Try to convert only Bold and Italic"
+msgstr "Intente convertir solo negrita y cursiva"
+
+#: config.py:95
 msgid "Comments Cleaner Options"
 msgstr "Comments Cleaner Opciones"
 
-#: config.py:79
+#: config.py:105
 msgid "Hyperlink:"
 msgstr "Hipervínculo:"
 
-#: config.py:83
+#: config.py:109
 msgid "Justification:"
 msgstr "Justificación:"
 
-#: config.py:87
+#: config.py:113
 msgid "Weights:"
 msgstr "Fuerza:"
 
-#: config.py:91
+#: config.py:117
 msgid "Multiple Line Return in a paragraph:"
 msgstr "Retorno de varias líneas en un párrafo:"
 
-#: config.py:99
+#: config.py:121
+msgid "Headings:"
+msgstr "Encabezados:"
+
+#: config.py:125
+msgid "ID & CLASS attributs:"
+msgstr "Atributos de ID y CLASE:"
+
+#: config.py:129
+msgid "Markdown:"
+msgstr "Reducción:"
+
+#: config.py:132
+msgid ""
+"Conversion from a Markdown format will only be done if the comment is NOT an "
+"HTML format."
+msgstr ""
+"La conversión de un formato de Reducción solo se realizará si el comentario "
+"NO es un formato HTML."
+
+#: config.py:138
 msgid "CSS rule to keep:"
 msgstr "Regla CSS para mantener:"
 
-#: config.py:106
+#: config.py:141
+msgid ""
+"Custom CSS rules to keep in addition to the basic ones. Rules separated by a "
+"space."
+msgstr ""
+"Reglas CSS personalizadas para mantener además de las básicas. Reglas "
+"separadas por un espacio."
+
+#: config.py:145
 msgid "Keyboard shortcuts..."
 msgstr "Atajos de teclado..."
 
-#: config.py:107
+#: config.py:146
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Edite los atajos de teclado asociados con este complemento"
