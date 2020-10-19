@@ -174,6 +174,8 @@ def CleanHTML(text):
 	text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>(<(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*'+nbsp+r'(</(?:i|b|em|strong|sup|sub|u|s|span|a)>)*</\1>',r'<div>', text);
 	text = RegexLoop(r'<(p|h\d)(| [^>]*)>(<(?:i|b|em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*'+nbsp+r'(</(?:i|b|em|strong|sup|sub|u|s|span|a)>)*</\1>\s*</div>',r'</div>', text);
 	
+	
+	
 	if util.strtobool(PREFS[KEY.FORMATTING]):
 		return RemoveFormatting(text);
 	
@@ -202,7 +204,7 @@ def CleanHTML(text):
 		text = RegexLoop(r'(?:<p(| [^>]*)>'+nbsp+r'</p>\s*){2,}', r'<p\1>'+nbsp+r'</p>', text);
 	elif PREFS[KEY.EMPTY_PARA] == 'del':
 		text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
-	
+		
 	
 	# Headings
 	if PREFS[KEY.HEADINGS] == 'bolder':

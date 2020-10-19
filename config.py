@@ -203,6 +203,7 @@ class ConfigWidget(QWidget):
 			self.comboBoxFORCE_JUSTIFY.setEnabled(False);
 			self.comboBoxFONT_WEIGHT.setEnabled(False);
 			self.comboBoxDOUBLE_BR.setEnabled(False);
+			self.comboBoxEMPTY_PARA.setEnabled(False);
 			self.comboBoxHEADINGS.setEnabled(False);
 			self.comboBoxID_CLASS.setEnabled(False);
 			self.comboBoxMARKDOWN.setEnabled(False);
@@ -212,6 +213,7 @@ class ConfigWidget(QWidget):
 			self.comboBoxFORCE_JUSTIFY.setEnabled(True);
 			self.comboBoxFONT_WEIGHT.setEnabled(True);
 			self.comboBoxDOUBLE_BR.setEnabled(True);
+			self.comboBoxEMPTY_PARA.setEnabled(True);
 			self.comboBoxHEADINGS.setEnabled(True);
 			self.comboBoxID_CLASS.setEnabled(True);
 			self.comboBoxMARKDOWN.setEnabled(True);
