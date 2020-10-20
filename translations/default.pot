@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-19 18:00+0200\n"
+"POT-Creation-Date: 2020-10-20 11:54+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -72,139 +72,155 @@ msgstr ""
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: config.py:39
+#: config.py:44
 msgid "Keep URL"
 msgstr ""
 
-#: config.py:40
+#: config.py:45
 msgid "Delete URL"
 msgstr ""
 
-#: config.py:43
+#: config.py:48
 msgid "Force the justification (ecrase \"center\" and \"right\")"
 msgstr ""
 
-#: config.py:44
+#: config.py:49
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr ""
 
-#: config.py:45 config.py:51 config.py:56 config.py:60 config.py:66
-#: config.py:72 config.py:77
+#: config.py:50 config.py:62 config.py:66 config.py:72 config.py:78
+#: config.py:83
 msgid "No change"
 msgstr ""
 
-#: config.py:46
+#: config.py:51
 msgid "Delete all align"
 msgstr ""
 
-#: config.py:49
-msgid "Truncate the value to the hundred"
-msgstr ""
-
-#: config.py:50
-msgid "Rounded to Bold (value 600)"
-msgstr ""
-
 #: config.py:54
-msgid "Create a empty paragraph"
+msgid "Truncate the Weights value to the hundred"
 msgstr ""
 
 #: config.py:55
-msgid "Create a new paragraph"
+msgid "Rounded to Bold (value 600)"
 msgstr ""
 
-#: config.py:59
-msgid "Merge in a single empty paragraph"
+#: config.py:56
+msgid "No change the Weights"
+msgstr ""
+
+#: config.py:57
+msgid "Delete Weights"
+msgstr ""
+
+#: config.py:60
+msgid "Create a empty paragraph"
 msgstr ""
 
 #: config.py:61
-msgid "Delete empty paragraph"
-msgstr ""
-
-#: config.py:64
-msgid "Converte to a paragraph"
+msgid "Create a new paragraph"
 msgstr ""
 
 #: config.py:65
-msgid "Converte to a paragraph but keep the bold"
+msgid "Merge in a single empty paragraph"
 msgstr ""
 
-#: config.py:69
-msgid "Delete \"id\" attribut"
+#: config.py:67
+msgid "Delete empty paragraph"
 msgstr ""
 
 #: config.py:70
-msgid "Delete \"class\" attribut"
+msgid "Converte to a paragraph"
 msgstr ""
 
 #: config.py:71
-msgid "Delete \"id\" and \"class\" attribut"
+msgid "Converte to a paragraph but keep the bold"
 msgstr ""
 
 #: config.py:75
-msgid "Convert in all comments (not recomanded)"
+msgid "Delete \"id\" attribut"
 msgstr ""
 
 #: config.py:76
+msgid "Delete \"class\" attribut"
+msgstr ""
+
+#: config.py:77
+msgid "Delete \"id\" and \"class\" attribut"
+msgstr ""
+
+#: config.py:81
+msgid "Convert in all comments (not recomanded)"
+msgstr ""
+
+#: config.py:82
 msgid "Convert only from a plain text comment"
 msgstr ""
 
-#: config.py:104
+#: config.py:115
 msgid "Comments Cleaner Options"
 msgstr ""
 
-#: config.py:115
+#: config.py:126
 msgid "Hyperlink:"
 msgstr ""
 
-#: config.py:119
+#: config.py:130
 msgid "Headings:"
 msgstr ""
 
-#: config.py:123
-msgid "Weights:"
-msgstr ""
-
-#: config.py:127
-msgid "Justification:"
-msgstr ""
-
-#: config.py:131
-msgid "Multiple Line Return in a paragraph:"
-msgstr ""
-
-#: config.py:135
-msgid "Multiple empty paragraph:"
-msgstr ""
-
 #: config.py:139
-msgid "ID & CLASS attributs:"
+msgid "Remove Italic"
 msgstr ""
 
 #: config.py:143
+msgid "Remove Underline"
+msgstr ""
+
+#: config.py:147
+msgid "Remove Strikethrough"
+msgstr ""
+
+#: config.py:155
+msgid "Justification:"
+msgstr ""
+
+#: config.py:159
+msgid "ID & CLASS attributs:"
+msgstr ""
+
+#: config.py:163
 msgid "Markdown:"
 msgstr ""
 
-#: config.py:146
+#: config.py:166
 msgid "Try to convert any Markdown strings to HTML."
 msgstr ""
 
-#: config.py:151
+#: config.py:171
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:154
+#: config.py:174
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:158
+#: config.py:179
 msgid "Remove all formatting"
 msgstr ""
 
-#: config.py:167
+#: config.py:191
+msgid "Multiple Line Return in a paragraph:"
+msgstr ""
+
+#: config.py:195
+msgid "Multiple empty paragraph:"
+msgstr ""
+
+#: config.py:206
 msgid "Keyboard shortcuts..."
 msgstr ""
 
-#: config.py:168
+#: config.py:207
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""

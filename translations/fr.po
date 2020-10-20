@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-19 17:56+0200\n"
-"PO-Revision-Date: 2020-10-19 18:00+0200\n"
+"POT-Creation-Date: 2020-10-20 11:54+0200\n"
+"PO-Revision-Date: 2020-10-20 11:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -71,139 +71,155 @@ msgstr "Raccourcis clavier"
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: config.py:39
+#: config.py:44
 msgid "Keep URL"
 msgstr "Conserver les URL"
 
-#: config.py:40
+#: config.py:45
 msgid "Delete URL"
 msgstr "Supprimer les URL"
 
-#: config.py:43
+#: config.py:48
 msgid "Force the justification (ecrase \"center\" and \"right\")"
-msgstr "Forcer la justification (écrasée  \"center\" et \"right\")"
+msgstr "Forcer la justification (écraser \"center\" et \"right\")"
 
-#: config.py:44
+#: config.py:49
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justification pour le texte indéterminé (conserver \"center\" et \"right\")"
 
-#: config.py:45 config.py:51 config.py:56 config.py:60 config.py:66
-#: config.py:72 config.py:77
+#: config.py:50 config.py:62 config.py:66 config.py:72 config.py:78
+#: config.py:83
 msgid "No change"
 msgstr "Aucune modification"
 
-#: config.py:46
+#: config.py:51
 msgid "Delete all align"
 msgstr "Supprimer tous les align"
 
-#: config.py:49
-msgid "Truncate the value to the hundred"
-msgstr "Tronquer la valeur a la centaine"
+#: config.py:54
+msgid "Truncate the Weights value to the hundred"
+msgstr "Tronquer la valeur de la Graisse a la centaine"
 
-#: config.py:50
+#: config.py:55
 msgid "Rounded to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
-#: config.py:54
+#: config.py:56
+msgid "No change the Weights"
+msgstr "Aucune modification de la Graisse"
+
+#: config.py:57
+msgid "Delete Weights"
+msgstr "Supprimer la Graisse"
+
+#: config.py:60
 msgid "Create a empty paragraph"
 msgstr "Crée un paragraphe vide"
 
-#: config.py:55
+#: config.py:61
 msgid "Create a new paragraph"
 msgstr "Crée un nouveau paragraphe"
 
-#: config.py:59
+#: config.py:65
 msgid "Merge in a single empty paragraph"
 msgstr "Fusionner en un seul paragraphe vide"
 
-#: config.py:61
+#: config.py:67
 msgid "Delete empty paragraph"
 msgstr "Supprimer les paragraphes vide"
 
-#: config.py:64
+#: config.py:70
 msgid "Converte to a paragraph"
 msgstr "Convertir en paragraphe"
 
-#: config.py:65
+#: config.py:71
 msgid "Converte to a paragraph but keep the bold"
 msgstr "Convertir en paragraphe mais conserver le gras"
 
-#: config.py:69
+#: config.py:75
 msgid "Delete \"id\" attribut"
 msgstr "Supprimer les attributs \"id\""
 
-#: config.py:70
+#: config.py:76
 msgid "Delete \"class\" attribut"
 msgstr "Supprimer les attributs \"class\""
 
-#: config.py:71
+#: config.py:77
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Supprimer les attributs \"class\" et \"id\""
 
-#: config.py:75
+#: config.py:81
 msgid "Convert in all comments (not recomanded)"
-msgstr "Converti dans tous les commentaires (non recommandé)"
+msgstr "Convertir dans tous les commentaires (non recommandé)"
 
-#: config.py:76
+#: config.py:82
 msgid "Convert only from a plain text comment"
-msgstr "Converti uniqument les commentaires en text brut"
+msgstr "Convertir uniqument les commentaires en text brut"
 
-#: config.py:104
+#: config.py:115
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:115
+#: config.py:126
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:119
+#: config.py:130
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:123
-msgid "Weights:"
-msgstr "Gras :"
+#: config.py:139
+msgid "Remove Italic"
+msgstr "Supprimer l'Italique"
 
-#: config.py:127
+#: config.py:143
+msgid "Remove Underline"
+msgstr "Supprimer le soulignement"
+
+#: config.py:147
+msgid "Remove Strikethrough"
+msgstr "Supprimer le texte barré"
+
+#: config.py:155
 msgid "Justification:"
 msgstr "Justification :"
 
-#: config.py:131
-msgid "Multiple Line Return in a paragraph:"
-msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
-
-#: config.py:135
-msgid "Multiple empty paragraph:"
-msgstr "Multiple paragraphes vide :"
-
-#: config.py:139
+#: config.py:159
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:143
+#: config.py:163
 msgid "Markdown:"
 msgstr "Markdown :"
 
-#: config.py:146
+#: config.py:166
 msgid "Try to convert any Markdown strings to HTML."
 msgstr "Essayer de convertir toute chaîne de caractères Markdown en HTML."
 
-#: config.py:151
+#: config.py:171
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:154
+#: config.py:174
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:158
+#: config.py:179
 msgid "Remove all formatting"
 msgstr "Effacer toute mise en forme"
 
-#: config.py:167
+#: config.py:191
+msgid "Multiple Line Return in a paragraph:"
+msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
+
+#: config.py:195
+msgid "Multiple empty paragraph:"
+msgstr "Multiple paragraphes vide :"
+
+#: config.py:206
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:168
+#: config.py:207
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
