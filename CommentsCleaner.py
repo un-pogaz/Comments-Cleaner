@@ -149,10 +149,9 @@ def XMLformat(text):
 
 def CleanHTML(text):
 	
-	text = XMLformat(text);
-	
 	# if no tag = plain text
 	if not(RegexSearch(r'<(p|div)(| [^>]*)>', text)):
+		text = text.replace('\r\n', '\n').replace('\r', '\n');
 		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'\n',r'<br>', text);
 		text = RegexLoop(r'(<p>|<br>)\s+', r'\1', text);
@@ -161,6 +160,7 @@ def CleanHTML(text):
 		if PREFS[KEY.MARKDOWN] == 'try':
 			text = CleanMarkdown(text);
 		
+	
 	
 	# double parse
 	# Empirical tests have shown that it was necessary for some very rare and specific cases.
@@ -187,7 +187,6 @@ def CleanHTML(text):
 		# Del empty <p> at the start/end
 		text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text);
 		text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>',r'</div>', text);
-		
 		
 		# Multiple Line Return
 		if PREFS[KEY.DOUBLE_BR] == 'new':
