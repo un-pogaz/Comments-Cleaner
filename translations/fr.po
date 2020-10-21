@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-20 11:54+0200\n"
-"PO-Revision-Date: 2020-10-20 11:54+0200\n"
+"POT-Creation-Date: 2020-10-21 17:28+0200\n"
+"PO-Revision-Date: 2020-10-21 17:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -105,8 +105,8 @@ msgid "Rounded to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
 #: config.py:56
-msgid "No change the Weights"
-msgstr "Aucune modification de la Graisse"
+msgid "Do not change the Weights"
+msgstr "Ne pas changer la Graisse"
 
 #: config.py:57
 msgid "Delete Weights"
@@ -168,15 +168,15 @@ msgstr "Hyper-liens :"
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:139
+#: config.py:140
 msgid "Remove Italic"
 msgstr "Supprimer l'Italique"
 
-#: config.py:143
+#: config.py:144
 msgid "Remove Underline"
 msgstr "Supprimer le soulignement"
 
-#: config.py:147
+#: config.py:148
 msgid "Remove Strikethrough"
 msgstr "Supprimer le texte barré"
 
@@ -188,25 +188,25 @@ msgstr "Justification :"
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:163
-msgid "Markdown:"
-msgstr "Markdown :"
-
 #: config.py:166
-msgid "Try to convert any Markdown strings to HTML."
-msgstr "Essayer de convertir toute chaîne de caractères Markdown en HTML."
-
-#: config.py:171
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:174
+#: config.py:169
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:179
+#: config.py:174
 msgid "Remove all formatting"
 msgstr "Effacer toute mise en forme"
+
+#: config.py:186
+msgid "Markdown:"
+msgstr "Markdown :"
+
+#: config.py:189
+msgid "Try to convert any Markdown strings to HTML."
+msgstr "Essayer de convertir toute chaîne de caractères Markdown en HTML."
 
 #: config.py:191
 msgid "Multiple Line Return in a paragraph:"
@@ -216,10 +216,10 @@ msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
 msgid "Multiple empty paragraph:"
 msgstr "Multiple paragraphes vide :"
 
-#: config.py:206
+#: config.py:202
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:207
+#: config.py:203
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"

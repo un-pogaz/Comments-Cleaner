@@ -40,7 +40,7 @@ def CleanBasic(text):
 	text = RegexLoop(r'<(/?)strike(| [^>]*)>', r'<\1s\2>', text);
 	
 	# invalid tag
-	text = RegexLoop(r'</?(font|html|body|img|meta|link)(|\s[^>]*)>', r'', text);
+	text = RegexLoop(r'</?(font|html|body|img|meta|link)(| [^>]*)>', r'', text);
 	
 	
 	# remove namespaced attribut
@@ -269,7 +269,7 @@ def CleanAlign(text):
 		text = RegexLoop(r'<('+tags+r') align="left"( align="[^"]*")', r'<\1\2', text);
 		
 		# swap text-align to align
-		text = RegexLoop(r' align="[^"]*"([^>]*)style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' align="\3"\1style="\2\4"', text);
+		text = RegexLoop(r' align="[^"]*"([^>]*) style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' align="\3"\1 style="\2\4"', text);
 		
 		# clean space in attribut
 		text = RegexLoop(r' align="\s+([^"]*)"', r' align="\1"', text);
@@ -320,8 +320,8 @@ def CleanStyle(text):
 	
 	
 	# font-weight
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(normal|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(bold)\s*;([^"]*)"', r' style="\1font-weight: 600\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(normal|lighter|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight:\s*(bold|bolder)\s*;([^"]*)"', r' style="\1font-weight: 600\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
 	
@@ -336,14 +336,13 @@ def CleanStyle(text):
 		text = RegexLoop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);
 	
-	
 	# font-style
 	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
 	if util.strtobool(PREFS[KEY.DEL_ITALIC]):
 		text = RegexLoop(r'<(/?)em(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]*) font-style:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);
 	else:
-		text = RegexLoop(r' style="([^"]*) font-style:\s*(oblique(?:\s+\d+deg))\s*;([^"]*)"', r' style="\1 font-style: italic;\3"', text);
+		text = RegexLoop(r' style="([^"]*) font-style:\s*(oblique(?:\s+\d+deg)?)\s*;([^"]*)"', r' style="\1 font-style: italic;\3"', text);
 	
 	
 	# text-decoration

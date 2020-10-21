@@ -53,7 +53,7 @@ FORCE_JUSTIFY = OrderedDict([
 FONT_WEIGHT = OrderedDict([
 						('trunc', _('Truncate the Weights value to the hundred')),
 						('bold', _('Rounded to Bold (value 600)')),
-						('none', _('No change the Weights')),
+						('none', _('Do not change the Weights')),
 						('del', _('Delete Weights'))])
 
 DOUBLE_BR = OrderedDict([
@@ -93,15 +93,15 @@ PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
 PREFS.defaults[KEY.DEL_ITALIC] = 'false'
 PREFS.defaults[KEY.DEL_UNDER] = 'false'
 PREFS.defaults[KEY.DEL_STRIKE] = 'false'
-PREFS.defaults[KEY.CSS_KEEP] = ''
 PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
-PREFS.defaults[KEY.MARKDOWN] = 'try'
-
-PREFS.defaults[KEY.DOUBLE_BR] = 'new'
-PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
+PREFS.defaults[KEY.CSS_KEEP] = ''
 
 PREFS.defaults[KEY.FORMATTING] = 'false'
+
+PREFS.defaults[KEY.MARKDOWN] = 'try'
+PREFS.defaults[KEY.DOUBLE_BR] = 'new'
+PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 class ConfigWidget(QWidget):
 

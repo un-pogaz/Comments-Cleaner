@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-20 11:54+0200\n"
+"POT-Creation-Date: 2020-10-21 17:28+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -106,7 +106,7 @@ msgid "Rounded to Bold (value 600)"
 msgstr ""
 
 #: config.py:56
-msgid "No change the Weights"
+msgid "Do not change the Weights"
 msgstr ""
 
 #: config.py:57
@@ -169,15 +169,15 @@ msgstr ""
 msgid "Headings:"
 msgstr ""
 
-#: config.py:139
+#: config.py:140
 msgid "Remove Italic"
 msgstr ""
 
-#: config.py:143
+#: config.py:144
 msgid "Remove Underline"
 msgstr ""
 
-#: config.py:147
+#: config.py:148
 msgid "Remove Strikethrough"
 msgstr ""
 
@@ -189,24 +189,24 @@ msgstr ""
 msgid "ID & CLASS attributs:"
 msgstr ""
 
-#: config.py:163
-msgid "Markdown:"
-msgstr ""
-
 #: config.py:166
-msgid "Try to convert any Markdown strings to HTML."
-msgstr ""
-
-#: config.py:171
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:174
+#: config.py:169
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:179
+#: config.py:174
 msgid "Remove all formatting"
+msgstr ""
+
+#: config.py:186
+msgid "Markdown:"
+msgstr ""
+
+#: config.py:189
+msgid "Try to convert any Markdown strings to HTML."
 msgstr ""
 
 #: config.py:191
@@ -217,10 +217,10 @@ msgstr ""
 msgid "Multiple empty paragraph:"
 msgstr ""
 
-#: config.py:206
+#: config.py:202
 msgid "Keyboard shortcuts..."
 msgstr ""
 
-#: config.py:207
+#: config.py:203
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""
