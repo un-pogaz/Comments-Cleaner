@@ -39,17 +39,20 @@ def CleanBasic(text):
 	text = RegexLoop(r'<(/?)del(| [^>]*)>', r'<\1s\2>', text);
 	text = RegexLoop(r'<(/?)strike(| [^>]*)>', r'<\1s\2>', text);
 	
-	# invalid tag
-	text = RegexLoop(r'</?(font|html|body|img|meta|link)(| [^>]*)>', r'', text);
+	text = RegexLoop(r'<(/?)dd(| [^>]*)>', r'<\1p\2>', text);
+	text = RegexLoop(r'<(/?)dt(| [^>]*)>', r'<\1p\2>', text);
 	
+	# invalid tag
+	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form)(| [^>]*)>', r'', text);
+	
+	text = RegexLoop(r'<script(| [^>]*)>((?!</p>|</div>).)*?</script>', r'', text);
 	
 	# remove namespaced attribut
-	text = RegexLoop(r' [^"=<>]+:[^"=<>]+="[^"]*"', r'', text);
+	text = RegexLoop(r' [\w\-]+:[\w\-]+="[^"]*"', r'', text);
 	
 	# clean space in attribut
-	text = RegexLoop(r' ([^"=<>]+)="\s+([^"]*)"', r' \1="\2"', text);
-	text = RegexLoop(r' ([^"=<>]+)="([^"]*)\s+"', r' \1="\2"', text);
-	
+	text = RegexLoop(r' ([\w\-]+)="\s+([^"]*)"', r' \1="\2"', text);
+	text = RegexLoop(r' ([\w\-]+)="([^"]*)\s+"', r' \1="\2"', text);
 	
 	# management of <br>
 	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
@@ -83,21 +86,21 @@ def CleanBasic(text):
 	
 	
 	#empty block
-	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul|dt|dd|dl)(| [^>]*)>\s*</\1>', r'', text);
-	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul|dt|dd|dl)(| [^>]*)/>', r'', text);
+	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)>\s*</\1>', r'', text);
+	text = RegexLoop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)/>', r'', text);
 	
 	
 	# double space and tab in <p>
 	text = RegexLoop(r'(<(p|h\d)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n| {2,})', r'\1 ', text);
 	
 	# space and <br> before/after <p>
-	rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li|dt|dd)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
+	rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
 	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)*'+rgx+r'(\s|'+nbsp+r'|<br>)+', r'\1\2\3', text);
 	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)+'+rgx+r'(\s|'+nbsp+r'|<br>)*', r'\1\2\3', text);
 	# restore empty <p>
-	text = RegexLoop(r'<(p|div|h\d|li|dt|dd)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+nbsp+r'</\1>', text);
+	text = RegexLoop(r'<(p|div|h\d|li)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+nbsp+r'</\1>', text);
 	
-	text = RegexLoop(r'><(p|div|h\d|li|ol|ul|dt|dd)', r'>\n<\1', text);
+	text = RegexLoop(r'><(p|div|h\d|li|ol|ul)', r'>\n<\1', text);
 	
 	
 	# style: del double ;
@@ -114,7 +117,7 @@ def CleanBasic(text):
 	
 	
 	# remove empty attribut
-	text = RegexLoop(r' ([^"=<>]+)="\s*"', r'', text);
+	text = RegexLoop(r' ([\w\-]+)="\s*"', r'', text);
 	
 	#strip span
 	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
@@ -143,6 +146,7 @@ def XMLformat(text):
 	
 	return text;
 
+
 def CleanHTML(text):
 	
 	text = XMLformat(text);
@@ -158,94 +162,106 @@ def CleanHTML(text):
 			text = CleanMarkdown(text);
 		
 	
-	text = CleanBasic(text);
+	# double parse
+	# Empirical tests have shown that it was necessary for some very rare and specific cases.
+	for p in range(2):
+		
+		text = CleanBasic(text);
+		
+		# If <div> is not the racine tag
+		if not RegexSearch(r'<div(| [^>]*)>\s*<(p|div|h\d)(| [^>]*)>', text):
+			text = '<div>'+text+'</div>';
+		
+		# Del empty <div>
+		text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>',r'<div>\2', text);
+		
+		# Convert <div> after a <div> in <p>
+		text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
+		
+		# <p> in <p>
+		text = RegexLoop(r'<(p|h\d)(| [^>]*)>\s*<(p|h\d)(| [^>]*)>(.*?)</\3>\s*</\1>',r'<\3\4>\5</\3>', text);
+		
+		# <p> in <p>
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>(.*?)</p>\s*</p>',r'<p\1>\2</p><p\3>\4</p>', text);
+		
+		# Del empty <p> at the start/end
+		text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text);
+		text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>',r'</div>', text);
+		
+		
+		# Multiple Line Return
+		if PREFS[KEY.DOUBLE_BR] == 'new':
+			text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
+		elif PREFS[KEY.DOUBLE_BR] == 'empty':
+			text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text);
+		
+		# Empty paragraph
+		if PREFS[KEY.EMPTY_PARA] == 'merge':
+			text = RegexLoop(r'(?:<p(| [^>]*)>'+nbsp+r'</p>\s*){2,}', r'<p\1>'+nbsp+r'</p>', text);
+		elif PREFS[KEY.EMPTY_PARA] == 'del':
+			text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
+		
+		# Markdown
+		if PREFS[KEY.MARKDOWN] == 'always':
+			text = CleanMarkdown(text);
+		
+		# Formatting
+		if util.strtobool(PREFS[KEY.FORMATTING]):
+			return RemoveFormatting(text);
+		
+		
+		# ID and CLASS attributs
+		if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
+			text = RegexLoop(r' id="[^"]*"', r'', text);
+		if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
+			text = RegexLoop(r' class="[^"]*"', r'', text);
+		
+		text = RegexLoop(r' (?!align|style|class|id|href)[\w\-]+="[^"]*"', r'', text);
+		
+		
+		# Headings
+		if PREFS[KEY.HEADINGS] == 'bolder':
+			text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3;font-weight: bold;"\4>', text);
+			text = RegexLoop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text);
+		if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
+			text = RegexLoop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text);
+		
+		# Hyperlink
+		if PREFS[KEY.KEEP_URL] == 'del':
+			text = RegexLoop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text);
+		
+		# remove empty hyperllink
+		text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
+		
+		
+		# style standardization:  insert ; at the end
+		text = RegexLoop(r' style="([^"]*[^";])"', r' style="\1;"', text);
+		# style standardization: insert space at the start
+		text = text.replace(' style="', ' style=" ');
+		
+		
+		text = CleanAlign(text);
+		
+		text = CleanStyle(text);
+		
+		
+		text = OrderedAttributs(text);
+		
+		# del attibuts for <div> with <p>
+		text = RegexLoop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text);
+		
+		#
+		text = CleanBasic(text);
+		
 	
-	# If <div> is not the racine tag
-	if not RegexSearch(r'<div(| [^>]*)>\s*<(p|div|h\d)(| [^>]*)>', text):
-		text = '<div>'+text+'</div>';
-	
-	
-	# Del empty <div>
-	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>',r'<div>\2', text);
-	
-	# Convert <div> after a <div> in <p>
-	text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
-	
-	# Del empty <p> at the start/end
-	text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text);
-	text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>',r'</div>', text);
-	
-	
-	# Multiple Line Return
-	if PREFS[KEY.DOUBLE_BR] == 'new':
-		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
-	elif PREFS[KEY.DOUBLE_BR] == 'empty':
-		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text);
-	
-	# Empty paragraph
-	if PREFS[KEY.EMPTY_PARA] == 'merge':
-		text = RegexLoop(r'(?:<p(| [^>]*)>'+nbsp+r'</p>\s*){2,}', r'<p\1>'+nbsp+r'</p>', text);
-	elif PREFS[KEY.EMPTY_PARA] == 'del':
-		text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
-	
-	# Markdown
-	if PREFS[KEY.MARKDOWN] == 'always':
-		text = CleanMarkdown(text);
-	
-	# Formatting
-	if util.strtobool(PREFS[KEY.FORMATTING]):
-		return RemoveFormatting(text);
-	
-	
-	# ID and CLASS attributs
-	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
-		text = RegexLoop(r' id="[^"]*"', r'', text);
-	if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
-		text = RegexLoop(r' class="[^"]*"', r'', text);
-	
-	text = RegexLoop(r' (dir)="[^"]*"', r'', text);
-	
-	
-	# Headings
-	if PREFS[KEY.HEADINGS] == 'bolder':
-		text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3;font-weight: bold;"\4>', text);
-		text = RegexLoop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text);
-	if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
-		text = RegexLoop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text);
-	
-	# Hyperlink
-	if PREFS[KEY.KEEP_URL] == 'del':
-		text = RegexLoop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text);
-	
-	# remove empty hyperllink
-	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
-	
-	
-	# style standardization:  insert ; at the end
-	text = RegexLoop(r' style="([^"]*[^";])"', r' style="\1;"', text);
-	# style standardization: insert space at the start
-	text = text.replace(' style="', ' style=" ');
-	
-	
-	text = CleanAlign(text);
-	
-	text = CleanStyle(text);
-	
-	
-	text = OrderedAttributs(text);
-	
-	# del attibuts for <div> with <p>
-	text = RegexLoop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text);
-	
-	#
-	
-	return CleanBasic(text);
+	return text;
+
 
 # Ordered the attributs
 def OrderedAttributs(text):
 	attributs = ['align','style','class','id','href']
 	for attribut in reversed(sorted(attributs)):
-		text = RegexLoop(r'<([^\s])([^=>]*=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3"\2', text);
+		text = RegexLoop(r'<([^\s>]*)\s+([\w\-]+=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3" \2', text);
 	return text;
 
 def CleanAlign(text):
@@ -259,7 +275,7 @@ def CleanAlign(text):
 		
 	else: # empty / all / none
 		
-		tags = 'p|div|h1|h2|h3|h4|h5|h6|dt|dd';
+		tags = 'p|div|h1|h2|h3|h4|h5|h6';
 		
 		# insert align left for all
 		for tag in tags.split('|'):
