@@ -7,7 +7,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy, os, distutils.util as util
+import copy, os
 
 try:
 	load_translations()
@@ -18,7 +18,7 @@ from collections import OrderedDict
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 from calibre.utils.config import JSONConfig
 
-from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
+from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules, strtobool
 
 
 PLUGIN_ICONS = ['images/plugin.png']
@@ -138,15 +138,15 @@ class ConfigWidget(QWidget):
 		optionsHTML_GridLayout.addWidget(self.comboBoxFONT_WEIGHT, 5, 0);
 		
 		self.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), self);
-		self.checkBoxDEL_ITALIC.setChecked(util.strtobool(PREFS[KEY.DEL_ITALIC]));
+		self.checkBoxDEL_ITALIC.setChecked(strtobool(PREFS[KEY.DEL_ITALIC]));
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_ITALIC, 5, 1);
 		
 		self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), self);
-		self.checkBoxDEL_UNDER.setChecked(util.strtobool(PREFS[KEY.DEL_UNDER]));
+		self.checkBoxDEL_UNDER.setChecked(strtobool(PREFS[KEY.DEL_UNDER]));
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_UNDER, 6, 0);
 		
 		self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), self);
-		self.checkBoxDEL_STRIKE.setChecked(util.strtobool(PREFS[KEY.DEL_STRIKE]));
+		self.checkBoxDEL_STRIKE.setChecked(strtobool(PREFS[KEY.DEL_STRIKE]));
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_STRIKE, 6, 1);
 		
 		optionsHTML_GridLayout.addWidget(QLabel(' ', self), 9, 0);
@@ -173,7 +173,7 @@ class ConfigWidget(QWidget):
 		
 		self.checkBoxCLEAN_ALL = QCheckBox(_('Remove all formatting'), self);
 		self.checkBoxCLEAN_ALL.stateChanged.connect(self.checkBox_click);
-		self.checkBoxCLEAN_ALL.setChecked(util.strtobool(PREFS[KEY.FORMATTING]));
+		self.checkBoxCLEAN_ALL.setChecked(strtobool(PREFS[KEY.FORMATTING]));
 		layout.addWidget(self.checkBoxCLEAN_ALL);
 		
 		

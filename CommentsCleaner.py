@@ -7,10 +7,11 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <>'
 __docformat__ = 'restructuredtext en'
 
-import sys, os, distutils.util as util
+import sys, os
 
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
-from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules
+from calibre_plugins.comments_cleaner.XMLentity import parseXMLentity
+from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules, strtobool
 
 nbsp = '\u00A0'
 
@@ -20,19 +21,6 @@ def CleanBasic(text):
 	text = RegexLoop(r'(&#xA0;|&#160;|&nbsp;)', '\u00A0', text);
 	
 	text = XMLformat(text);
-	
-	# entity
-	text = RegexLoop("&#38;", "&amp;", text);
-	text = RegexLoop("&#60;", "&lt;", text);
-	text = RegexLoop("&#62;", "&gt;", text);
-	
-	text = RegexLoop("(&mdash;|&#8212;)", "—", text);
-	text = RegexLoop("(&ndash;|&#8211;)", "–", text);
-	text = RegexLoop("(&laquo;|&#171;)", "«", text);
-	text = RegexLoop("(&raquo;|&#187;)", "»", text);
-	text = RegexLoop("(&hellip;|&#8230;)", "…", text);
-	text = RegexLoop("(&rsquo;|&#8217;)", "’", text);
-	
 	
 	text = RegexLoop(r'<(/?)i(| [^>]*)>', r'<\1em\2>', text);
 	text = RegexLoop(r'<(/?)b(| [^>]*)>', r'<\1strong\2>', text);
@@ -160,7 +148,7 @@ def CleanHTML(text):
 		if PREFS[KEY.MARKDOWN] == 'try':
 			text = CleanMarkdown(text);
 		
-	
+	text = parseXMLentity(text);
 	
 	# double parse
 	# Empirical tests have shown that it was necessary for some very rare and specific cases.
@@ -205,7 +193,7 @@ def CleanHTML(text):
 			text = CleanMarkdown(text);
 		
 		# Formatting
-		if util.strtobool(PREFS[KEY.FORMATTING]):
+		if strtobool(PREFS[KEY.FORMATTING]):
 			return RemoveFormatting(text);
 		
 		
@@ -215,8 +203,7 @@ def CleanHTML(text):
 		if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
 			text = RegexLoop(r' class="[^"]*"', r'', text);
 		
-		text = RegexLoop(r' (?!align|style|class|id|href)[\w\-]+="[^"]*"', r'', text);
-		
+		text = OrderedAttributs(text);
 		
 		# Headings
 		if PREFS[KEY.HEADINGS] == 'bolder':
@@ -258,9 +245,14 @@ def CleanHTML(text):
 
 # Ordered the attributs
 def OrderedAttributs(text):
-	attributs = ['align','style','class','id','href']
-	for attribut in reversed(sorted(attributs)):
-		text = RegexLoop(r'<([^\s>]*)\s+([\w\-]+=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3" \2', text);
+	
+	attributs = 'align|style|class|id|href';
+	
+	text = RegexLoop(r' (?!'+attributs+r')[\w\-]+="[^"]*"', r'', text);
+	
+	for attribut in reversed(sorted(attributs.split('|'))):
+		text = RegexLoop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3" \2', text);
+	
 	return text;
 
 def CleanAlign(text):
@@ -353,7 +345,7 @@ def CleanStyle(text):
 	
 	# font-style
 	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
-	if util.strtobool(PREFS[KEY.DEL_ITALIC]):
+	if strtobool(PREFS[KEY.DEL_ITALIC]):
 		text = RegexLoop(r'<(/?)em(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]*) font-style:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);
 	else:
@@ -363,10 +355,10 @@ def CleanStyle(text):
 	# text-decoration
 	text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)(?:none|blink|overline|inherit|initial|unset)([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
 	
-	if util.strtobool(PREFS[KEY.DEL_UNDER]):
+	if strtobool(PREFS[KEY.DEL_UNDER]):
 		text = RegexLoop(r'<(/?)u(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)underline([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
-	if util.strtobool(PREFS[KEY.DEL_STRIKE]):
+	if strtobool(PREFS[KEY.DEL_STRIKE]):
 		text = RegexLoop(r'<(/?)s(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)line-through([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
 	
