@@ -255,6 +255,7 @@ def OrderedAttributs(text):
 	
 	return text;
 
+
 def CleanAlign(text):
 	
 	text = OrderedAttributs(text);
