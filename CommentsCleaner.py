@@ -17,9 +17,6 @@ nbsp = '\u00A0'
 
 def CleanBasic(text):
 	
-	text = RegexLoop(r'(&#x202F;|&#8239;)', '\u202F', text);
-	text = RegexLoop(r'(&#xA0;|&#160;|&nbsp;)', '\u00A0', text);
-	
 	text = XMLformat(text);
 	
 	text = RegexLoop(r'<(/?)i(| [^>]*)>', r'<\1em\2>', text);
@@ -31,7 +28,7 @@ def CleanBasic(text):
 	text = RegexLoop(r'<(/?)dt(| [^>]*)>', r'<\1p\2>', text);
 	
 	# invalid tag
-	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form)(| [^>]*)>', r'', text);
+	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form|smarttagtype|personname)(| [^>]*)>', r'', text);
 	
 	text = RegexLoop(r'<script(| [^>]*)>((?!</p>|</div>).)*?</script>', r'', text);
 	
@@ -380,7 +377,7 @@ def CleanMarkdown(text): # key word: TRY!
 	# hyperlink
 	text = RegexLoop( r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)',r'<a href="\2">\1</a>', text);
 	
-	# heading 1 & 2
+	# heading 1, 2
 	for h, n in [('=', '1'),('-', '2')]:
 		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)', r'</p><h'+n+r'>\2</h'+n+r'><p>', text);
 		text = RegexLoop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        , r'</p><h'+n+r'>\2</h'+n+r'>'   , text);
