@@ -330,13 +330,22 @@ def CleanStyle(text):
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
 	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
 	
+	if PREFS[KEY.FONT_WEIGHT] == 'trunc' or PREFS[KEY.FONT_WEIGHT] == 'bold':
+		
+		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d\d)0(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text);
+		regx = r' style="([^"]*) font-weight:\s*(?P<name>\d\d)[1-9](?:\.\d+)?\s*;([^"]*)"';
+		while RegexSearch(regx, text):
+			
+			m = RegexSearch(regx, text);
+			d = RegexSearch(regx, text).group('name');
+			rpl = RegexLoop(regx, r' style="\1 font-weight: '+str(round(int(d),-1))+'0;'+m.group(3)+'"', m.group(0));
+			text = text.replace(m.group(0), rpl);
+			
 	if PREFS[KEY.FONT_WEIGHT] == 'bold':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1\2"', text);
-	elif PREFS[KEY.FONT_WEIGHT] == 'trunc':
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>xx;\3"', text);
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d)xx\s*;([^"]*)"', r' style="\1 font-weight: \g<name>00;\3"', text);
+		
 	elif PREFS[KEY.FONT_WEIGHT] == 'del':
 		text = RegexLoop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);

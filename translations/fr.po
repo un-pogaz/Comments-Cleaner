@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-21 22:58+0200\n"
-"PO-Revision-Date: 2020-10-21 22:58+0200\n"
+"POT-Creation-Date: 2020-10-23 12:03+0200\n"
+"PO-Revision-Date: 2020-10-23 12:04+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -97,11 +97,11 @@ msgid "Delete all align"
 msgstr "Supprimer tous les align"
 
 #: config.py:54
-msgid "Truncate the Weights value to the hundred"
-msgstr "Tronquer la valeur de la Graisse a la centaine"
+msgid "Round the Weights value to the hundred"
+msgstr "Arrondir la valeur de la Graisse a la centaine"
 
 #: config.py:55
-msgid "Rounded to Bold (value 600)"
+msgid "Round to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
 #: config.py:56

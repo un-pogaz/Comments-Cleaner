@@ -51,8 +51,8 @@ FORCE_JUSTIFY = OrderedDict([
 						('del', _('Delete all align'))])
 
 FONT_WEIGHT = OrderedDict([
-						('trunc', _('Truncate the Weights value to the hundred')),
-						('bold', _('Rounded to Bold (value 600)')),
+						('trunc', _('Round the Weights value to the hundred')),
+						('bold', _('Round to Bold (value 600)')),
 						('none', _('Do not change the Weights')),
 						('del', _('Delete Weights'))])
 
