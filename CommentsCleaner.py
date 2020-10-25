@@ -28,9 +28,10 @@ def CleanBasic(text):
 	text = RegexLoop(r'<(/?)dt(| [^>]*)>', r'<\1p\2>', text);
 	
 	# invalid tag
-	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form|smarttagtype|personname)(| [^>]*)>', r'', text);
+	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form)(| [^>]*)>', r'', text);
+	text = RegexLoop(r'</?(smarttagtype|personname)(| [^>]*)>', r'', text);
 	
-	text = RegexLoop(r'<script(| [^>]*)>((?!</p>|</div>).)*?</script>', r'', text);
+	text = RegexLoop(r'<(script|style)(| [^>]*)>((?!</p>|</div>).)*?</\1>', r'', text);
 	
 	# remove namespaced attribut
 	text = RegexLoop(r' [\w\-]+:[\w\-]+="[^"]*"', r'', text);
@@ -145,6 +146,8 @@ def CleanHTML(text):
 		if PREFS[KEY.MARKDOWN] == 'try':
 			text = CleanMarkdown(text);
 		
+	
+	text = XMLformat(text);
 	text = parseXMLentity(text);
 	
 	# double parse
@@ -233,8 +236,8 @@ def CleanHTML(text):
 		# del attibuts for <div> with <p>
 		text = RegexLoop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text);
 		
-		#
 		text = CleanBasic(text);
+		#
 		
 	
 	return text;
@@ -403,17 +406,22 @@ def CleanMarkdown(text): # key word: TRY!
 	
 	
 	# u liste
-	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+(.*?)(<br>|</p><p>)', r'</p><ul><li>\2</li></ul><p>', text);
-	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+(.*?)(</p>)'        , r'</p><ul><li>\2</li></ul>'   , text);
-	text = RegexLoop(         r'(<p>)(?:\*|-)\s+(.*?)(<br>|</p><p>)'    , r'<ul><li>\2</li></ul><p>', text);
-	text = RegexLoop(         r'(<p>)(?:\*|-)\s+(.*?)(</p>)'            , r'<ul><li>\2</li></ul>'   , text);
+	debug_text('11', text)
+	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ul><li>\2</li></ul><p>', text);
+	debug_text('22', text)
+	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        , r'</p><ul><li>\2</li></ul>'   , text);
+	debug_text('33', text)
+	text = RegexLoop(         r'(<p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)'    , r'<ul><li>\2</li></ul><p>', text);
+	debug_text('44', text)
+	text = RegexLoop(         r'(<p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'            , r'<ul><li>\2</li></ul>'   , text);
+	debug_text('55', text)
 	text = RegexLoop(r'</li></ul><ul><li>', r'</li><li>', text);
 	
 	# o liste
-	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+(.*?)(<br>|</p><p>)', r'</p><ol><li>\2</li></ol><p>', text);
-	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+(.*?)(</p>)'        , r'</p><ol><li>\2</li></ol>'   , text);
-	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+(.*?)(<br>|</p><p>)',     r'<ol><li>\2</li></ol><p>', text);
-	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+(.*?)(</p>)'        ,     r'<ol><li>\2</li></ol>'   , text);
+	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ol><li>\2</li></ol><p>', text);
+	text = RegexLoop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        , r'</p><ol><li>\2</li></ol>'   , text);
+	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)',     r'<ol><li>\2</li></ol><p>', text);
+	text = RegexLoop(         r'(<p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        ,     r'<ol><li>\2</li></ol>'   , text);
 	text = RegexLoop(r'</li></ol><ol><li>', r'</li><li>', text);
 	
 	# <hr>
