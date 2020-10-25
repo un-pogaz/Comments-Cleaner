@@ -406,15 +406,10 @@ def CleanMarkdown(text): # key word: TRY!
 	
 	
 	# u liste
-	debug_text('11', text)
 	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ul><li>\2</li></ul><p>', text);
-	debug_text('22', text)
 	text = RegexLoop(r'(<br>|</p><p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        , r'</p><ul><li>\2</li></ul>'   , text);
-	debug_text('33', text)
 	text = RegexLoop(         r'(<p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)'    , r'<ul><li>\2</li></ul><p>', text);
-	debug_text('44', text)
 	text = RegexLoop(         r'(<p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'            , r'<ul><li>\2</li></ul>'   , text);
-	debug_text('55', text)
 	text = RegexLoop(r'</li></ul><ul><li>', r'</li><li>', text);
 	
 	# o liste
