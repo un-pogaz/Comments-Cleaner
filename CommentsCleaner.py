@@ -33,6 +33,9 @@ def CleanBasic(text):
 	
 	text = RegexLoop(r'<(script|style)(| [^>]*)>((?!</p>|</div>).)*?</\1>', r'', text);
 	
+	# empty hyperlink
+	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
+	
 	# remove namespaced attribut
 	text = RegexLoop(r' [\w\-]+:[\w\-]+="[^"]*"', r'', text);
 	
@@ -216,10 +219,7 @@ def CleanHTML(text):
 		if PREFS[KEY.KEEP_URL] == 'del':
 			text = RegexLoop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text);
 		
-		# remove empty hyperllink
-		text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
-		
-		
+		text = CleanBasic(text);
 		# style standardization:  insert ; at the end
 		text = RegexLoop(r' style="([^"]*[^";])"', r' style="\1;"', text);
 		# style standardization: insert space at the start
@@ -343,7 +343,7 @@ def CleanStyle(text):
 			d = RegexSearch(regx, text).group('name');
 			rpl = RegexLoop(regx, r' style="\1 font-weight: '+str(round(int(d),-1))+'0;'+m.group(3)+'"', m.group(0));
 			text = text.replace(m.group(0), rpl);
-			
+	
 	if PREFS[KEY.FONT_WEIGHT] == 'bold':
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
 		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
