@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-26 11:01+0100\n"
+"POT-Creation-Date: 2020-10-28 10:08+0100\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Book {0} of {1}"
 msgstr ""
 
-#: action.py:195
+#: action.py:198
 #, python-brace-format
 msgid "Update the library for {0} books..."
 msgstr ""
