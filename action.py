@@ -176,9 +176,10 @@ class CleanerProgressDialog(QProgressDialog):
 				self.close();
 				return;
 			
+			book_stat = '(book: '+str(num)+'/'+str(self.book_count)+')[id: '+str(book_id)+']'
 			# process the comment
 			if comment is not None:
-				debug_text('Text in (book: '+str(num)+'/'+str(self.book_count)+')[id: '+str(book_id)+']', comment);
+				debug_text('Text in '+book_stat, comment);
 				comment_out = CleanHTML(comment);
 				if comment == comment_out:
 					debug_print('Unchanged text :::\n');
@@ -186,6 +187,8 @@ class CleanerProgressDialog(QProgressDialog):
 					debug_text('Text out', comment_out);
 					self.books_dic[book_id] = comment_out;
 			
+			else:
+				debug_print('Empty comment '+book_stat+':::\n');
 			
 		
 		books_dic_count = len(self.books_dic)
