@@ -15,33 +15,115 @@ from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_tex
 
 nbsp = '\u00A0'
 
+# Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
+TAGS = [
+	'a',
+	'address',
+	'b',
+	'big',
+	'blockquote',
+	'body',
+	'br',
+	'center',
+	'cite',
+	'code',
+	'dd',
+	'dfn',
+	'div',
+	'dl',
+	'dt',
+	'em',
+	'font',
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	'head',
+	'hr',
+	'html',
+	'i',
+	'img',
+	'kbd',
+	'meta',
+	'li',
+	'nobr',
+	'ol',
+	'p',
+	'pre',
+	'qt',
+	's',
+	'samp',
+	'small',
+	'span',
+	'strong',
+	'sub',
+	'sup',
+	'table',
+	'tbody',
+	'td',
+	'tfoot',
+	'th',
+	'thead',
+	'title',
+	'tr',
+	'tt',
+	'u',
+	'ul',
+	'var',
+]
+
+ATTRIBUTES = [
+	'id',
+	'class',
+	'style',
+	'align',
+	'href',
+]
+
 def CleanBasic(text):
 	
 	text = XMLformat(text);
 	
-	text = RegexLoop(r'<(/?)i(| [^>]*)>', r'<\1em\2>', text);
-	text = RegexLoop(r'<(/?)b(| [^>]*)>', r'<\1strong\2>', text);
-	text = RegexLoop(r'<(/?)del(| [^>]*)>', r'<\1s\2>', text);
-	text = RegexLoop(r'<(/?)strike(| [^>]*)>', r'<\1s\2>', text);
+	text = parseXMLentity(text);
 	
-	text = RegexLoop(r'<(/?)dd(| [^>]*)>', r'<\1p\2>', text);
-	text = RegexLoop(r'<(/?)dt(| [^>]*)>', r'<\1p\2>', text);
 	
-	# invalid tag
-	text = RegexLoop(r'</?(dl|font|abbr|html|body|img|meta|link|section|form)(| [^>]*)>', r'', text);
-	text = RegexLoop(r'</?(smarttagtype|personname)(| [^>]*)>', r'', text);
+	# convert tag
+	text = RegexLoop(r'<(/?)(?:i|cite|dfn|var)(| [^>]*)>', r'<\1em\2>', text);
+	text = RegexLoop(r'<(/?)(?:b)(| [^>]*)>',              r'<\1strong\2>', text);
+	text = RegexLoop(r'<(/?)(?:del|strike)(| [^>]*)>',     r'<\1s\2>', text);
 	
-	text = RegexLoop(r'<(script|style)(| [^>]*)>((?!</p>|</div>).)*?</\1>', r'', text);
+	text = RegexLoop(r'<(/?)(?:blockquote|dd|dt|pre)(| [^>]*)>', r'<\1p\2>', text);
 	
-	# empty hyperlink
-	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
+	# convert tag with content
+	text = RegexLoop(r'<(center)(| [^>]*)>((?:(?!</p>|</div>).)*?)</\1>', r'<p align="center" \2>\3</p>', text);
+	
+	# invalid tag with content
+	text = RegexLoop(r'<(script|style|head|title)(| [^>]*)>((?!</p>|</div>).)*?</\1>', r'', text);
+	
+	# remove invalid tag
+	text = RegexLoop(r'</?(?!'+ '|'.join(TAGS) +r')\w+(| [^>]*)>', r'', text);
 	
 	# remove namespaced attribut
 	text = RegexLoop(r' [\w\-]+:[\w\-]+="[^"]*"', r'', text);
 	
+	# remove invalid attribut
+	text = RegexLoop(r' (?!'+ '|'.join(ATTRIBUTES) +r')[\w\-]+="[^"]*"', r'', text);
+	
+	# filtre not desired tag
+	text = RegexLoop(r'</?(font|img|html|body|section|form|dl)(| [^>]*)>', r'', text);
+	text = RegexLoop(r'</?(address|big|code|kbd|meta|nobr|qt|samp|small|tt)(| [^>]*)>', r'', text);
+	
+	# invalid attribut tag 
+	text = RegexLoop(r'<((?!a)\w+)(| [^>]*) href="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
+	text = RegexLoop(r'<((?!p|div|h\d)\w+)(| [^>]*) align="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
+	
+	
 	# clean space in attribut
 	text = RegexLoop(r' ([\w\-]+)="\s+([^"]*)"', r' \1="\2"', text);
 	text = RegexLoop(r' ([\w\-]+)="([^"]*)\s+"', r' \1="\2"', text);
+	
 	
 	# management of <br>
 	text = RegexLoop(r'<(b|h)r[^>]+>', r'<\1r>', text);
@@ -111,13 +193,27 @@ def CleanBasic(text):
 	#strip span
 	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
 	
+	# empty hyperlink
+	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
+	
 	
 	# replaces the invalid triple point
 	#text = RegexSimple(r'\.\s*\.\s*\.', r'…', text);
 	text = RegexLoop(r'\.\s+\.\s*\.', r'...', text);
 	text = RegexLoop(r'\.\s*\.\s+\.', r'...', text);
 	
+	
 	text = XMLformat(text);
+	
+	text = OrderedAttributs(text);
+	
+	return text;
+
+# Ordered the attributs
+def OrderedAttributs(text):
+	
+	for atr in reversed(sorted(ATTRIBUTES)):
+		text = RegexLoop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+atr+r'="([^"]*)"', r'<\1 '+atr+r'="\3" \2', text);
 	
 	return text;
 
@@ -139,7 +235,7 @@ def XMLformat(text):
 def CleanHTML(text):
 	
 	# if no tag = plain text
-	if not(RegexSearch(r'<(p|div)(| [^>]*)>', text)):
+	if not RegexSearch(r'<\w+(| [^>]*)>', text):
 		text = text.replace('\r\n', '\n').replace('\r', '\n');
 		text = '<div><p>' + RegexLoop(r'\n{2,}',r'</p><p>', text) + '</p></div>';
 		text = RegexLoop(r'\n',r'<br>', text);
@@ -149,9 +245,6 @@ def CleanHTML(text):
 		if PREFS[KEY.MARKDOWN] == 'try':
 			text = CleanMarkdown(text);
 		
-	
-	text = XMLformat(text);
-	text = parseXMLentity(text);
 	
 	# double parse
 	# Empirical tests have shown that it was necessary for some very rare and specific cases.
@@ -169,11 +262,14 @@ def CleanHTML(text):
 		# Convert <div> after a <div> in <p>
 		text = RegexLoop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text);
 		
-		# <p> in <p>
-		text = RegexLoop(r'<(p|h\d)(| [^>]*)>\s*<(p|h\d)(| [^>]*)>(.*?)</\3>\s*</\1>',r'<\3\4>\5</\3>', text);
-		
-		# <p> in <p>
-		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>(.*?)</p>\s*</p>',r'<p\1>\2</p><p\3>\4</p>', text);
+		# <p> in \s<p>\s
+		text = RegexLoop(r'<(p|h\d)(| [^>]*)>\s*<(p|h\d)(| [^>]*)>((?:(?!</(?:p|h\d)>).)*?)</\3>\s*</\1>',r'<\3\4>\5</\3>', text);
+		# <p> in ??<p>\s
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>\s*</p>',r'<p\1>\2</p><p\3>\4</p>', text);
+		# <p> in \s<p>??
+		text = RegexLoop(r'<p(| [^>]*)>\s*<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>',r'<p\2>\3</p><p\1>\4</p>', text);
+		# <p> in ??<p>??
+		text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>',r'<p\1>\2</p><p\3>\4</p><p\1>\5</p>', text);
 		
 		# Del empty <p> at the start/end
 		text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text);
@@ -192,7 +288,7 @@ def CleanHTML(text):
 			text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
 		
 		# Markdown
-		if PREFS[KEY.MARKDOWN] == 'always':
+		if PREFS[KEY.MARKDOWN] == 'always' and p == 0:
 			text = CleanMarkdown(text);
 		
 		# Formatting
@@ -206,7 +302,6 @@ def CleanHTML(text):
 		if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
 			text = RegexLoop(r' class="[^"]*"', r'', text);
 		
-		text = OrderedAttributs(text);
 		
 		# Headings
 		if PREFS[KEY.HEADINGS] == 'bolder':
@@ -231,27 +326,12 @@ def CleanHTML(text):
 		text = CleanStyle(text);
 		
 		
-		text = OrderedAttributs(text);
-		
 		# del attibuts for <div> with <p>
 		text = RegexLoop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text);
 		
 		text = CleanBasic(text);
 		#
 		
-	
-	return text;
-
-
-# Ordered the attributs
-def OrderedAttributs(text):
-	
-	attributs = 'align|style|class|id|href';
-	
-	text = RegexLoop(r' (?!'+attributs+r')[\w\-]+="[^"]*"', r'', text);
-	
-	for attribut in reversed(sorted(attributs.split('|'))):
-		text = RegexLoop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+attribut+r'="([^"]*)"', r'<\1 '+attribut+r'="\3" \2', text);
 	
 	return text;
 
