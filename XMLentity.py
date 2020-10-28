@@ -22,27 +22,28 @@ except:
 
 def parseXMLentity(text):
 	
-	#		" & ' < >
+	#	" & ' < >
 	regx = r'&#x(0022|0026|0027|003C|003E);';
 	while RegexSearch(regx, text):
 		m = RegexSearch(regx, text).group(1);
 		text = text.replace('&#x'+m+';', '&#'+str(int(m, base=16))+';')
 	
+	#	&#38; => &amp;
 	for c, h, d in entitysHtmlBase() + entitysHtmlQuot() + entitysHtmlApos():
 		text = text.replace(d, h);
 		#debug_print(h, d, c);
-		#&Agrave; &#192; À
+		# &amp; &#38; &
 	
-	
+	#	&Agrave; &#192; => À
 	for c, h, d in entitysHtml2() + entitysHtml3() + entitysHtml4():
 		text = text.replace(h, c).replace(d, c);
 		#debug_print(h, d, c);
-		#&Agrave; &#192; À
+		# &Agrave; &#192; À
 	
-	regx = r'&#((?!160)\d+);';
+	
+	regx = r'&#(\d+);';
 	while RegexSearch(regx, text):
 		m = RegexSearch(regx, text).group(1);
-		text = text.replace('&#'+m+';', chr(int(m)));
 		
 		if PYTHON2:
 			text = text.replace('&#'+m+';', unichr(int(m)));
