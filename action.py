@@ -61,8 +61,6 @@ class CommentCleanerAction(InterfaceAction):
 		m = self.menu;
 		m.clear();
 		
-		candidate = self.gui.library_path;
-		
 		ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
 									triggered=partial(self._clean_comment),
 									shortcut_name='Comments Cleaner')
