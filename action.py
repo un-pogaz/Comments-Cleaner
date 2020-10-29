@@ -15,12 +15,11 @@ except NameError:
 	pass # load_translations() added in calibre 1.9
 
 from functools import partial
+from datetime import datetime
 try:
 	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer, QModelIndex
 except ImportError:
 	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer
-
-from datetime import datetime
 
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
@@ -63,7 +62,6 @@ class CommentCleanerAction(InterfaceAction):
 		m.clear();
 		
 		candidate = self.gui.library_path;
-		db = LibraryDatabase (candidate);
 		
 		ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
 									triggered=partial(self._clean_comment),
@@ -76,10 +74,6 @@ class CommentCleanerAction(InterfaceAction):
 		
 		self.gui.keyboard.finalize();
 	
-	def reactivate_menus(self):
-		candidate = self.gui.library_path;
-		db = LibraryDatabase (candidate);
-	
 	def toolbar_triggered(self):
 		self._clean_comment();
 		#self.show_configuration();
@@ -87,7 +81,6 @@ class CommentCleanerAction(InterfaceAction):
 	
 	def show_configuration(self):
 		self.interface_action_base_plugin.do_user_config(self.gui);
-		self.reactivate_menus();
 		
 	def _clean_comment(self):
 		if not self.is_library_selected:
