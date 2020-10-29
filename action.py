@@ -56,7 +56,7 @@ class CommentCleanerAction(InterfaceAction):
 		self.qaction.setMenu(self.menu);
 		self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]));
 		self.qaction.triggered.connect(self.toolbar_triggered);
-
+	
 	def build_menus(self):
 		m = self.menu;
 		m.clear();
@@ -138,12 +138,12 @@ class CleanerProgressDialog(QProgressDialog):
 			debug_print('Cleaning launched for {0} book.'.format(self.book_count));
 			debug_print('Cleaning performed for {0} comments.'.format(self.books_clean));
 			debug_print('Settings: {0}\n'.format(PREFS));
-
+	
 	def close(self):
 		self.dbA = None;
 		self.books_dic = None;
 		super(CleanerProgressDialog, self).close();
-
+	
 	def _do_clean_comments(self):
 		
 		self.setValue(0);

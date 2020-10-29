@@ -124,7 +124,7 @@ def get_pixmap(icon_name):
 			pixmap = QPixmap()
 			pixmap.load(local_image_path)
 			return pixmap
-
+	
 	# As we did not find an icon elsewhere, look within our zip resources
 	if icon_name in plugin_icon_resources:
 		pixmap = QPixmap()
@@ -174,7 +174,7 @@ def create_menu_action_unique(ia, parent_menu, menu_text, image=None, tooltip=No
 					shortcut = None
 				else:
 					shortcut = _(shortcut)
-
+	
 	if shortcut_name is None:
 		shortcut_name = menu_text.replace('&','')
 	
@@ -215,7 +215,7 @@ class ImageTitleLayout(QHBoxLayout):
 		shelf_label.setFont(title_font)
 		self.addWidget(shelf_label)
 		self.insertStretch(-1)
-
+	
 	def update_title_icon(self, icon_name):
 		#debug_print ("Icon: ", icon_name)
 		pixmap = get_pixmap(icon_name)
@@ -237,18 +237,18 @@ class SizePersistedDialog(QDialog):
 		self.unique_pref_name = unique_pref_name
 		self.geom = gprefs.get(unique_pref_name, None)
 		self.finished.connect(self.dialog_closing)
-
+	
 	def resize_dialog(self):
 		if self.geom is None:
 			self.resize(self.sizeHint())
 		else:
 			self.restoreGeometry(self.geom)
-
+	
 	def dialog_closing(self, result):
 		geom = bytearray(self.saveGeometry())
 		gprefs[self.unique_pref_name] = geom
 		self.persist_custom_prefs()
-
+	
 	def persist_custom_prefs(self):
 		'''
 		Invoked when the dialog is closing. Override this function to call
@@ -256,20 +256,20 @@ class SizePersistedDialog(QDialog):
 		retrieve in your __init__() using load_custom_pref() when next opened
 		'''
 		pass
-
+	
 	def load_custom_pref(self, name, default=None):
 		return gprefs.get(self.unique_pref_name+':'+name, default)
-
+	
 	def save_custom_pref(self, name, value):
 		gprefs[self.unique_pref_name+':'+name] = value
 
 class KeyValueComboBox(QComboBox):
-
+	
 	def __init__(self, parent, values, selected_key):
 		QComboBox.__init__(self, parent)
 		self.values = values
 		self.populate_combo(selected_key)
-
+	
 	def populate_combo(self, selected_key):
 		self.clear()
 		selected_idx = idx = -1
@@ -279,7 +279,7 @@ class KeyValueComboBox(QComboBox):
 			if key == selected_key:
 				selected_idx = idx
 		self.setCurrentIndex(selected_idx)
-
+	
 	def selected_key(self):
 		for key, value in six.iteritems(self.values):
 			if value == six.text_type(self.currentText()).strip():
@@ -308,11 +308,11 @@ class KeyboardConfigDialog(SizePersistedDialog):
 		# Cause our dialog size to be restored from prefs or created on first usage
 		self.resize_dialog()
 		self.initialize()
-
+	
 	def initialize(self):
 		self.keyboard_widget.initialize(self.gui.keyboard)
 		self.keyboard_widget.highlight_group(self.group_name)
-
+	
 	def commit(self):
 		self.keyboard_widget.commit()
 		self.accept()
@@ -357,15 +357,15 @@ def CSS_CleanRules(css):
 
 
 def strtobool (val):
-    """Convert a string representation of truth to true (1) or false (0).
-    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
-    are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
-    'val' is anything else.
-    """
-    val = val.lower()
-    if val in ('y', 'yes', 't', 'true', 'on', '1'):
-        return 1
-    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
-        return 0
-    else:
-        raise ValueError("invalid truth value %r" % (val,))
+	"""Convert a string representation of truth to true (1) or false (0).
+	True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
+	are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
+	'val' is anything else.
+	"""
+	val = val.lower()
+	if val in ('y', 'yes', 't', 'true', 'on', '1'):
+		return 1
+	elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+		return 0
+	else:
+		raise ValueError("invalid truth value %r" % (val,))

@@ -204,7 +204,7 @@ class ConfigWidget(QWidget):
 		keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts);
 		layout.addWidget(keyboard_shortcuts_button);
 		layout.addStretch(1);
-
+	
 	def save_settings(self):
 		
 		PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key();
@@ -229,15 +229,15 @@ class ConfigWidget(QWidget):
 		
 		debug_print('Save settings: {0}\n'.format(PREFS));
 		
-
+	
 	def edit_shortcuts(self):
 		self.save_settings();
 		self.plugin_action.build_menus();
 		d = KeyboardConfigDialog(self.plugin_action.gui, self.plugin_action.action_spec[0]);
 		if d.exec_() == d.Accepted:
 			self.plugin_action.gui.keyboard.finalize();
-
-
+	
+	
 	def checkBox_click(self, num):
 		
 		if self.checkBoxCLEAN_ALL.checkState():
