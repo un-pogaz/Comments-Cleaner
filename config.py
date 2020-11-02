@@ -210,16 +210,16 @@ class ConfigWidget(QWidget):
 		PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key();
 		PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key();
 		PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key();
-		PREFS[KEY.DEL_ITALIC] = str(self.checkBoxDEL_ITALIC.checkState() > 0).lower()
-		PREFS[KEY.DEL_UNDER] = str(self.checkBoxDEL_UNDER.checkState() > 0).lower()
-		PREFS[KEY.DEL_STRIKE] = str(self.checkBoxDEL_STRIKE.checkState() > 0).lower()
+		PREFS[KEY.DEL_ITALIC] = str(self.checkBoxDEL_ITALIC.isChecked()).lower()
+		PREFS[KEY.DEL_UNDER] = str(self.checkBoxDEL_UNDER.isChecked()).lower()
+		PREFS[KEY.DEL_STRIKE] = str(self.checkBoxDEL_STRIKE.isChecked()).lower()
 		PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key();
 		PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key();
 		
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text());
 		
 		
-		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.checkState() > 0).lower()
+		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.isChecked()).lower()
 		
 		
 		PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key();
@@ -240,7 +240,7 @@ class ConfigWidget(QWidget):
 	
 	def checkBox_click(self, num):
 		
-		if self.checkBoxCLEAN_ALL.checkState():
+		if self.checkBoxCLEAN_ALL.isChecked():
 			self.comboBoxKEEP_URL.setEnabled(False);
 			self.comboBoxFORCE_JUSTIFY.setEnabled(False);
 			self.comboBoxFONT_WEIGHT.setEnabled(False);
