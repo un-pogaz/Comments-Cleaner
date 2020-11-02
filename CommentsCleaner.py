@@ -82,6 +82,7 @@ ATTRIBUTES = [
 	'href',
 ]
 
+# Cleannig based on Calibre 4 and above (QtWebEngine)
 def CleanBasic(text):
 	
 	text = XMLformat(text);
@@ -172,6 +173,8 @@ def CleanBasic(text):
 	text = RegexLoop(r'<(p|div|h\d|li)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+nbsp+r'</\1>', text);
 	
 	text = RegexLoop(r'><(p|div|h\d|li|ol|ul)', r'>\n<\1', text);
+	text = RegexLoop(r'<(ol|ul)(| [^>]*)>\s+<li', r'<\1\2><li', text);
+	text = RegexLoop(r'</li>\s+</(ol|ul)>', r'</li></\1>', text);
 	
 	
 	# style: del double ;
@@ -380,8 +383,8 @@ def CleanAlign(text):
 	# del align for <li>
 	text = RegexLoop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text);
 	
-	# del justify for <h1>
-	text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
+	## del justify for <h1>
+	#text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
 	
 	
 	# del text-align left (default value)
