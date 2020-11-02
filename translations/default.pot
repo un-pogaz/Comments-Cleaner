@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-11-02 19:35+0100\n"
+"POT-Creation-Date: 2020-11-02 22:53+0100\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -218,7 +218,7 @@ msgid "Markdown:"
 msgstr ""
 
 #: config.py:203
-msgid "Try to convert any Markdown strings to HTML."
+msgid "Try to convert any Markdown strings to HTML"
 msgstr ""
 
 #: config.py:205
