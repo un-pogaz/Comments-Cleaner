@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-10-28 12:02+0100\n"
+"POT-Creation-Date: 2020-11-02 19:35+0100\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,40 +18,40 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:31 action.py:40
+#: __init__.py:31 action.py:39
 msgid "Remove the scraps CSS in HTML comments"
 msgstr ""
 
-#: action.py:68
+#: action.py:64
 msgid "&Clean the selecteds Comments"
 msgstr ""
 
-#: action.py:74
+#: action.py:70
 msgid "&Customize plugin"
 msgstr ""
 
-#: action.py:94 action.py:99
+#: action.py:85 action.py:90
 msgid "No selected book"
 msgstr ""
 
-#: action.py:94 action.py:99
+#: action.py:85 action.py:90
 msgid "No book selected for cleaning comments"
 msgstr ""
 
-#: action.py:124
+#: action.py:115
 msgid "Cancel"
 msgstr ""
 
-#: action.py:127
+#: action.py:118
 msgid "Comments Cleaner Progress"
 msgstr ""
 
-#: action.py:164
+#: action.py:155
 #, python-brace-format
 msgid "Book {0} of {1}"
 msgstr ""
 
-#: action.py:198
+#: action.py:189
 #, python-brace-format
 msgid "Update the library for {0} books..."
 msgstr ""
@@ -72,155 +72,177 @@ msgstr ""
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: config.py:44
+#: config.py:47
 msgid "Keep URL"
 msgstr ""
 
-#: config.py:45
+#: config.py:48
 msgid "Delete URL"
 msgstr ""
 
-#: config.py:48
-msgid "Force the justification (ecrase \"center\" and \"right\")"
-msgstr ""
-
-#: config.py:49
-msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
-msgstr ""
-
-#: config.py:50 config.py:62 config.py:66 config.py:72 config.py:78
-#: config.py:83
-msgid "No change"
-msgstr ""
-
 #: config.py:51
-msgid "Delete all align"
-msgstr ""
-
-#: config.py:54
-msgid "Round the Weights value to the hundred"
-msgstr ""
-
-#: config.py:55
-msgid "Round to Bold (value 600)"
-msgstr ""
-
-#: config.py:56
-msgid "Do not change the Weights"
-msgstr ""
-
-#: config.py:57
-msgid "Delete Weights"
-msgstr ""
-
-#: config.py:60
-msgid "Create a empty paragraph"
-msgstr ""
-
-#: config.py:61
-msgid "Create a new paragraph"
-msgstr ""
-
-#: config.py:65
-msgid "Merge in a single empty paragraph"
-msgstr ""
-
-#: config.py:67
-msgid "Delete empty paragraph"
-msgstr ""
-
-#: config.py:70
 msgid "Converte to a paragraph"
 msgstr ""
 
-#: config.py:71
+#: config.py:52
 msgid "Converte to a paragraph but keep the bold"
 msgstr ""
 
-#: config.py:75
+#: config.py:53 config.py:64 config.py:75 config.py:81 config.py:86
+#: config.py:90
+msgid "No change"
+msgstr ""
+
+#: config.py:56
+msgid "Round the Weights value to the hundred"
+msgstr ""
+
+#: config.py:57
+msgid "Round to Bold (value 600)"
+msgstr ""
+
+#: config.py:58
+msgid "Do not change the Weights"
+msgstr ""
+
+#: config.py:59
+msgid "Delete Weights"
+msgstr ""
+
+#: config.py:62
+msgid "Force the justification (ecrase \"center\" and \"right\")"
+msgstr ""
+
+#: config.py:63
+msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
+msgstr ""
+
+#: config.py:65
+msgid "Delete all alignment"
+msgstr ""
+
+#: config.py:68
+msgid "Use the 'Justification' setting"
+msgstr ""
+
+#: config.py:69
+msgid "Delete the alignment in lists"
+msgstr ""
+
+#: config.py:72
 msgid "Delete \"id\" attribut"
 msgstr ""
 
-#: config.py:76
+#: config.py:73
 msgid "Delete \"class\" attribut"
 msgstr ""
 
-#: config.py:77
+#: config.py:74
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr ""
 
-#: config.py:81
+#: config.py:79
 msgid "Convert in all comments (not recomanded)"
 msgstr ""
 
-#: config.py:82
+#: config.py:80
 msgid "Convert only from a plain text comment"
 msgstr ""
 
-#: config.py:115
+#: config.py:84
+msgid "Create a empty paragraph"
+msgstr ""
+
+#: config.py:85
+msgid "Create a new paragraph"
+msgstr ""
+
+#: config.py:89
+msgid "Merge in a single empty paragraph"
+msgstr ""
+
+#: config.py:91
+msgid "Delete empty paragraph"
+msgstr ""
+
+#: config.py:125
 msgid "Comments Cleaner Options"
 msgstr ""
 
-#: config.py:126
+#: config.py:136
 msgid "Hyperlink:"
 msgstr ""
 
-#: config.py:130
+#: config.py:140
 msgid "Headings:"
 msgstr ""
 
-#: config.py:140
+#: config.py:150
 msgid "Remove Italic"
 msgstr ""
 
-#: config.py:144
+#: config.py:154
 msgid "Remove Underline"
 msgstr ""
 
-#: config.py:148
+#: config.py:158
 msgid "Remove Strikethrough"
 msgstr ""
 
-#: config.py:155
+#: config.py:165
 msgid "Justification:"
 msgstr ""
 
-#: config.py:159
+#: config.py:169
+msgid "List alignment:"
+msgstr ""
+
+#: config.py:173
 msgid "ID & CLASS attributs:"
 msgstr ""
 
-#: config.py:166
+#: config.py:180
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:169
+#: config.py:183
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:174
+#: config.py:188
 msgid "Remove all formatting"
 msgstr ""
 
-#: config.py:186
+#: config.py:200
 msgid "Markdown:"
 msgstr ""
 
-#: config.py:189
+#: config.py:203
 msgid "Try to convert any Markdown strings to HTML."
 msgstr ""
 
-#: config.py:191
-msgid "Multiple Line Return in a paragraph:"
+#: config.py:205
+msgid "Multiple 'Line Return' in a paragraph:"
 msgstr ""
 
-#: config.py:195
+#: config.py:209
+msgid "Convert 'Line Return' into a new paragraph"
+msgstr ""
+
+#: config.py:211
+msgid ""
+"This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
+"and before \"Multiple empty paragraph\""
+msgstr ""
+
+#: config.py:216
 msgid "Multiple empty paragraph:"
 msgstr ""
 
-#: config.py:202
+#: config.py:223
 msgid "Keyboard shortcuts..."
 msgstr ""
 
-#: config.py:203
+#: config.py:224
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""

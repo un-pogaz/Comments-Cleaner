@@ -25,30 +25,32 @@ PLUGIN_ICONS = ['images/plugin.png']
 
 class KEY:
 	KEEP_URL = 'KeepUrl';
-	FORCE_JUSTIFY = 'ForceJustify';
+	HEADINGS = 'Headings';
 	FONT_WEIGHT = 'FontWeight';
 	DEL_ITALIC = 'RemoveItalic';
 	DEL_UNDER = 'RemoveUnderline';
 	DEL_STRIKE = 'RemoveStrikethrough';
-	CSS_KEEP = 'CSStoKeep';
-	HEADINGS = 'Headings';
+	FORCE_JUSTIFY = 'ForceJustify';
+	LIST_ALIGN = 'ListAlign';
 	ID_CLASS = 'ID_Class';
-	MARKDOWN = 'Markdown';
+	CSS_KEEP = 'CSStoKeep';
 	
+	MARKDOWN = 'Markdown';
 	DOUBLE_BR = 'DoubleBR';
+	BR_TO_PARA = 'BRtoParagraph';
 	EMPTY_PARA = 'EmptyParagraph';
 	
 	FORMATTING = 'RemoveFormatting';
+
 
 KEEP_URL = OrderedDict([
 					('keep', _('Keep URL')),
 					('del', _('Delete URL'))])
 
-FORCE_JUSTIFY = OrderedDict([
-						('all', _('Force the justification (ecrase "center" and "right")')),
-						('empty', _('Justification for indeterminate text (keep "center" and "right")')),
-						('none', _('No change')),
-						('del', _('Delete all align'))])
+HEADINGS = OrderedDict([
+						('conv', _('Converte to a paragraph')),
+						('bolder', _('Converte to a paragraph but keep the bold')),
+						('none', _('No change'))])
 
 FONT_WEIGHT = OrderedDict([
 						('trunc', _('Round the Weights value to the hundred')),
@@ -56,20 +58,15 @@ FONT_WEIGHT = OrderedDict([
 						('none', _('Do not change the Weights')),
 						('del', _('Delete Weights'))])
 
-DOUBLE_BR = OrderedDict([
-						('empty', _('Create a empty paragraph')),
-						('new', _('Create a new paragraph')),
-						('none', _('No change'))])
-
-EMPTY_PARA = OrderedDict([
-						('merge', _('Merge in a single empty paragraph')),
+FORCE_JUSTIFY = OrderedDict([
+						('all', _('Force the justification (ecrase "center" and "right")')),
+						('empty', _('Justification for indeterminate text (keep "center" and "right")')),
 						('none', _('No change')),
-						('del', _('Delete empty paragraph'))])
+						('del', _('Delete all alignment'))])
 
-HEADINGS = OrderedDict([
-						('conv', _('Converte to a paragraph')),
-						('bolder', _('Converte to a paragraph but keep the bold')),
-						('none', _('No change'))])
+LIST_ALIGN = OrderedDict([
+					('keep', _('Use the \'Justification\' setting')),
+					('del', _('Delete the alignment in lists'))])
 
 ID_CLASS = OrderedDict([
 						('id', _('Delete "id" attribut')),
@@ -77,10 +74,21 @@ ID_CLASS = OrderedDict([
 						('id_class', _('Delete "id" and "class" attribut')),
 						('none', _('No change'))])
 
+
 MARKDOWN = OrderedDict([
 						('always', _('Convert in all comments (not recomanded)')),
 						('try', _('Convert only from a plain text comment')),
 						('none', _('No change'))])
+
+DOUBLE_BR = OrderedDict([
+						('empty', _('Create a empty paragraph')),
+						('new', _('Create a new paragraph')),
+						('none', _('No change'))])
+						
+EMPTY_PARA = OrderedDict([
+						('merge', _('Merge in a single empty paragraph')),
+						('none', _('No change')),
+						('del', _('Delete empty paragraph'))])
 
 
 # This is where all preferences for this plugin are stored
@@ -88,12 +96,13 @@ PREFS = JSONConfig('plugins/Comment Cleaner')
 
 # Set defaults
 PREFS.defaults[KEY.KEEP_URL] = 'keep'
-PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
+PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
 PREFS.defaults[KEY.DEL_ITALIC] = 'false'
 PREFS.defaults[KEY.DEL_UNDER] = 'false'
 PREFS.defaults[KEY.DEL_STRIKE] = 'false'
-PREFS.defaults[KEY.HEADINGS] = 'none'
+PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
+PREFS.defaults[KEY.LIST_ALIGN] = 'del'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
 PREFS.defaults[KEY.CSS_KEEP] = ''
 
@@ -101,6 +110,7 @@ PREFS.defaults[KEY.FORMATTING] = 'false'
 
 PREFS.defaults[KEY.MARKDOWN] = 'try'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
+PREFS.defaults[KEY.BR_TO_PARA] = 'false'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 class ConfigWidget(QWidget):
@@ -156,9 +166,13 @@ class ConfigWidget(QWidget):
 		self.comboBoxFORCE_JUSTIFY = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY]);
 		optionsHTML_GridLayout.addWidget(self.comboBoxFORCE_JUSTIFY, 11, 0, 1, 2);
 		
-		optionsHTML_GridLayout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 12, 0);
+		optionsHTML_GridLayout.addWidget(QLabel(_('List alignment:'), self), 12, 0);
+		self.comboBoxLIST_ALIGN = KeyValueComboBox(self, LIST_ALIGN, PREFS[KEY.LIST_ALIGN]);
+		optionsHTML_GridLayout.addWidget(self.comboBoxLIST_ALIGN, 13, 0, 1, 2);
+		
+		optionsHTML_GridLayout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 14, 0);
 		self.comboBoxID_CLASS = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS]);
-		optionsHTML_GridLayout.addWidget(self.comboBoxID_CLASS, 13, 0, 1, 2);
+		optionsHTML_GridLayout.addWidget(self.comboBoxID_CLASS, 15, 0, 1, 2);
 		
 		
 		optionsHTML_GridLayout.addWidget(QLabel(' ', self));
@@ -188,9 +202,16 @@ class ConfigWidget(QWidget):
 		optionsTEXT_GridLayout.addWidget(self.comboBoxMARKDOWN);
 		self.comboBoxMARKDOWN.setToolTip(_('Try to convert any Markdown strings to HTML.'));
 		
-		optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple Line Return in a paragraph:'), self));
+		optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), self));
 		self.comboBoxDOUBLE_BR = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR]);
 		optionsTEXT_GridLayout.addWidget(self.comboBoxDOUBLE_BR);
+		
+		self.checkBoxBR_TO_PARA = QCheckBox(_('Convert \'Line Return\' into a new paragraph'), self);
+		self.checkBoxBR_TO_PARA.stateChanged.connect(self.checkBox_click);
+		self.checkBoxBR_TO_PARA.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
+											 'and before "Multiple empty paragraph"'));
+		self.checkBoxBR_TO_PARA.setChecked(strtobool(PREFS[KEY.BR_TO_PARA]));
+		optionsTEXT_GridLayout.addWidget(self.checkBoxBR_TO_PARA);
 		
 		optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), self));
 		self.comboBoxEMPTY_PARA = KeyValueComboBox(self, EMPTY_PARA, PREFS[KEY.EMPTY_PARA]);
@@ -208,22 +229,24 @@ class ConfigWidget(QWidget):
 	def save_settings(self):
 		
 		PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key();
-		PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key();
-		PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key();
-		PREFS[KEY.DEL_ITALIC] = str(self.checkBoxDEL_ITALIC.isChecked()).lower()
-		PREFS[KEY.DEL_UNDER] = str(self.checkBoxDEL_UNDER.isChecked()).lower()
-		PREFS[KEY.DEL_STRIKE] = str(self.checkBoxDEL_STRIKE.isChecked()).lower()
 		PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key();
+		PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key();
+		PREFS[KEY.DEL_ITALIC] = str(self.checkBoxDEL_ITALIC.isChecked()).lower();
+		PREFS[KEY.DEL_UNDER] = str(self.checkBoxDEL_UNDER.isChecked()).lower();
+		PREFS[KEY.DEL_STRIKE] = str(self.checkBoxDEL_STRIKE.isChecked()).lower();
+		PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key();
+		PREFS[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key();
 		PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key();
 		
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text());
 		
 		
-		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.isChecked()).lower()
+		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.isChecked()).lower();
 		
 		
 		PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key();
 		PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key();
+		PREFS[KEY.BR_TO_PARA] = str(self.checkBoxBR_TO_PARA.isChecked()).lower();
 		PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key();
 		
 		
@@ -240,23 +263,15 @@ class ConfigWidget(QWidget):
 	
 	def checkBox_click(self, num):
 		
-		if self.checkBoxCLEAN_ALL.isChecked():
-			self.comboBoxKEEP_URL.setEnabled(False);
-			self.comboBoxFORCE_JUSTIFY.setEnabled(False);
-			self.comboBoxFONT_WEIGHT.setEnabled(False);
-			self.checkBoxDEL_ITALIC.setEnabled(False);
-			self.checkBoxDEL_UNDER.setEnabled(False);
-			self.checkBoxDEL_STRIKE.setEnabled(False);
-			self.comboBoxHEADINGS.setEnabled(False);
-			self.comboBoxID_CLASS.setEnabled(False);
-			self.lineEditCSS_KEEP.setEnabled(False);
-		else:
-			self.comboBoxKEEP_URL.setEnabled(True);
-			self.comboBoxFORCE_JUSTIFY.setEnabled(True);
-			self.comboBoxFONT_WEIGHT.setEnabled(True);
-			self.checkBoxDEL_ITALIC.setEnabled(True);
-			self.checkBoxDEL_UNDER.setEnabled(True);
-			self.checkBoxDEL_STRIKE.setEnabled(True);
-			self.comboBoxHEADINGS.setEnabled(True);
-			self.comboBoxID_CLASS.setEnabled(True);
-			self.lineEditCSS_KEEP.setEnabled(True);
+		b = not self.checkBoxCLEAN_ALL.isChecked();
+		
+		self.comboBoxKEEP_URL.setEnabled(b);
+		self.comboBoxHEADINGS.setEnabled(b);
+		self.comboBoxFONT_WEIGHT.setEnabled(b);
+		self.checkBoxDEL_ITALIC.setEnabled(b);
+		self.checkBoxDEL_UNDER.setEnabled(b);
+		self.checkBoxDEL_STRIKE.setEnabled(b);
+		self.comboBoxFORCE_JUSTIFY.setEnabled(b);
+		self.comboBoxLIST_ALIGN.setEnabled(b);
+		self.comboBoxID_CLASS.setEnabled(b);
+		self.lineEditCSS_KEEP.setEnabled(b);

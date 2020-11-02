@@ -118,7 +118,7 @@ def CleanBasic(text):
 	
 	# invalid attribut tag 
 	text = RegexLoop(r'<((?!a)\w+)(| [^>]*) href="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
-	text = RegexLoop(r'<((?!p|div|h\d)\w+)(| [^>]*) align="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
+	text = RegexLoop(r'<((?!p|div|h\d|li|ol|ul)\w+)(| [^>]*) align="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
 	
 	
 	# clean space in attribut
@@ -278,11 +278,21 @@ def CleanHTML(text):
 		text = RegexLoop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text);
 		text = RegexLoop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>',r'</div>', text);
 		
+		
+		# Markdown
+		if PREFS[KEY.MARKDOWN] == 'always' and p == 0:
+			text = CleanMarkdown(text);
+		
 		# Multiple Line Return
 		if PREFS[KEY.DOUBLE_BR] == 'new':
 			text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text);
 		elif PREFS[KEY.DOUBLE_BR] == 'empty':
 			text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text);
+		
+		# <br> to <p>
+		if strtobool(PREFS[KEY.BR_TO_PARA]):
+			text = RegexLoop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\1>\3</p>', text);
+			text = RegexLoop(r'<p(| [^>]*)></p>', r'<p\1>'+nbsp+r'</p>', text);
 		
 		# Empty paragraph
 		if PREFS[KEY.EMPTY_PARA] == 'merge':
@@ -290,9 +300,6 @@ def CleanHTML(text):
 		elif PREFS[KEY.EMPTY_PARA] == 'del':
 			text = RegexLoop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text);
 		
-		# Markdown
-		if PREFS[KEY.MARKDOWN] == 'always' and p == 0:
-			text = CleanMarkdown(text);
 		
 		# Formatting
 		if strtobool(PREFS[KEY.FORMATTING]):
@@ -336,6 +343,7 @@ def CleanHTML(text):
 		#
 		
 	
+	
 	return text;
 
 
@@ -350,7 +358,7 @@ def CleanAlign(text):
 		
 	else: # empty / all / none
 		
-		tags = 'p|div|h1|h2|h3|h4|h5|h6';
+		tags = 'p|div|li|h1|h2|h3|h4|h5|h6';
 		
 		# insert align left for all
 		for tag in tags.split('|'):
@@ -369,6 +377,11 @@ def CleanAlign(text):
 		# align valide value
 		text = RegexLoop(r' align="(?!left|justify|center|right)[^"]*"', r' align="left"', text);
 		
+		# apply cascading heritage for list
+		text = RegexLoop(r'<(ol|ul) align="left"', r'<\1', text);
+		text = RegexLoop(r'<(ol|ul) align="([^"]*)"([^>]*)>((?:(?!</\1>).)*)<li align="left"', r'<\1 align="\2"\3>\4<li align="\2"', text);
+		text = RegexLoop(r'<(ol|ul) align="([^"]*)"', r'<\1', text);
+		
 		# set align prefs
 		if PREFS[KEY.FORCE_JUSTIFY] == 'empty':
 			text = RegexLoop(r' align="left"', r' align="justify"', text);
@@ -380,8 +393,9 @@ def CleanAlign(text):
 	# del text-align
 	text = RegexLoop(r' style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' style="\1\3"', text);
 	
-	# del align for <li>
-	text = RegexLoop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text);
+	# del align for list <li>
+	if PREFS[KEY.LIST_ALIGN] == 'del':
+		text = RegexLoop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text);
 	
 	## del justify for <h1>
 	#text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
