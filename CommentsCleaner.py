@@ -167,10 +167,16 @@ def CleanBasic(text):
 	
 	# space and <br> before/after <p>
 	rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
-	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)*'+rgx+r'(\s|'+nbsp+r'|<br>)+', r'\1\2\3', text);
-	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)+'+rgx+r'(\s|'+nbsp+r'|<br>)*', r'\1\2\3', text);
+	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)*'+rgx+r'(?:\s|'+nbsp+r'|<br>)+', r'\1\2\3', text);
+	text = RegexLoop(r'(?:\s|'+nbsp+r'|<br>)+'+rgx+r'(?:\s|'+nbsp+r'|<br>)*', r'\1\2\3', text);
 	# restore empty <p>
 	text = RegexLoop(r'<(p|div|h\d|li)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+nbsp+r'</\1>', text);
+	
+	# space with inline before/after <br>
+	rgx = r'((?:</(?:em|strong|sup|sub|u|s|span|a)>)*)(<br>)((?:<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
+	text = RegexLoop(r'(?:\s|'+nbsp+r')*'+rgx+r'(?:\s|'+nbsp+r')+', r'\1\2\3', text);
+	text = RegexLoop(r'(?:\s|'+nbsp+r')+'+rgx+r'(?:\s|'+nbsp+r')*', r'\1\2\3', text);
+	
 	
 	text = RegexLoop(r'><(p|div|h\d|li|ol|ul)', r'>\n<\1', text);
 	text = RegexLoop(r'<(ol|ul)(| [^>]*)>\s+<li', r'<\1\2><li', text);
@@ -178,13 +184,13 @@ def CleanBasic(text):
 	
 	
 	# style: del double ;
-	text = RegexLoop(r' style="([^"]*);\s+;([^"]*)"', r' style="\1;\2"', text);
+	text = RegexLoop(r' style="([^"]*);\s*;([^"]*)"', r' style="\1;\2"', text);
 	# style: clean space before : ;
 	text = RegexLoop(r' style="([^"]*)\s+(;|:)([^"]*)"', r' style="\1\2\3"', text);
 	# style: clean space after : ;
 	text = RegexLoop(r' style="([^"]*(?:;|:))\s{2,}([^"]*)"', r' style="\1 \2"', text);
 	# style: insert space after : ;
-	text = RegexLoop(r' style="([^"]*(?:;|:))([^ "])', r' style="\1 \2', text);
+	text = RegexLoop(r' style="([^"]*(?:;|:))([^ ][^"]*)"', r' style="\1 \2"', text);
 	
 	# style: remove last ;
 	text = RegexLoop(r' style="([^"]*);\s*"', r' style="\1"', text);
@@ -193,8 +199,9 @@ def CleanBasic(text):
 	# remove empty attribut
 	text = RegexLoop(r' ([\w\-]+)="\s*"', r'', text);
 	
-	#strip span
-	text = RegexLoop(r'<span\s*>((?:(?!<span).)*?)</span>', r'\1', text);
+	#strip <span>
+	text = RegexLoop(r'<span\s*>(((?!<span).)*?)</span>', r'\1', text);
+	text = RegexLoop(r'<span\s*>(((?!<span).)*?(<span[^>]*>((?!</?span).)*?</span>((?!</?span).)*?)+)</span>', r'\1', text);
 	
 	# empty hyperlink
 	text = RegexLoop(r'<a\s*>(.*?)</a>', r'\1', text);
@@ -315,7 +322,7 @@ def CleanHTML(text):
 		
 		# Headings
 		if PREFS[KEY.HEADINGS] == 'bolder':
-			text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3;font-weight: bold;"\4>', text);
+			text = RegexLoop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text);
 			text = RegexLoop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text);
 		if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
 			text = RegexLoop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text);
@@ -341,7 +348,6 @@ def CleanHTML(text):
 		
 		text = CleanBasic(text);
 		#
-		
 	
 	
 	return text;
@@ -375,6 +381,7 @@ def CleanAlign(text):
 		text = RegexLoop(r' align="([^"]*)\s+"', r' align="\1"', text);
 		
 		# align valide value
+		text = RegexLoop(r' align="justify-all"', r' align="justify"', text);
 		text = RegexLoop(r' align="(?!left|justify|center|right)[^"]*"', r' align="left"', text);
 		
 		# apply cascading heritage for list
@@ -391,14 +398,14 @@ def CleanAlign(text):
 		
 	
 	# del text-align
-	text = RegexLoop(r' style="([^"]*) text-align:\s*([^;]*)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) text-align:([^;]*);([^"]*)"', r' style="\1\3"', text);
 	
 	# del align for list <li>
 	if PREFS[KEY.LIST_ALIGN] == 'del':
 		text = RegexLoop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text);
 	
-	## del justify for <h1>
-	#text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
+	# del justify for <h1>
+	text = RegexLoop(r'<(h\d) align="justify"', r'<\1', text);
 	
 	
 	# del text-align left (default value)
@@ -418,59 +425,59 @@ def CleanStyle(text):
 	rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ');
 	
 	for rule in rule_tbl:
-		text = RegexLoop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text);
+		text = RegexLoop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text);
 	
 	text = RegexLoop(r' x-style="([^"]*)" style="[^"]*"', r' style="\1"', text);
 	text = RegexLoop(r' x-style="[^"]*"', r'', text);
 	
 	
 	# font-weight
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(normal|lighter|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(bold|bolder)\s*;([^"]*)"', r' style="\1font-weight: 600\3"', text);
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){4,}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
-	text = RegexLoop(r' style="([^"]*) font-weight:\s*(\d){1,2}(?:\.\d+)?\s*;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight: (?!bold|bolder|\d+)[^;]*;([^"]*)"', r' style="\1\2"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1font-weight: 600\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight: (\d){4,}(?:\.\d+)?;([^"]*)"', r' style="\1font-weight: 900;\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-weight: (\d){1,2}(?:\.\d+)?;([^"]*)"', r' style="\1font-weight: 100;\3"', text);
 	
 	if PREFS[KEY.FONT_WEIGHT] == 'trunc' or PREFS[KEY.FONT_WEIGHT] == 'bold':
 		
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*(?P<name>\d\d)0(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text);
-		regx = r' style="([^"]*) font-weight:\s*(?P<name>\d\d)[1-9](?:\.\d+)?\s*;([^"]*)"';
+		text = RegexLoop(r' style="([^"]*) font-weight: (?P<name>\d\d)0(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text);
+		regx = r' style="([^"]*) font-weight: (?P<name>\d\d[1-9])(?:\.\d+)?;([^"]*)"';
 		while RegexSearch(regx, text):
 			
 			m = RegexSearch(regx, text);
 			d = RegexSearch(regx, text).group('name');
-			rpl = RegexLoop(regx, r' style="\1 font-weight: '+str(round(int(d),-1))+'0;'+m.group(3)+'"', m.group(0));
+			rpl = RegexLoop(regx, r' style="\1 font-weight: '+str(round(int(d),-2))+r';\3"', m.group(0));
 			text = text.replace(m.group(0), rpl);
 	
 	if PREFS[KEY.FONT_WEIGHT] == 'bold':
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*[5-9]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*xxx\s*;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*[1-4]\d\d(?:\.\d+)?\s*;([^"]*)"', r' style="\1\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight: [5-9]\d\d(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 font-weight: 600;\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight: [1-4]\d\d(?:\.\d+)?;([^"]*)"', r' style="\1\2"', text);
 		
 	elif PREFS[KEY.FONT_WEIGHT] == 'del':
 		text = RegexLoop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text);
-		text = RegexLoop(r' style="([^"]*) font-weight:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-weight:[^;]*;([^"]*)"', r' style="\1\2"', text);
 	
 	# font-style
-	text = RegexLoop(r' style="([^"]*) font-style:\s*(normal|inherit|initial|unset)\s*;([^"]*)"', r' style="\1\3"', text);
+	text = RegexLoop(r' style="([^"]*) font-style: (?!oblique|italic)[^;]*;([^"]*)"', r' style="\1\2"', text);
 	if strtobool(PREFS[KEY.DEL_ITALIC]):
 		text = RegexLoop(r'<(/?)em(| [^>]*)>', r'<\1span\2>', text);
-		text = RegexLoop(r' style="([^"]*) font-style:\s*[^;]*\s*;([^"]*)"', r' style="\1\2"', text);
+		text = RegexLoop(r' style="([^"]*) font-style:[^;]*;([^"]*)"', r' style="\1\2"', text);
 	else:
-		text = RegexLoop(r' style="([^"]*) font-style:\s*(oblique(?:\s+\d+deg)?)\s*;([^"]*)"', r' style="\1 font-style: italic;\3"', text);
+		text = RegexLoop(r' style="([^"]*) font-style: (oblique(?:\s+\d+deg)?);([^"]*)"', r' style="\1 font-style: italic;\3"', text);
 	
 	
 	# text-decoration
-	text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)(?:none|blink|overline|inherit|initial|unset)([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
+	text = RegexLoop(r' style="([^"]* text-decoration:[^;]*) (?:none|blink|overline|inherit|initial|unset)([^;]*;[^"]*)"', r' style="\1\2"', text);
 	
 	if strtobool(PREFS[KEY.DEL_UNDER]):
 		text = RegexLoop(r'<(/?)u(| [^>]*)>', r'<\1span\2>', text);
-		text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)underline([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
+		text = RegexLoop(r' style="([^"]* text-decoration:[^;]*) underline([^;]*;[^"]*)"', r' style="\1\2"', text);
 	if strtobool(PREFS[KEY.DEL_STRIKE]):
 		text = RegexLoop(r'<(/?)s(| [^>]*)>', r'<\1span\2>', text);
-		text = RegexLoop(r' style="([^"]* text-decoration:\s*[^;]*)line-through([^;]*\s*;[^"]*)"', r' style="\1\2"', text);
+		text = RegexLoop(r' style="([^"]* text-decoration:[^;]*) line-through([^;]*;[^"]*)"', r' style="\1\2"', text);
 	
-	text = RegexLoop(r'<(p|h\d)(| [^>]*)( style="[^"]* text-decoration:\s*[^;]*)underline([^;]*\s*;[^"]*"[^>]*)>(.*?)</\1>',    r'<\1\2\3\4><u>\5</u></\1>', text);
-	text = RegexLoop(r'<(p|h\d)(| [^>]*)( style="[^"]* text-decoration:\s*[^;]*)line-through([^;]*\s*;[^"]*"[^>]*)>(.*?)</\1>', r'<\1\2\3\4><s>\5</s></\1>', text);
+	text = RegexLoop(r'<(p|h\d)(| [^>]*)( style="[^"]* text-decoration:[^;]*) underline([^;]*;[^"]*"[^>]*)>(.*?)</\1>',    r'<\1\2\3\4><u>\5</u></\1>', text);
+	text = RegexLoop(r'<(p|h\d)(| [^>]*)( style="[^"]* text-decoration:[^;]*) line-through([^;]*;[^"]*"[^>]*)>(.*?)</\1>', r'<\1\2\3\4><s>\5</s></\1>', text);
 	
 	text = RegexLoop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text);
 	
@@ -496,10 +503,10 @@ def CleanMarkdown(text): # key word: TRY!
 	# heading
 	for h in range(1, 6):
 		h = str(h);
-		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text);
-		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s*(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text);
-		text = RegexLoop(         r'(<p>)#{'+h+r'}\s*(.*?)(<br>|</p><p>)',     r'<h'+h+r'>\2</h'+h+r'><p>', text);
-		text = RegexLoop(         r'(<p>)#{'+h+r'}\s*(.*?)(</p>)'        ,     r'<h'+h+r'>\2</h'+h+r'>',    text);
+		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s+(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text);
+		text = RegexLoop(r'(<br>|</p><p>)#{'+h+r'}\s+(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text);
+		text = RegexLoop(         r'(<p>)#{'+h+r'}\s+(.*?)(<br>|</p><p>)',     r'<h'+h+r'>\2</h'+h+r'><p>', text);
+		text = RegexLoop(         r'(<p>)#{'+h+r'}\s+(.*?)(</p>)'        ,     r'<h'+h+r'>\2</h'+h+r'>',    text);
 	
 	
 	# u liste
@@ -517,9 +524,9 @@ def CleanMarkdown(text): # key word: TRY!
 	text = RegexLoop(r'</li></ol><ol><li>', r'</li><li>', text);
 	
 	# <hr>
-	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*){2,}(<br>|</p><p>)', r'</p><hr><p>', text);
-	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*){2,}(</p>)'        , r'</p><hr>'   , text);
-	text = RegexLoop(         r'(<p>)(?:-|\*){2,}(<br>|</p><p>)', r'<hr><p>'    , text);
+	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*|_){3,}(<br>|</p><p>)', r'</p><hr><p>', text);
+	text = RegexLoop(r'(<br>|</p><p>)(?:-|\*|_){3,}(</p>)'        , r'</p><hr>'   , text);
+	text = RegexLoop(         r'(<p>)(?:-|\*|_){3,}(<br>|</p><p>)', r'<hr><p>'    , text);
 	
 	# bold
 	text = RegexLoop(r'([^\\])((?:_|\*){2})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<strong>\3</strong>', text);
