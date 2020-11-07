@@ -9,7 +9,7 @@ __docformat__ = 'restructuredtext en'
 
 import sys, os
 
-from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop
+from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex
 
 PYTHON2 = True;
 try:
@@ -24,8 +24,8 @@ def parseXMLentity(text):
 	
 	#	" & ' < >
 	regx = r'&#x(0022|0026|0027|003C|003E);';
-	while RegexSearch(regx, text):
-		m = RegexSearch(regx, text).group(1);
+	while regex.search(regx, text):
+		m = regex.search(regx, text).group(1);
 		text = text.replace('&#x'+m+';', '&#'+str(int(m, base=16))+';')
 	
 	#	&#38; => &amp;
@@ -42,8 +42,8 @@ def parseXMLentity(text):
 	
 	
 	regx = r'&#(\d+);';
-	while RegexSearch(regx, text):
-		m = RegexSearch(regx, text).group(1);
+	while regex.search(regx, text):
+		m = regex.search(regx, text).group(1);
 		
 		if PYTHON2:
 			text = text.replace('&#'+m+';', unichr(int(m)));
@@ -52,18 +52,18 @@ def parseXMLentity(text):
 		
 	
 	regx = r'&#x([0-9a-fA-F]+);';
-	while RegexSearch(regx, text):
-		m = RegexSearch(regx, text).group(1);
+	while regex.search(regx, text):
+		m = regex.search(regx, text).group(1);
 		
 		if PYTHON2:
 			text = text.replace('&#x'+m+';', unichr(int(m, base=16)));
 		else:
 			text = text.replace('&#x'+m+';', chr(int(m, base=16)));
 	
-	text = RegexLoop(r'(>[^<>]*)&quot;([^<>]*<)', r'\1"\2',text);
-	text = RegexLoop(r'(>[^<>]*)&apos;([^<>]*<)', r"\1'\2",text);
+	text = regex.loop(r'(>[^<>]*)&quot;([^<>]*<)', r'\1"\2',text);
+	text = regex.loop(r'(>[^<>]*)&apos;([^<>]*<)', r"\1'\2",text);
 	
-	text = RegexLoop(r'(<[^<>]*="[^"]*)&apos;([^"]*"[^<>]*>)', r"\1'\2",text);
+	text = regex.loop(r'(<[^<>]*="[^"]*)&apos;([^"]*"[^<>]*>)', r"\1'\2",text);
 	
 	return text;
 

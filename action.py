@@ -28,7 +28,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.library import current_library_name
 
 from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS, PREFS
-from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, debug_text, RegexSimple, RegexSearch, RegexLoop
+from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print, debug_text
 
 from calibre_plugins.comments_cleaner.CommentsCleaner import CleanHTML
 

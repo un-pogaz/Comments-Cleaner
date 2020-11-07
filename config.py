@@ -18,7 +18,7 @@ from collections import OrderedDict
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 from calibre.utils.config import JSONConfig
 
-from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, RegexSimple, RegexSearch, RegexLoop, CSS_CleanRules, strtobool
+from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
 
 
 PLUGIN_ICONS = ['images/plugin.png']
@@ -98,19 +98,19 @@ PREFS = JSONConfig('plugins/Comment Cleaner')
 PREFS.defaults[KEY.KEEP_URL] = 'keep'
 PREFS.defaults[KEY.HEADINGS] = 'none'
 PREFS.defaults[KEY.FONT_WEIGHT] = 'bold'
-PREFS.defaults[KEY.DEL_ITALIC] = 'false'
-PREFS.defaults[KEY.DEL_UNDER] = 'false'
-PREFS.defaults[KEY.DEL_STRIKE] = 'false'
+PREFS.defaults[KEY.DEL_ITALIC] = False
+PREFS.defaults[KEY.DEL_UNDER] = False
+PREFS.defaults[KEY.DEL_STRIKE] = False
 PREFS.defaults[KEY.FORCE_JUSTIFY] = 'empty'
 PREFS.defaults[KEY.LIST_ALIGN] = 'del'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
 PREFS.defaults[KEY.CSS_KEEP] = ''
 
-PREFS.defaults[KEY.FORMATTING] = 'false'
+PREFS.defaults[KEY.FORMATTING] = False
 
 PREFS.defaults[KEY.MARKDOWN] = 'try'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
-PREFS.defaults[KEY.BR_TO_PARA] = 'false'
+PREFS.defaults[KEY.BR_TO_PARA] = False
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 class ConfigWidget(QWidget):
@@ -148,15 +148,15 @@ class ConfigWidget(QWidget):
 		optionsHTML_GridLayout.addWidget(self.comboBoxFONT_WEIGHT, 5, 0);
 		
 		self.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), self);
-		self.checkBoxDEL_ITALIC.setChecked(strtobool(PREFS[KEY.DEL_ITALIC]));
+		self.checkBoxDEL_ITALIC.setChecked(PREFS[KEY.DEL_ITALIC]);
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_ITALIC, 5, 1);
 		
 		self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), self);
-		self.checkBoxDEL_UNDER.setChecked(strtobool(PREFS[KEY.DEL_UNDER]));
+		self.checkBoxDEL_UNDER.setChecked(PREFS[KEY.DEL_UNDER]);
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_UNDER, 6, 0);
 		
 		self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), self);
-		self.checkBoxDEL_STRIKE.setChecked(strtobool(PREFS[KEY.DEL_STRIKE]));
+		self.checkBoxDEL_STRIKE.setChecked(PREFS[KEY.DEL_STRIKE]);
 		optionsHTML_GridLayout.addWidget(self.checkBoxDEL_STRIKE, 6, 1);
 		
 		optionsHTML_GridLayout.addWidget(QLabel(' ', self), 9, 0);
@@ -187,7 +187,7 @@ class ConfigWidget(QWidget):
 		
 		self.checkBoxCLEAN_ALL = QCheckBox(_('Remove all formatting'), self);
 		self.checkBoxCLEAN_ALL.stateChanged.connect(self.checkBox_click);
-		self.checkBoxCLEAN_ALL.setChecked(strtobool(PREFS[KEY.FORMATTING]));
+		self.checkBoxCLEAN_ALL.setChecked(PREFS[KEY.FORMATTING]);
 		layout.addWidget(self.checkBoxCLEAN_ALL);
 		
 		
@@ -210,7 +210,7 @@ class ConfigWidget(QWidget):
 		self.checkBoxBR_TO_PARA.stateChanged.connect(self.checkBox_click);
 		self.checkBoxBR_TO_PARA.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
 											 'and before "Multiple empty paragraph"'));
-		self.checkBoxBR_TO_PARA.setChecked(strtobool(PREFS[KEY.BR_TO_PARA]));
+		self.checkBoxBR_TO_PARA.setChecked(PREFS[KEY.BR_TO_PARA]);
 		optionsTEXT_GridLayout.addWidget(self.checkBoxBR_TO_PARA);
 		
 		optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), self));
@@ -231,9 +231,9 @@ class ConfigWidget(QWidget):
 		PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key();
 		PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key();
 		PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key();
-		PREFS[KEY.DEL_ITALIC] = str(self.checkBoxDEL_ITALIC.isChecked()).lower();
-		PREFS[KEY.DEL_UNDER] = str(self.checkBoxDEL_UNDER.isChecked()).lower();
-		PREFS[KEY.DEL_STRIKE] = str(self.checkBoxDEL_STRIKE.isChecked()).lower();
+		PREFS[KEY.DEL_ITALIC] = self.checkBoxDEL_ITALIC.isChecked();
+		PREFS[KEY.DEL_UNDER] = self.checkBoxDEL_UNDER.isChecked();
+		PREFS[KEY.DEL_STRIKE] = self.checkBoxDEL_STRIKE.isChecked();
 		PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key();
 		PREFS[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key();
 		PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key();
@@ -241,12 +241,12 @@ class ConfigWidget(QWidget):
 		PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text());
 		
 		
-		PREFS[KEY.FORMATTING] = str(self.checkBoxCLEAN_ALL.isChecked()).lower();
+		PREFS[KEY.FORMATTING] = self.checkBoxCLEAN_ALL.isChecked();
 		
 		
 		PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key();
 		PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key();
-		PREFS[KEY.BR_TO_PARA] = str(self.checkBoxBR_TO_PARA.isChecked()).lower();
+		PREFS[KEY.BR_TO_PARA] = self.checkBoxBR_TO_PARA.isChecked();
 		PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key();
 		
 		

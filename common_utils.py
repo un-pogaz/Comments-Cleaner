@@ -318,35 +318,61 @@ class KeyboardConfigDialog(SizePersistedDialog):
 		self.accept()
 
 
-# Simple Regex 
-
-reFlag = re.MULTILINE + re.DOTALL;
-
-try:
-	reFlag = re.ASCII + re.MULTILINE + re.DOTALL;
-except :
-	reFlag = re.MULTILINE + re.DOTALL;
-	pass; # calibre 5 // re.ASCII for Python3 only
-
-
-def RegexSimple(pattern, repl, string):
-	return re.sub(pattern, repl, string, 0, reFlag);
-
-def RegexSearch(pattern, string):
-	return re.search(pattern, string, reFlag);
-
-def RegexLoop(pattern, repl, string):
+# Simple Regex
+class regex():
 	
-	while RegexSearch(pattern, string):
-		string = RegexSimple(pattern, repl, string);
+	# import the Python regex flag
+	locals().update(re.RegexFlag.__members__);
 	
-	return string;
+	flag = MULTILINE + DOTALL;
+	
+	try:
+		flag = ASCII + MULTILINE + re.DOTALL;
+	except :
+		flag = MULTILINE + DOTALL;
+		pass; # calibre 5 // re.ASCII for Python3 only
+	
+	
+	def match(pattern, string, f=flag):
+		return re.fullmatch(pattern, string, f);
+	
+	def search(pattern, string, f=flag):
+		return re.search(pattern, string, f);
+	
+	def searchall(pattern, string, f=flag):
+		return re.finditer(pattern, string, f);
+	
+	def split(pattern, string, maxsplit=0, f=flag):
+		return re.split(pattern, string, maxsplit, f);
+	
+	def simple(pattern, repl, string, f=flag):
+		return re.sub(pattern, repl, string, 0, f);
+	
+	def loop(pattern, repl, string, f=flag):
+		i = 0;
+		while regex.search(pattern, string, f):
+			if i > 1000:
+				raise regexException('the pattern and substitution string caused an infinite loop', pattern, repl);
+			string = regex.simple(pattern, repl, string, f);
+			i+=1;
+			
+		return string;
+
+class regexException(BaseException):
+	def __init__(self, msg, pattern=None, repl=None):
+		self.pattern = pattern;
+		self.repl = repl;
+		self.msg = msg;
+	
+	def __str__(self):
+		return self.msg;
+
 
 def CSS_CleanRules(css):
 	#remove space and invalid character
-	css = RegexLoop(r'[.*!()?+<>\\]', r'', css.lower());
-	css = RegexLoop(r'(,|;|:|\n|\r|\s{2,})', r' ', css);
-	css = RegexSimple(r'^\s*(.*?)\s*$', r'\1', css); 
+	css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower());
+	css = regex.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css);
+	css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css); 
 	# split to table and remove duplicate
 	css = list(dict.fromkeys(css.split(' ')));
 	# sort
@@ -354,18 +380,3 @@ def CSS_CleanRules(css):
 	# join in a string
 	css = ' '.join(css);
 	return css;
-
-
-def strtobool (val):
-	"""Convert a string representation of truth to true (1) or false (0).
-	True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
-	are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
-	'val' is anything else.
-	"""
-	val = val.lower()
-	if val in ('y', 'yes', 't', 'true', 'on', '1'):
-		return 1
-	elif val in ('n', 'no', 'f', 'false', 'off', '0'):
-		return 0
-	else:
-		raise ValueError("invalid truth value %r" % (val,))
