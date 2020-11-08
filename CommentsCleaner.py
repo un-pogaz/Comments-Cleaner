@@ -364,8 +364,6 @@ def CleanAlign(text):
 		
 	else: # empty / all / none
 		
-		tags = 'p|div|li|h1|h2|h3|h4|h5|h6';
-		
 		# insert align left for all
 		text = regex.simple(r'<(p|div|li|h1|h2|h3|h4|h5|h6)', r'<\1 align="left"', text);
 		
