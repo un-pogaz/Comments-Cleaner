@@ -17,9 +17,9 @@ except NameError:
 from functools import partial
 from datetime import datetime
 try:
-	from PyQt5.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer, QModelIndex
+	from PyQt5.Qt import QToolButton, QMenu, QProgressDialog, QTimer
 except ImportError:
-	from PyQt4.Qt import Qt, QToolButton, QMenu, QProgressDialog, QTimer
+	from PyQt4.Qt import QToolButton, QMenu, QProgressDialog, QTimer
 
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
@@ -62,13 +62,15 @@ class CommentCleanerAction(InterfaceAction):
 		m.clear();
 		
 		ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
-									triggered=partial(self._clean_comment),
-									shortcut_name='Comments Cleaner')
-		self.menu_actions.append (ac);
+											 triggered=partial(self._clean_comment),
+											 shortcut_name='Comments Cleaner')
+		self.menu_actions.append(ac);
 		
 		self.menu.addSeparator();
-		ac = create_menu_action_unique(self, m, _('&Customize plugin')+'...', 'config.png', shortcut=False, triggered=self.show_configuration);
-		self.menu_actions.append (ac);
+		ac = create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
+											 triggered=self.show_configuration,
+											 shortcut=False);
+		self.menu_actions.append(ac);
 		
 		self.gui.keyboard.finalize();
 	

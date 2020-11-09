@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-11-07 12:50+0100\n"
+"POT-Creation-Date: 2020-11-09 09:17+0100\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -27,31 +27,31 @@ msgid "&Clean the selecteds Comments"
 msgstr ""
 
 #: action.py:70
-msgid "&Customize plugin"
+msgid "&Customize plugin..."
 msgstr ""
 
-#: action.py:85 action.py:90
+#: action.py:87 action.py:92
 msgid "No selected book"
 msgstr ""
 
-#: action.py:85 action.py:90
+#: action.py:87 action.py:92
 msgid "No book selected for cleaning comments"
 msgstr ""
 
-#: action.py:115
+#: action.py:117
 msgid "Cancel"
 msgstr ""
 
-#: action.py:118
+#: action.py:120
 msgid "Comments Cleaner Progress"
 msgstr ""
 
-#: action.py:155
+#: action.py:157
 #, python-brace-format
 msgid "Book {0} of {1}"
 msgstr ""
 
-#: action.py:189
+#: action.py:191
 #, python-brace-format
 msgid "Update the library for {0} books..."
 msgstr ""

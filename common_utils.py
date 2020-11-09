@@ -153,8 +153,8 @@ def get_library_uuid(db):
 	return library_uuid
 
 def create_menu_action_unique(ia, parent_menu, menu_text, image=None, tooltip=None,
-					   shortcut=None, triggered=None, is_checked=None, shortcut_name=None,
-					   unique_name=None, favourites_menu_unique_name=None,submenu=None,enabled=True):
+							  shortcut=None, shortcut_name=None, triggered=None, is_checked=None,
+							  unique_name=None, favourites_menu_unique_name=None,submenu=None, enabled=True):
 	'''
 	Create a menu action with the specified criteria and action, using the new
 	InterfaceAction.create_menu_action() function which ensures that regardless of
@@ -191,12 +191,12 @@ def create_menu_action_unique(ia, parent_menu, menu_text, image=None, tooltip=No
 			ac.setChecked(True)
 			
 	if submenu:
-		ac.setMenu (submenu)
+		ac.setMenu(submenu)
 		
-	if (not enabled):
-		ac.setEnabled (False)
+	if not enabled:
+		ac.setEnabled(False)
 	else:
-		ac.setEnabled (True)
+		ac.setEnabled(True)
 	return ac
 
 class ImageTitleLayout(QHBoxLayout):
@@ -217,7 +217,7 @@ class ImageTitleLayout(QHBoxLayout):
 		self.insertStretch(-1)
 	
 	def update_title_icon(self, icon_name):
-		#debug_print ("Icon: ", icon_name)
+		#debug_print("Icon: ", icon_name)
 		pixmap = get_pixmap(icon_name)
 		if pixmap is None:
 			error_dialog(self.parent(), _('Restart required'),
@@ -331,6 +331,20 @@ class regex():
 	except :
 		flag = MULTILINE + DOTALL;
 		pass; # calibre 5 // re.ASCII for Python3 only
+	
+		#	re.A
+		#	re.ASCII
+		#	re.DEBUG
+		#	re.I
+		#	re.IGNORECASE
+		#	re.L
+		#	re.LOCALE
+		#	re.M
+		#	re.MULTILINE
+		#	re.S
+		#	re.DOTALL
+		#	re.X
+		#	re.VERBOSE
 	
 	
 	def match(pattern, string, f=flag):
