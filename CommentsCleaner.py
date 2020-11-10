@@ -13,7 +13,8 @@ from calibre_plugins.comments_cleaner.config import KEY, PREFS
 from calibre_plugins.comments_cleaner.XMLentity import parseXMLentity
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex, CSS_CleanRules
 
-nbsp = '\u00A0'
+regex = regex();
+nbsp = u'\u00A0';
 
 # Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
 TAGS = [
@@ -120,11 +121,9 @@ def CleanBasic(text):
 	text = regex.loop(r'<((?!a)\w+)(| [^>]*) href="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
 	text = regex.loop(r'<((?!p|div|h\d|li|ol|ul)\w+)(| [^>]*) align="[^"]*"(| [^>]*)>', r'<\1\2\3>', text);
 	
-	
 	# clean space in attribut
 	text = regex.loop(r' ([\w\-]+)="\s+([^"]*)"', r' \1="\2"', text);
 	text = regex.loop(r' ([\w\-]+)="([^"]*)\s+"', r' \1="\2"', text);
-	
 	
 	# management of <br>
 	text = regex.loop(r'<(b|h)r[^>]+>', r'<\1r>', text);
@@ -156,14 +155,12 @@ def CleanBasic(text):
 	text = regex.loop(r'\s+((?:<(em|strong|sup|sub|u|s|span|a)(| [^>]*)>)+)\s+', r' \1', text);
 	text = regex.loop(r'\s+((?:</(em|strong|sup|sub|u|s|span|a)>)+)\s+', r'\1 ', text);
 	
-	
 	#empty block
 	text = regex.loop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)>\s*</\1>', r'', text);
 	text = regex.loop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)/>', r'', text);
 	
-	
 	# double space and tab in <p>
-	text = regex.loop(r'(<(p|h\d)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n| {2,})', r'\1 ', text);
+	text = regex.loop(r'(<(p|h\d)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n|\s{2,})', r'\1 ', text);
 	
 	# space and <br> before/after <p>
 	rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
@@ -177,7 +174,7 @@ def CleanBasic(text):
 	text = regex.loop(r'(?:\s|'+nbsp+r')*'+rgx+r'(?:\s|'+nbsp+r')+', r'\1\2\3', text);
 	text = regex.loop(r'(?:\s|'+nbsp+r')+'+rgx+r'(?:\s|'+nbsp+r')*', r'\1\2\3', text);
 	
-	
+	# space line return for lists
 	text = regex.loop(r'><(p|div|h\d|li|ol|ul)', r'>\n<\1', text);
 	text = regex.loop(r'<(ol|ul)(| [^>]*)>\s+<li', r'<\1\2><li', text);
 	text = regex.loop(r'</li>\s+</(ol|ul)>', r'</li></\1>', text);
@@ -348,7 +345,6 @@ def CleanHTML(text):
 		
 		text = CleanBasic(text);
 		#
-	
 	
 	return text;
 

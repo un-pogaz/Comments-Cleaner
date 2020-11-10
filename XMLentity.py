@@ -11,13 +11,14 @@ import sys, os
 
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex
 
+regex = regex();
 PYTHON2 = True;
 try:
 	u = unichr(160);
 	PYTHON2 = True;
 except:
 	PYTHON2 = False;
-	pass
+	pass;
 
 
 def parseXMLentity(text):

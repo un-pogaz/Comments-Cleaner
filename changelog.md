@@ -1,7 +1,7 @@
 ### version 1.3
 Improvements of mass edit:
 - Add a progres bar window and possibility to cancel the current operation
-- *(internal)* Don't update, in the Database, the unchanged comments
+- *(internal)* Don't update the unchanged comments in the Database
 
 Add new options for the cleaning:
 - Round the Weights value instead of truncated
