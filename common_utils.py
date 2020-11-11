@@ -73,7 +73,7 @@ def debug_print(*args):
         #prints('DEBUG CommentsCleaner: %6.1f'%(time.time()-BASE_TIME), *args)
 
 def debug_text(pre, text):
-    debug_print(pre+':::\n'+text+'\n');
+    debug_print(pre+':::\n'+text+'\n')
 
 def set_plugin_icon_resources(name, resources):
     '''
@@ -318,76 +318,76 @@ class KeyboardConfigDialog(SizePersistedDialog):
         self.accept()
 
 
-import re;
+import re
 # Simple Regex
 class regex():
     
     def __init__(self, flag=None):
         
         #set the default flag
-        self.flag = flag;
+        self.flag = flag
         if self.flag == None:
             try:
-                self.flag = re.ASCII + re.MULTILINE + re.DOTALL;
+                self.flag = re.ASCII + re.MULTILINE + re.DOTALL
             except :
-                self.flag = re.MULTILINE + re.DOTALL;
+                self.flag = re.MULTILINE + re.DOTALL
                 pass; # calibre 5 // re.ASCII for Python3 only
             
     
     def match(self, pattern, string, flag=None):
-        if flag == None: flag = self.flag;
-        return re.fullmatch(pattern, string, flag);
+        if flag == None: flag = self.flag
+        return re.fullmatch(pattern, string, flag)
     
     def search(self, pattern, string, flag=None):
-        if flag == None: flag = self.flag;
-        return re.search(pattern, string, flag);
+        if flag == None: flag = self.flag
+        return re.search(pattern, string, flag)
     
     def searchall(self, pattern, string, flag=None):
-        if flag == None: flag = self.flag;
+        if flag == None: flag = self.flag
         if self.search(pattern, string, flag):
-            return re.finditer(pattern, string, flag);
+            return re.finditer(pattern, string, flag)
         else:
-            return None;
+            return None
     
     def split(self, pattern, string, maxsplit=0, flag=None):
-        if flag == None: flag = self.flag;
-        return re.split(pattern, string, maxsplit, flag);
+        if flag == None: flag = self.flag
+        return re.split(pattern, string, maxsplit, flag)
     
     def simple(self, pattern, repl, string, flag=None):
-        if flag == None: flag = self.flag;
-        return re.sub(pattern, repl, string, 0, flag);
+        if flag == None: flag = self.flag
+        return re.sub(pattern, repl, string, 0, flag)
     
     def loop(self, pattern, repl, string, flag=None):
-        if flag == None: flag = self.flag;
-        i = 0;
+        if flag == None: flag = self.flag
+        i = 0
         while self.search(pattern, string, flag):
             if i > 1000:
-                raise regexException('the pattern and substitution string caused an infinite loop', pattern, repl);
-            string = self.simple(pattern, repl, string, flag);
-            i+=1;
+                raise regexException('the pattern and substitution string caused an infinite loop', pattern, repl)
+            string = self.simple(pattern, repl, string, flag)
+            i+=1
             
-        return string;
+        return string
 
 class regexException(BaseException):
     def __init__(self, msg, pattern=None, repl=None):
-        self.pattern = pattern;
-        self.repl = repl;
-        self.msg = msg;
+        self.pattern = pattern
+        self.repl = repl
+        self.msg = msg
     
     def __str__(self):
-        return self.msg;
+        return self.msg
 
 
 def CSS_CleanRules(css):
     #remove space and invalid character
-    r = regex();
-    css = r.loop(r'[.*!()?+<>\\]', r'', css.lower());
-    css = r.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css);
+    r = regex()
+    css = r.loop(r'[.*!()?+<>\\]', r'', css.lower())
+    css = r.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css)
     css = r.simple(r'^\s*(.*?)\s*$', r'\1', css); 
     # split to table and remove duplicate
-    css = list(dict.fromkeys(css.split(' ')));
+    css = list(dict.fromkeys(css.split(' ')))
     # sort
-    css = sorted(css);
+    css = sorted(css)
     # join in a string
-    css = ' '.join(css);
-    return css;
+    css = ' '.join(css)
+    return css

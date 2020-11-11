@@ -11,71 +11,71 @@ import sys, os
 
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex
 
-regex = regex();
-PYTHON2 = True;
+regex = regex()
+PYTHON2 = True
 try:
-    u = unichr(160);
-    PYTHON2 = True;
+    u = unichr(160)
+    PYTHON2 = True
 except:
-    PYTHON2 = False;
-    pass;
+    PYTHON2 = False
+    pass
 
 
 def parseXMLentity(text):
     
     #    " & ' < >
-    regx = r'&#x(0022|0026|0027|003C|003E);';
+    regx = r'&#x(0022|0026|0027|003C|003E);'
     while regex.search(regx, text):
-        m = regex.search(regx, text).group(1);
+        m = regex.search(regx, text).group(1)
         text = text.replace('&#x'+m+';', '&#'+str(int(m, base=16))+';')
     
-    #    &#38; => &amp;
+    #    &#38; => &amp
     for c, h, d in entitysHtmlBase() + entitysHtmlQuot() + entitysHtmlApos():
-        text = text.replace(d, h);
-        #debug_print(h, d, c);
+        text = text.replace(d, h)
+        #debug_print(h, d, c)
         # &amp; &#38; &
     
     #    &Agrave; &#192; => À
     for c, h, d in entitysHtml2() + entitysHtml3() + entitysHtml4():
-        text = text.replace(h, c).replace(d, c);
-        #debug_print(h, d, c);
+        text = text.replace(h, c).replace(d, c)
+        #debug_print(h, d, c)
         # &Agrave; &#192; À
     
     
-    regx = r'&#(\d+);';
+    regx = r'&#(\d+);'
     while regex.search(regx, text):
-        m = regex.search(regx, text).group(1);
+        m = regex.search(regx, text).group(1)
         
         if PYTHON2:
-            text = text.replace('&#'+m+';', unichr(int(m)));
+            text = text.replace('&#'+m+';', unichr(int(m)))
         else:
-            text = text.replace('&#'+m+';', chr(int(m)));
+            text = text.replace('&#'+m+';', chr(int(m)))
         
     
-    regx = r'&#x([0-9a-fA-F]+);';
+    regx = r'&#x([0-9a-fA-F]+);'
     while regex.search(regx, text):
-        m = regex.search(regx, text).group(1);
+        m = regex.search(regx, text).group(1)
         
         if PYTHON2:
-            text = text.replace('&#x'+m+';', unichr(int(m, base=16)));
+            text = text.replace('&#x'+m+';', unichr(int(m, base=16)))
         else:
-            text = text.replace('&#x'+m+';', chr(int(m, base=16)));
+            text = text.replace('&#x'+m+';', chr(int(m, base=16)))
     
-    text = regex.loop(r'(>[^<>]*)&quot;([^<>]*<)', r'\1"\2',text);
-    text = regex.loop(r'(>[^<>]*)&apos;([^<>]*<)', r"\1'\2",text);
+    text = regex.loop(r'(>[^<>]*)&quot;([^<>]*<)', r'\1"\2',text)
+    text = regex.loop(r'(>[^<>]*)&apos;([^<>]*<)', r"\1'\2",text)
     
-    text = regex.loop(r'(<[^<>]*="[^"]*)&apos;([^"]*"[^<>]*>)', r"\1'\2",text);
+    text = regex.loop(r'(<[^<>]*="[^"]*)&apos;([^"]*"[^<>]*>)', r"\1'\2",text)
     
-    return text;
+    return text
 
 def XmlHtmlEntity(html, deci):
     
     if PYTHON2:
-        cara = unichr(deci);
+        cara = unichr(deci)
     else:
-        cara = chr(deci);
+        cara = chr(deci)
     
-    return (cara, '&'+html+';', '&#'+str(ord(cara))+';');
+    return (cara, '&'+html+';', '&#'+str(ord(cara))+';')
 
 def entitysHtmlQuot():
         return [
@@ -340,8 +340,8 @@ def entitysHtml4():
 
 
 def main():
-    print('I reached main when I should not have\n');
-    return -1;
+    print('I reached main when I should not have\n')
+    return -1
 
 if __name__ == '__main__':
     sys.exit(main())
