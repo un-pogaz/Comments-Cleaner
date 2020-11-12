@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-11-10 14:34+0100\n"
-"PO-Revision-Date: 2020-11-10 14:34+0100\n"
+"POT-Creation-Date: 2020-11-12 19:59+0100\n"
+"PO-Revision-Date: 2020-11-12 20:00+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -217,8 +217,8 @@ msgid "Markdown:"
 msgstr "Markdown :"
 
 #: config.py:203
-msgid "Try to convert any Markdown strings to HTML"
-msgstr "Essayer de convertir toute chaîne de caractères Markdown en HTML"
+msgid "Try to convert the Markdown strings to HTML"
+msgstr "Essayer de convertir les chaînes de caractères Markdown en HTML"
 
 #: config.py:205
 msgid "Multiple 'Line Return' in a paragraph:"

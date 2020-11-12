@@ -200,7 +200,7 @@ class ConfigWidget(QWidget):
         optionsTEXT_GridLayout.addWidget(QLabel(_('Markdown:'), self))
         self.comboBoxMARKDOWN = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN])
         optionsTEXT_GridLayout.addWidget(self.comboBoxMARKDOWN)
-        self.comboBoxMARKDOWN.setToolTip(_('Try to convert any Markdown strings to HTML'))
+        self.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
         
         optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), self))
         self.comboBoxDOUBLE_BR = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR])
