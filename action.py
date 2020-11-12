@@ -103,7 +103,7 @@ class CleanerProgressDialog(QProgressDialog):
     def __init__(self, gui, book_ids):
         
         # DB API
-        self.dbA = gui.current_db
+        self.dbA = gui.current_db.new_api
         # liste of book id
         self.book_ids = book_ids
         # Count book
@@ -162,7 +162,7 @@ class CleanerProgressDialog(QProgressDialog):
                 self.show()
             
             # get the comment
-            miA = self.dbA.get_metadata(book_id, index_is_id=True, get_cover=False)
+            miA = self.dbA.get_metadata(book_id, get_cover=False)
             comment = miA.get('comments')
             
             if self.wasCanceled():
@@ -191,7 +191,7 @@ class CleanerProgressDialog(QProgressDialog):
             self.setLabelText(_('Update the library for {0} books...').format(books_dic_count))
             
             self.books_clean += len(self.books_dic)
-            self.dbA.new_api.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
+            self.dbA.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
             self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
         
         self.hide()
