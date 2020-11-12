@@ -40,7 +40,7 @@ class KEY:
     BR_TO_PARA = 'BRtoParagraph'
     EMPTY_PARA = 'EmptyParagraph'
     
-    FORMATTING = 'RemoveFormatting'
+    DEL_FORMATTING = 'RemoveFormatting'
 
 
 KEEP_URL = OrderedDict([
@@ -106,7 +106,7 @@ PREFS.defaults[KEY.LIST_ALIGN] = 'del'
 PREFS.defaults[KEY.ID_CLASS] = 'id_class'
 PREFS.defaults[KEY.CSS_KEEP] = ''
 
-PREFS.defaults[KEY.FORMATTING] = False
+PREFS.defaults[KEY.DEL_FORMATTING] = False
 
 PREFS.defaults[KEY.MARKDOWN] = 'try'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
@@ -185,10 +185,10 @@ class ConfigWidget(QWidget):
         
         # --- formatting ---
         
-        self.checkBoxCLEAN_ALL = QCheckBox(_('Remove all formatting'), self)
-        self.checkBoxCLEAN_ALL.stateChanged.connect(self.checkBox_click)
-        self.checkBoxCLEAN_ALL.setChecked(PREFS[KEY.FORMATTING])
-        layout.addWidget(self.checkBoxCLEAN_ALL)
+        self.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), self)
+        self.checkBoxDEL_FORMATTING.stateChanged.connect(self.checkBox_click)
+        self.checkBoxDEL_FORMATTING.setChecked(PREFS[KEY.DEL_FORMATTING])
+        layout.addWidget(self.checkBoxDEL_FORMATTING)
         
         
         # --- options TEXT ---
@@ -241,7 +241,7 @@ class ConfigWidget(QWidget):
         PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
         
         
-        PREFS[KEY.FORMATTING] = self.checkBoxCLEAN_ALL.isChecked()
+        PREFS[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
         
         
         PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
@@ -263,7 +263,7 @@ class ConfigWidget(QWidget):
     
     def checkBox_click(self, num):
         
-        b = not self.checkBoxCLEAN_ALL.isChecked()
+        b = not self.checkBoxDEL_FORMATTING.isChecked()
         
         self.comboBoxKEEP_URL.setEnabled(b)
         self.comboBoxHEADINGS.setEnabled(b)

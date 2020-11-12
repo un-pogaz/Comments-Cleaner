@@ -160,7 +160,7 @@ def CleanBasic(text):
     text = regex.loop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)/>', r'', text)
     
     # double space and tab in <p>
-    text = regex.loop(r'(<(p|h\d)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n|\s{2,})', r'\1 ', text)
+    text = regex.loop(r'(<(p|h\d|li)(| [^>]*)>(?:(?!</\2).)*?)(\t|\n|\s{2,})', r'\1 ', text)
     
     # space and <br> before/after <p>
     rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
@@ -244,8 +244,8 @@ def CleanHTML(text):
     # if no tag = plain text
     if not regex.search(r'<\w+(| [^>]*)>', text):
         text = regex.loop(r'(\r\n|\r)', r'\n', text)
-        text = '<div><p>' + regex.loop(r'\n{2,}',r'</p><p>', text) + '</p></div>'
-        text = regex.loop(r'\n',r'<br>', text)
+        text = '<div><p>' + regex.loop(r'\n{2,}', r'</p><p>', text) + '</p></div>'
+        text = regex.loop(r'\n', r'<br>', text)
         text = regex.loop(r'(<p>|<br>)\s+', r'\1', text)
         text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
         # Markdown
@@ -253,9 +253,9 @@ def CleanHTML(text):
             text = CleanMarkdown(text)
         
     
-    # double parse
+    # double passe
     # Empirical tests have shown that it was necessary for some very rare and specific cases.
-    for p in range(2):
+    for passe in range(2):
         
         text = CleanBasic(text)
         
@@ -264,27 +264,27 @@ def CleanHTML(text):
             text = '<div>'+text+'</div>'
         
         # Del empty <div>
-        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>',r'<div>\2', text)
+        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>', r'<div>\2', text)
         
         # Convert <div> after a <div> in <p>
-        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>',r'<div>\2<p\3>\4</p>', text)
+        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>', r'<div>\2<p\3>\4</p>', text)
         
         # <p> in \s<p>\s
-        text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<(p|h\d)(| [^>]*)>((?:(?!</(?:p|h\d)>).)*?)</\3>\s*</\1>',r'<\3\4>\5</\3>', text)
+        text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<(p|h\d)(| [^>]*)>((?:(?!</(?:p|h\d)>).)*?)</\3>\s*</\1>', r'<\3\4>\5</\3>', text)
         # <p> in ??<p>\s
-        text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>\s*</p>',r'<p\1>\2</p><p\3>\4</p>', text)
+        text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>\s*</p>', r'<p\1>\2</p><p\3>\4</p>', text)
         # <p> in \s<p>??
-        text = regex.loop(r'<p(| [^>]*)>\s*<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>',r'<p\2>\3</p><p\1>\4</p>', text)
+        text = regex.loop(r'<p(| [^>]*)>\s*<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>', r'<p\2>\3</p><p\1>\4</p>', text)
         # <p> in ??<p>??
-        text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>',r'<p\1>\2</p><p\3>\4</p><p\1>\5</p>', text)
+        text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\3>\4</p><p\1>\5</p>', text)
         
         # Del empty <p> at the start/end
-        text = regex.loop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>',r'<div>', text)
-        text = regex.loop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>',r'</div>', text)
+        text = regex.loop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>', r'<div>', text)
+        text = regex.loop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>', r'</div>', text)
         
         
         # Markdown
-        if PREFS[KEY.MARKDOWN] == 'always' and p == 0:
+        if PREFS[KEY.MARKDOWN] == 'always' and passe == 0:
             text = CleanMarkdown(text)
         
         # Multiple Line Return
@@ -305,39 +305,42 @@ def CleanHTML(text):
             text = regex.loop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text)
         
         
-        # Formatting
-        if PREFS[KEY.FORMATTING]:
-            return RemoveFormatting(text)
-        
-        
-        # ID and CLASS attributs
-        if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'id':
-            text = regex.loop(r' id="[^"]*"', r'', text)
-        if PREFS[KEY.ID_CLASS] == 'id_class' or PREFS[KEY.ID_CLASS] == 'class':
-            text = regex.loop(r' class="[^"]*"', r'', text)
-        
-        
-        # Headings
-        if PREFS[KEY.HEADINGS] == 'bolder':
-            text = regex.loop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text)
-            text = regex.loop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
-        if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
-            text = regex.loop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text)
-        
-        # Hyperlink
-        if PREFS[KEY.KEEP_URL] == 'del':
-            text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
-        
-        text = CleanBasic(text)
-        # style standardization:  insert ; at the end
-        text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
-        # style standardization: insert space at the start
-        text = text.replace(' style="', ' style=" ')
-        
-        
-        text = CleanAlign(text)
-        
-        text = CleanStyle(text)
+        if PREFS[KEY.DEL_FORMATTING]:
+            # Remove Formatting
+            text = regex.loop(r'<(/?)(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text)
+            text = regex.loop(r'<(/?)(h\d|li|pre|dt|dd)(|\s[^>]*)>', r'<\1p>', text)
+            text = regex.loop(r'<p\s[^>]*>', r'<p>', text)
+            
+        else:
+            # ID and CLASS attributs
+            if 'id' in PREFS[KEY.ID_CLASS]:
+                text = regex.loop(r' id="[^"]*"', r'', text)
+            if 'class' in PREFS[KEY.ID_CLASS]:
+                text = regex.loop(r' class="[^"]*"', r'', text)
+            
+            
+            # Headings
+            if PREFS[KEY.HEADINGS] == 'bolder':
+                text = regex.loop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text)
+                text = regex.loop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
+            if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
+                text = regex.loop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text)
+            
+            # Hyperlink
+            if PREFS[KEY.KEEP_URL] == 'del':
+                text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
+            
+            text = CleanBasic(text)
+            # style standardization:  insert ; at the end
+            text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
+            # style standardization: insert space at the start
+            text = text.replace(' style="', ' style=" ')
+            
+            
+            text = CleanAlign(text)
+            
+            text = CleanStyle(text)
+            
         
         
         # del attibuts for <div> with <p>
@@ -412,7 +415,7 @@ def CleanStyle(text):
     text = OrderedAttributs(text)
     
     text = regex.loop(r' x-style="[^"]*"', r'', text)
-    text = text.replace(' style="',' x-style="" style=" ')
+    text = text.replace(' style="', ' x-style="" style=" ')
     
     rule_all = 'text-align font-weight font-style text-decoration'
     rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ')
@@ -482,9 +485,9 @@ def CleanStyle(text):
 # Try to convert Markdown to HTML
 def CleanMarkdown(text): # key word: TRY!
     # image
-    text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)',r'<img alt"\1" src="\2">', text)
+    text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink
-    text = regex.loop( r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)',r'<a href="\2">\1</a>', text)
+    text = regex.loop( r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<a href="\2">\1</a>', text)
     
     # heading 1, 2
     for h, n in [('=', '1'),('-', '2')]:
@@ -522,25 +525,15 @@ def CleanMarkdown(text): # key word: TRY!
     text = regex.loop(         r'(<p>)(?:-|\*|_){3,}(<br>|</p><p>)', r'<hr><p>'    , text)
     
     # bold
-    text = regex.loop(r'([^\\])((?:_|\*){2})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<strong>\3</strong>', text)
+    text = regex.loop(r'([^\\])((?:_|\*){2})((?:(?!<br>|</p>).)*?[^\\])\2', r'\1<strong>\3</strong>', text)
     # italic
-    text = regex.loop(r'([^\\])((?:_|\*){1})((?:(?!<br>|</p>).)*?[^\\])\2',r'\1<em>\3</em>', text)
+    text = regex.loop(r'([^\\])((?:_|\*){1})((?:(?!<br>|</p>).)*?[^\\])\2', r'\1<em>\3</em>', text)
     
     #
-    text = regex.loop(r'\\(_|\*)',r'\1', text)
+    text = regex.loop(r'\\(_|\*)', r'\1', text)
     
     return text
 
-
-def RemoveFormatting(text):
-    
-    text = regex.loop(r'</?(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text)
-    
-    text = regex.loop(r'<(/?)(h\d|li|pre|dt|dd)(|\s[^>]*)>', r'<\1p>', text)
-    
-    text = regex.loop(r'<p\s[^>]*>', r'<p>', text)
-    
-    return CleanBasic(text)
 
 
 def main():
