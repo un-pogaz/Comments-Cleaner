@@ -282,6 +282,14 @@ def CleanHTML(text):
         text = regex.loop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>', r'<div>', text)
         text = regex.loop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>', r'</div>', text)
         
+        # Convert empty <table>to empty <p>
+        text = regex.loop(r'<table(| [^>]*)>(?:\s*<tbody>)?\s*(?:<tr(?:| [^>]*)>(?:\s*<td(| [^>]*)>\s*</td>)+\s*</tr>)+(?:\s*</tbody>)?\s*</table>', r'<p\1\2>'+nbsp+r'</p>', text)
+        
+        # Convert <table> with only 1 row and 1 cell to <p>
+        text = regex.loop(r'<table(| [^>]*)>(?:\s*<tbody>)?\s*<tr(?:| [^>]*)>\s*<td(| [^>]*)>(.*?)</td>\s*</tr>(?:\s*</tbody>)?\s*</table>', r'<p\1\2>\3</p>', text)
+        
+        # Merge duplicate attributs
+        text = regex.loop(r' (\w+)="([^"]*)"([^>]*) \1="([^"]*)"', r' \1="\2 \4"\3', text)
         
         # Markdown
         if PREFS[KEY.MARKDOWN] == 'always' and passe == 0:
