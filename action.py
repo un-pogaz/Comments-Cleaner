@@ -162,26 +162,28 @@ class CleanerProgressDialog(QProgressDialog):
                 self.show()
             
             # get the comment
-            miA = self.dbA.get_metadata(book_id, get_cover=False)
+            miA = self.dbA.get_metadata(book_id, get_cover=False, get_user_categories=False)
             comment = miA.get('comments')
             
             if self.wasCanceled():
                 self.close()
                 return
             
-            book_stat = '(book: '+str(num)+'/'+str(self.book_count)+')[id: '+str(book_id)+']'
+            # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
+            book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
+            
             # process the comment
             if comment is not None:
-                debug_text('Text in '+book_stat, comment)
+                debug_text('Comment for '+book_info, comment)
                 comment_out = CleanHTML(comment)
                 if comment == comment_out:
-                    debug_print('Unchanged text :::\n')
+                    debug_print('Unchanged comment :::\n')
                 else:
-                    debug_text('Text out', comment_out)
+                    debug_text('Comment out', comment_out)
                     self.books_dic[book_id] = comment_out
             
             else:
-                debug_print('Empty comment '+book_stat+':::\n')
+                debug_print('Empty comment '+book_info+':::\n')
             
         
         books_dic_count = len(self.books_dic)
