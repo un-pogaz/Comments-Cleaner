@@ -9,16 +9,9 @@ __docformat__ = 'restructuredtext en'
 
 import sys, os
 
-from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex
+from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex, PYTHON2
 
 regex = regex()
-PYTHON2 = True
-try:
-    u = unichr(160)
-    PYTHON2 = True
-except:
-    PYTHON2 = False
-    pass
 
 
 def parseXMLentity(text):

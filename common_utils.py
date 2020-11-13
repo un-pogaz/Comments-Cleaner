@@ -318,6 +318,11 @@ class KeyboardConfigDialog(SizePersistedDialog):
         self.accept()
 
 
+import sys
+PYTHON = sys.version_info
+PYTHON2 = (sys.version_info[0] == 2)
+PYTHON3 = (sys.version_info[0] == 3)
+
 import re
 # Simple Regex
 class regex():
@@ -327,11 +332,11 @@ class regex():
         #set the default flag
         self.flag = flag
         if self.flag == None:
-            try:
-                self.flag = re.ASCII + re.MULTILINE + re.DOTALL
-            except :
+            if PYTHON2:
                 self.flag = re.MULTILINE + re.DOTALL
-                pass; # calibre 5 // re.ASCII for Python3 only
+            else:
+                self.flag = re.ASCII + re.MULTILINE + re.DOTALL
+                # calibre 5 // re.ASCII for Python3 only
             
     
     def match(self, pattern, string, flag=None):
