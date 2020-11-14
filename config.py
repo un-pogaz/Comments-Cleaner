@@ -35,12 +35,12 @@ class KEY:
     ID_CLASS = 'ID_Class'
     CSS_KEEP = 'CSStoKeep'
     
+    DEL_FORMATTING = 'RemoveFormatting'
+    
     MARKDOWN = 'Markdown'
     DOUBLE_BR = 'DoubleBR'
     BR_TO_PARA = 'BRtoParagraph'
     EMPTY_PARA = 'EmptyParagraph'
-    
-    DEL_FORMATTING = 'RemoveFormatting'
 
 
 KEEP_URL = OrderedDict([
