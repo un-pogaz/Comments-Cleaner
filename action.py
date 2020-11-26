@@ -94,7 +94,7 @@ class CommentCleanerAction(InterfaceAction):
         
         cpgb = CleanerProgressDialog(self.gui, book_ids)
         cpgb.close()
-        cpgb = None
+        del cpgb
         
 
 
@@ -102,8 +102,12 @@ class CleanerProgressDialog(QProgressDialog):
     
     def __init__(self, gui, book_ids):
         
+        # DB
+        self.db = gui.current_db
         # DB API
         self.dbA = gui.current_db.new_api
+        # gui
+        self.gui = gui
         # liste of book id
         self.book_ids = book_ids
         # Count book
@@ -112,10 +116,11 @@ class CleanerProgressDialog(QProgressDialog):
         self.books_dic = {}
         # Count of cleaned comments
         self.books_clean = 0
+        # Exception
+        self.exception = None
         
         
-        QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, gui)
-        self.gui = gui
+        QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, self.gui)
         
         self.setWindowTitle(_('Comments Cleaner Progress'))
         self.setWindowIcon(get_icon(PLUGIN_ICONS[0]))
@@ -128,7 +133,7 @@ class CleanerProgressDialog(QProgressDialog):
         self.setAutoReset(False)
         
         self.hide()
-        debug_print('Launch cleaning for {0} book.'.format(self.book_count))
+        debug_print('Launch cleaning for {0} books.'.format(self.book_count))
         debug_print(str(PREFS)+'\n')
         
         QTimer.singleShot(0, self._run_clean_comments)
@@ -136,65 +141,72 @@ class CleanerProgressDialog(QProgressDialog):
         
         if self.wasCanceled():
             debug_print('Cleaning comments as cancelled. No change.')
+        elif self.exception:
+            debug_print('Cleaning comments as cancelled. An exception has occurred:')
+            debug_print(self.exception)
         else:
-            debug_print('Cleaning launched for {0} book.'.format(self.book_count))
+            debug_print('Cleaning launched for {0} books.'.format(self.book_count))
             debug_print('Cleaning performed for {0} comments.'.format(self.books_clean))
             debug_print('Settings: {0}\n'.format(PREFS))
     
     def close(self):
-        self.dbA = None
-        self.books_dic = None
+        del self.books_dic
         super(CleanerProgressDialog, self).close()
     
     def _run_clean_comments(self):
         
-        self.setValue(0)
-        
-        for num, book_id in enumerate(self.book_ids, start=1):
+        try:
+            self.setValue(0)
             
-            # update Progress
-            self.setValue(num)
-            self.setLabelText(_('Book {0} of {1}').format(num, self.book_count))
-            
-            if self.book_count < 100:
-                self.hide()
-            else:
-                self.show()
-            
-            # get the comment
-            miA = self.dbA.get_metadata(book_id, get_cover=False, get_user_categories=False)
-            comment = miA.get('comments')
-            
-            if self.wasCanceled():
-                self.close()
-                return
-            
-            # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
-            book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
-            
-            # process the comment
-            if comment is not None:
-                debug_text('Comment for '+book_info, comment)
-                comment_out = CleanHTML(comment)
-                if comment == comment_out:
-                    debug_print('Unchanged comment :::\n')
+            for num, book_id in enumerate(self.book_ids, start=1):
+                
+                # update Progress
+                self.setValue(num)
+                self.setLabelText(_('Book {0} of {1}').format(num, self.book_count))
+                
+                if self.book_count < 100:
+                    self.hide()
                 else:
-                    debug_text('Comment out', comment_out)
-                    self.books_dic[book_id] = comment_out
+                    self.show()
+                
+                # get the comment
+                miA = self.dbA.get_metadata(book_id, get_cover=False, get_user_categories=False)
+                comment = miA.get('comments')
+                
+                if self.wasCanceled():
+                    self.close()
+                    return
+                
+                # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
+                book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
+                
+                # process the comment
+                if comment is not None:
+                    debug_text('Comment for '+book_info, comment)
+                    comment_out = CleanHTML(comment)
+                    if comment == comment_out:
+                        debug_print('Unchanged comment :::\n')
+                    else:
+                        debug_text('Comment out', comment_out)
+                        self.books_dic[book_id] = comment_out
+                
+                else:
+                    debug_print('Empty comment '+book_info+':::\n')
+                
             
-            else:
-                debug_print('Empty comment '+book_info+':::\n')
+            books_dic_count = len(self.books_dic)
+            if books_dic_count > 0:
+                
+                debug_print('Update the database for {0} books...\n'.format(books_dic_count))
+                self.setLabelText(_('Update the library for {0} books...').format(books_dic_count))
+                
+                self.books_clean += len(self.books_dic)
+                self.dbA.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
+                self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
             
+        except Exception as e:
+            self.exception = e;
         
-        books_dic_count = len(self.books_dic)
-        if books_dic_count > 0:
-            
-            debug_print('Update the database for {0} books...\n'.format(books_dic_count))
-            self.setLabelText(_('Update the library for {0} books...').format(books_dic_count))
-            
-            self.books_clean += len(self.books_dic)
-            self.dbA.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
-            self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
-        
+        self.db.clean()
         self.hide()
         return

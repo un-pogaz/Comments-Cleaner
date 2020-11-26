@@ -16,7 +16,7 @@ except NameError:
 
 from collections import OrderedDict
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
-from calibre.utils.config import JSONConfig
+from calibre.utils.config import JSONConfig, tweaks
 
 from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
 
@@ -133,55 +133,55 @@ class ConfigWidget(QWidget):
         optionsHTML_GroupBox.setLayout(optionsHTML_GridLayout)
         
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('Hyperlink:'), self), 0, 0)
+        optionsHTML_GridLayout.addWidget(QLabel(_('Hyperlink:'), self), 0, 0, 1, 2)
         self.comboBoxKEEP_URL = KeyValueComboBox(self, KEEP_URL, PREFS[KEY.KEEP_URL])
-        optionsHTML_GridLayout.addWidget(self.comboBoxKEEP_URL, 1, 0)
+        optionsHTML_GridLayout.addWidget(self.comboBoxKEEP_URL, 1, 0, 1, 2)
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('Headings:'), self), 0, 1)
+        optionsHTML_GridLayout.addWidget(QLabel(_('Headings:'), self), 0, 2, 1, 2)
         self.comboBoxHEADINGS = KeyValueComboBox(self, HEADINGS, PREFS[KEY.HEADINGS])
-        optionsHTML_GridLayout.addWidget(self.comboBoxHEADINGS, 1, 1)
+        optionsHTML_GridLayout.addWidget(self.comboBoxHEADINGS, 1, 2, 1, 2)
         
         
         optionsHTML_GridLayout.addWidget(QLabel(' ', self), 4, 0)
         
         self.comboBoxFONT_WEIGHT = KeyValueComboBox(self, FONT_WEIGHT, PREFS[KEY.FONT_WEIGHT])
-        optionsHTML_GridLayout.addWidget(self.comboBoxFONT_WEIGHT, 5, 0)
+        optionsHTML_GridLayout.addWidget(self.comboBoxFONT_WEIGHT, 5, 0, 1, 2)
         
         self.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), self)
         self.checkBoxDEL_ITALIC.setChecked(PREFS[KEY.DEL_ITALIC])
-        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_ITALIC, 5, 1)
+        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_ITALIC, 5, 2, 1, 2)
         
         self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), self)
         self.checkBoxDEL_UNDER.setChecked(PREFS[KEY.DEL_UNDER])
-        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_UNDER, 6, 0)
+        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_UNDER, 6, 0, 1, 2)
         
         self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), self)
         self.checkBoxDEL_STRIKE.setChecked(PREFS[KEY.DEL_STRIKE])
-        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_STRIKE, 6, 1)
+        optionsHTML_GridLayout.addWidget(self.checkBoxDEL_STRIKE, 6, 2, 1, 2)
         
         optionsHTML_GridLayout.addWidget(QLabel(' ', self), 9, 0)
         
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('Justification:'), self), 10, 0)
+        optionsHTML_GridLayout.addWidget(QLabel(_('Justification:'), self), 10, 0, 1, 1)
         self.comboBoxFORCE_JUSTIFY = KeyValueComboBox(self, FORCE_JUSTIFY, PREFS[KEY.FORCE_JUSTIFY])
-        optionsHTML_GridLayout.addWidget(self.comboBoxFORCE_JUSTIFY, 11, 0, 1, 2)
+        optionsHTML_GridLayout.addWidget(self.comboBoxFORCE_JUSTIFY, 10, 1, 1, 3)
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('List alignment:'), self), 12, 0)
+        optionsHTML_GridLayout.addWidget(QLabel(_('List alignment:'), self), 11, 0, 1, 1)
         self.comboBoxLIST_ALIGN = KeyValueComboBox(self, LIST_ALIGN, PREFS[KEY.LIST_ALIGN])
-        optionsHTML_GridLayout.addWidget(self.comboBoxLIST_ALIGN, 13, 0, 1, 2)
+        optionsHTML_GridLayout.addWidget(self.comboBoxLIST_ALIGN, 11, 1, 1, 3)
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 14, 0)
+        optionsHTML_GridLayout.addWidget(QLabel(_('ID & CLASS attributs:'), self), 12, 0, 1, 1)
         self.comboBoxID_CLASS = KeyValueComboBox(self, ID_CLASS, PREFS[KEY.ID_CLASS])
-        optionsHTML_GridLayout.addWidget(self.comboBoxID_CLASS, 15, 0, 1, 2)
+        optionsHTML_GridLayout.addWidget(self.comboBoxID_CLASS, 12, 1, 1, 3)
         
         
         optionsHTML_GridLayout.addWidget(QLabel(' ', self))
         
-        optionsHTML_GridLayout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 0)
+        optionsHTML_GridLayout.addWidget(QLabel(_('CSS rule to keep:'), self), 20, 0, 1, 1)
         self.lineEditCSS_KEEP = QLineEdit(self)
         self.lineEditCSS_KEEP.setText(PREFS[KEY.CSS_KEEP])
         self.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
-        optionsHTML_GridLayout.addWidget(self.lineEditCSS_KEEP, 21, 0, 1, 2)
+        optionsHTML_GridLayout.addWidget(self.lineEditCSS_KEEP, 20, 1, 1, 3)
         
         # --- formatting ---
         
@@ -197,29 +197,28 @@ class ConfigWidget(QWidget):
         optionsTEXT_GridLayout = QGridLayout()
         optionsTEXT_GroupBox.setLayout(optionsTEXT_GridLayout)
         
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Markdown:'), self))
+        optionsTEXT_GridLayout.addWidget(QLabel(_('Markdown:'), self), 1, 0, 1, 1)
         self.comboBoxMARKDOWN = KeyValueComboBox(self, MARKDOWN, PREFS[KEY.MARKDOWN])
-        optionsTEXT_GridLayout.addWidget(self.comboBoxMARKDOWN)
+        optionsTEXT_GridLayout.addWidget(self.comboBoxMARKDOWN, 1, 1, 1, 2)
         self.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
         
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), self))
+        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), self), 2, 0, 1, 1)
         self.comboBoxDOUBLE_BR = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR])
-        optionsTEXT_GridLayout.addWidget(self.comboBoxDOUBLE_BR)
+        optionsTEXT_GridLayout.addWidget(self.comboBoxDOUBLE_BR, 2, 1, 1, 2)
         
         self.checkBoxBR_TO_PARA = QCheckBox(_('Convert \'Line Return\' into a new paragraph'), self)
         self.checkBoxBR_TO_PARA.stateChanged.connect(self.checkBox_click)
         self.checkBoxBR_TO_PARA.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
                                              'and before "Multiple empty paragraph"'))
         self.checkBoxBR_TO_PARA.setChecked(PREFS[KEY.BR_TO_PARA])
-        optionsTEXT_GridLayout.addWidget(self.checkBoxBR_TO_PARA)
+        optionsTEXT_GridLayout.addWidget(self.checkBoxBR_TO_PARA, 3, 0, 1, 3)
         
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), self))
+        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), self), 4, 0, 1, 1)
         self.comboBoxEMPTY_PARA = KeyValueComboBox(self, EMPTY_PARA, PREFS[KEY.EMPTY_PARA])
-        optionsTEXT_GridLayout.addWidget(self.comboBoxEMPTY_PARA)
+        optionsTEXT_GridLayout.addWidget(self.comboBoxEMPTY_PARA, 4, 1, 1, 2)
         
         
         # --- Keyboard shortcuts ---
-        layout.addWidget(QLabel(' ', self))
         keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self)
         keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
         keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
