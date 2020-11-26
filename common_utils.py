@@ -285,6 +285,12 @@ class KeyValueComboBox(QComboBox):
             if value == six.text_type(self.currentText()).strip():
                 return key
 
+class NoWheelComboBox(QComboBox):
+
+    def wheelEvent (self, event):
+        # Disable the mouse wheel on top of the combo box changing selection as plays havoc in a grid
+        event.ignore()
+
 class KeyboardConfigDialog(SizePersistedDialog):
     '''
     This dialog is used to allow editing of keyboard shortcuts.
