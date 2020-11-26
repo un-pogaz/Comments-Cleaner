@@ -1,3 +1,6 @@
+### version 1.3.1
+Reduce the height of the configuration window
+
 ### version 1.3
 Improvements of mass edit:
 - Add a progres bar window and possibility to cancel the current operation
