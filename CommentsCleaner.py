@@ -4,10 +4,12 @@ from __future__ import (unicode_literals, division, absolute_import,
                         print_function)
 
 __license__   = 'GPL v3'
-__copyright__ = '2020, un_pogaz <>'
+__copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import sys, os
+import os
+# calibre Python 3 compatibility.
+from six import text_type as unicode
 
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
 from calibre_plugins.comments_cleaner.XMLentity import parseXMLentity
@@ -521,10 +523,10 @@ def CleanMarkdown(text): # key word: TRY!
     text = regex.loop(r'</li></ul><ul><li>', r'</li><li>', text)
     
     # o liste
-    text = regex.loop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ol><li>\2</li></ol><p>', text)
-    text = regex.loop(r'(<br>|</p><p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        , r'</p><ol><li>\2</li></ol>'   , text)
-    text = regex.loop(         r'(<p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)',     r'<ol><li>\2</li></ol><p>', text)
-    text = regex.loop(         r'(<p>)\d+(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        ,     r'<ol><li>\2</li></ol>'   , text)
+    text = regex.loop(r'(<br>|</p><p>)\d{1,2}(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ol><li>\2</li></ol><p>', text)
+    text = regex.loop(r'(<br>|</p><p>)\d{1,2}(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        , r'</p><ol><li>\2</li></ol>'   , text)
+    text = regex.loop(         r'(<p>)\d{1,2}(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)',     r'<ol><li>\2</li></ol><p>', text)
+    text = regex.loop(         r'(<p>)\d{1,2}(?:\)|\.)\s+((?:(?!<br>|</p>|</li>).)*?)(</p>)'        ,     r'<ol><li>\2</li></ol>'   , text)
     text = regex.loop(r'</li></ol><ol><li>', r'</li><li>', text)
     
     # <hr>
