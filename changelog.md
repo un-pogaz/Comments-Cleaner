@@ -1,3 +1,6 @@
+### version 1.3.2
+[Fix] converte to list a plain text beginning with a year
+
 ### version 1.3.1
 Reduce the height of the configuration window
 
