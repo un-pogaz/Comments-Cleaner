@@ -150,7 +150,6 @@ class CleanerProgressDialog(QProgressDialog):
             debug_print('Settings: {0}\n'.format(PREFS))
     
     def close(self):
-        del self.books_dic
         super(CleanerProgressDialog, self).close()
     
     def _run_clean_comments(self):
