@@ -487,8 +487,10 @@ def CleanStyle(text):
     
     text = regex.loop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text)
     
-    #
+    # Del <sup>/<sub> paragraphe
+    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>([^<>]*)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
     
+    ######
     return text
 
 

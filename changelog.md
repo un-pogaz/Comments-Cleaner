@@ -1,3 +1,6 @@
+### version 1.3.3
+Clean a very rare invalid comment fomat (all in <sub>/<sup>)
+
 ### version 1.3.2
 [Fix] convert to list a plain text beginning with a year
 
@@ -12,7 +15,7 @@ Improvements of mass edit:
 Add new options for the cleaning:
 - Round the Weights value instead of truncated
 - Remove Strikethrough, Underline and Italic
-- Try a conversion from Mardown format (the key word is TRY)
+- Try a conversion from Markdown format (the key word is TRY)
 - Management of empty paragraphs
 - Convert 'Line Return' into paragraph
 - Specific alignment for lists
