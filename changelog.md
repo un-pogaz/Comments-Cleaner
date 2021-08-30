@@ -1,3 +1,6 @@
+### version 1.3.4
+Clean text fully bold
+
 ### version 1.3.3
 Clean a very rare invalid comment fomat (all in <sub>/<sup>)
 
