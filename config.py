@@ -84,7 +84,7 @@ DOUBLE_BR = OrderedDict([
                         ('empty', _('Create a empty paragraph')),
                         ('new', _('Create a new paragraph')),
                         ('none', _('No change'))])
-                        
+
 EMPTY_PARA = OrderedDict([
                         ('merge', _('Merge in a single empty paragraph')),
                         ('none', _('No change')),
