@@ -11,6 +11,9 @@ import os
 # calibre Python 3 compatibility.
 from six import text_type as unicode
 
+from PyQt5.Qt import QWidget
+from calibre.gui2.metadata.basic_widgets import CommentsEdit
+
 from calibre_plugins.comments_cleaner.config import KEY, PREFS
 from calibre_plugins.comments_cleaner.XMLentity import parseXMLentity
 from calibre_plugins.comments_cleaner.common_utils import debug_print, debug_text, regex, CSS_CleanRules
@@ -358,7 +361,10 @@ def CleanHTML(text):
         
         # clean text full bold
         text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</p>\s*</div>\s*$', r'<div><p\1\2>\3</p></div>', text)
+        
         text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span></p></div>', text)
+        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong><br><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span><br><span\4>\5</span></p></div>', text)
+        
         text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><(\w+)([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</\2></p>\s*</div>\s*$',
             r'<div><p\1><\2\3\4>\5</\2></p></div>', text)
         text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)><(\w+)([^>]*?)>((?:(?:<br>)|[^<>])*?)</\3></p>\s*</div>\s*$',
@@ -367,6 +373,40 @@ def CleanHTML(text):
         
         text = CleanBasic(text)
         #
+    
+    text = CalibreFormat(text)
+    
+    return text
+
+
+qw = QWidget()
+CommentsEditor = CommentsEdit(qw)
+Comments = -1
+
+# test version CommentsEdit
+try: # calibre < 4.0
+    CommentsEditor.current_val = ' '
+    t = CommentsEditor.current_val
+    Comments = 1
+except: # full error
+    pass
+try: # calibre >= 4.0
+    CommentsEditor.set_value(' ')
+    t = CommentsEditor.current_val
+    Comments = 2
+except:
+    pass
+
+# passe the comment in the Calibre comment editor
+# fix some last errors, better interpolarity Calibre <> plugin
+def CalibreFormat(text):
+    
+    if Comments == 1:
+        CommentsEditor.current_val = text
+        text = CommentsEditor.current_val
+    elif Comments == 2:
+        CommentsEditor.set_value(text)
+        text = CommentsEditor.current_val
     
     return text
 
@@ -497,7 +537,12 @@ def CleanStyle(text):
     text = regex.loop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text)
     
     # Del <sup>/<sub> paragraphe
-    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>([^<>]*)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
+    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
+    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*<br>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\5>\s*</\1>', r'<\1\2>\4<br>\6</\1>', text)
+    
+    # <br> in same tag
+    text = regex.loop(r'<((\w+)(?:| [^>]*))>((?:(?:<br>)|[^<>])*?)</\2><br><\1>', r'<\1>\3<br>', text)
+
     
     ######
     return text
