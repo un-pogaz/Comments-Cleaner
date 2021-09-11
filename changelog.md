@@ -1,6 +1,6 @@
 ### version 1.4.0
 Better support of small screens for the config dialog
-Clean for <br> in <strong>/<em>
+Improve <br> in <strong>/<em>
 Improve clean for text fully bold and <sup>/<sub> paragraphe
 Improved uniformity with the Calibre comment format
 
