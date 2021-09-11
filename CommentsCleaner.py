@@ -355,6 +355,13 @@ def CleanHTML(text):
             text = CleanStyle(text)
             
             
+            # Del <sup>/<sub> paragraphe
+            text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
+            text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*<br>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\5>\s*</\1>', r'<\1\2>\4<br>\6</\1>', text)
+            
+            # <br> in same tag
+            text = regex.loop(r'<((\w+)(?:| [^>]*))>((?:(?:<br>)|[^<>])*?)</\2><br><\1>', r'<\1>\3<br>', text)
+            
             # del attibuts for <div> with <p>
             text = regex.loop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text)
             
@@ -368,7 +375,6 @@ def CleanHTML(text):
                 r'<div><p\1><\2\3\4>\5</\2></p></div>', text)
             text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)><(\w+)([^>]*?)>((?:(?:<br>)|[^<>])*?)</\3></p>\s*</div>\s*$',
                 r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
-            
         
         
         text = CleanBasic(text)
@@ -536,13 +542,6 @@ def CleanStyle(text):
     
     text = regex.loop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text)
     
-    # Del <sup>/<sub> paragraphe
-    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
-    text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*<br>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\5>\s*</\1>', r'<\1\2>\4<br>\6</\1>', text)
-    
-    # <br> in same tag
-    text = regex.loop(r'<((\w+)(?:| [^>]*))>((?:(?:<br>)|[^<>])*?)</\2><br><\1>', r'<\1>\3<br>', text)
-
     
     ######
     return text
@@ -599,7 +598,6 @@ def CleanMarkdown(text): # key word: TRY!
     text = regex.loop(r'\\(_|\*)', r'\1', text)
     
     return text
-
 
 
 def main():
