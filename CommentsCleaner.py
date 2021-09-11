@@ -354,21 +354,21 @@ def CleanHTML(text):
             
             text = CleanStyle(text)
             
-        
-        
-        # del attibuts for <div> with <p>
-        text = regex.loop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text)
-        
-        # clean text full bold
-        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</p>\s*</div>\s*$', r'<div><p\1\2>\3</p></div>', text)
-        
-        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span></p></div>', text)
-        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong><br><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span><br><span\4>\5</span></p></div>', text)
-        
-        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><(\w+)([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</\2></p>\s*</div>\s*$',
-            r'<div><p\1><\2\3\4>\5</\2></p></div>', text)
-        text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)><(\w+)([^>]*?)>((?:(?:<br>)|[^<>])*?)</\3></p>\s*</div>\s*$',
-            r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
+            
+            # del attibuts for <div> with <p>
+            text = regex.loop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text)
+            
+            # clean text full bold
+            text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</p>\s*</div>\s*$', r'<div><p\1\2>\3</p></div>', text)
+            
+            text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span></p></div>', text)
+            text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong><br><strong([^>]*?)>((?:(?:<br>)|[^<>])*?)</strong></p>\s*</div>\s*$', r'<div><p\1><span\2>\3</span><br><span\4>\5</span></p></div>', text)
+            
+            text = regex.loop(r'^\s*<div>\s*<p([^>]*?)><(\w+)([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</\2></p>\s*</div>\s*$',
+                r'<div><p\1><\2\3\4>\5</\2></p></div>', text)
+            text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)><(\w+)([^>]*?)>((?:(?:<br>)|[^<>])*?)</\3></p>\s*</div>\s*$',
+                r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
+            
         
         
         text = CleanBasic(text)
