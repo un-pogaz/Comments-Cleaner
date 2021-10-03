@@ -1,17 +1,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-11-12 19:59+0100\n"
-"PO-Revision-Date: 2020-11-15 20:43-0300\n"
+"POT-Creation-Date: 2021-10-03 10:40+0200\n"
+"PO-Revision-Date: 2021-10-03 10:40+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: \n"
-"Language: es\n"
 "X-Poedit-SearchPath-0: action.py\n"
 "X-Poedit-SearchPath-1: config.py\n"
 "X-Poedit-SearchPath-2: __init__.py\n"
@@ -37,40 +37,35 @@ msgstr "Ningún libro seleccionado"
 msgid "No book selected for cleaning comments"
 msgstr "Ningún libro seleccionado para comentarios de limpieza"
 
-#: action.py:117
+#: action.py:123
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: action.py:120
+#: action.py:125
 msgid "Comments Cleaner Progress"
 msgstr "Comments Cleaner Progreso"
 
-#: action.py:157
-#, python-brace-format
-msgid "Book {0} of {1}"
-msgstr "Libro {0} de {1}"
+#: action.py:164
+msgid "Book {:d} of {:d}"
+msgstr "Libro {:d} de {:d}"
 
-#: action.py:191
-#, python-brace-format
-msgid "Update the library for {0} books..."
-msgstr "Actualizar la biblioteca de {0} libros..."
+#: action.py:200
+msgid "Update the library for {:d} books..."
+msgstr "Actualizar la biblioteca de {:d} libros..."
 
 #: common_utils.py:223
 msgid "Restart required"
 msgstr "Reinicio requerido"
 
 #: common_utils.py:224
-msgid ""
-"Title image not found - you must restart Calibre before using this plugin!"
-msgstr ""
-"No se encontró la imagen del título - debe reiniciar Calibre antes de usar "
-"este complemento!"
+msgid "Title image not found - you must restart Calibre before using this plugin!"
+msgstr "No se encontró la imagen del título - debe reiniciar Calibre antes de usar este complemento!"
 
-#: common_utils.py:293
+#: common_utils.py:299
 msgid "Keyboard shortcut dialog"
 msgstr "Diálogo de método abreviado de teclado"
 
-#: common_utils.py:295
+#: common_utils.py:301
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
 
@@ -117,8 +112,7 @@ msgstr "Forzar la justificación (ecrase \"centro\" y \"derecha\")"
 
 #: config.py:63
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
-msgstr ""
-"Justificación para texto indeterminado (mantenga \"centro\" y \"derecha\")"
+msgstr "Justificación para texto indeterminado (mantenga \"centro\" y \"derecha\")"
 
 #: config.py:65
 msgid "Delete all alignment"
@@ -172,87 +166,82 @@ msgstr "Eliminar párrafo vacío"
 msgid "Comments Cleaner Options"
 msgstr "Comments Cleaner Opciones"
 
-#: config.py:136
+#: config.py:146
 msgid "Hyperlink:"
 msgstr "Hipervínculo:"
 
-#: config.py:140
+#: config.py:150
 msgid "Headings:"
 msgstr "Encabezados:"
 
-#: config.py:150
+#: config.py:160
 msgid "Remove Italic"
 msgstr "Quitar cursiva"
 
-#: config.py:154
+#: config.py:164
 msgid "Remove Underline"
 msgstr "Quitar subrayado"
 
-#: config.py:158
+#: config.py:168
 msgid "Remove Strikethrough"
 msgstr "Quitar tachado"
 
-#: config.py:165
+#: config.py:175
 msgid "Justification:"
 msgstr "Justificación:"
 
-#: config.py:169
+#: config.py:179
 msgid "List alignment:"
 msgstr "Lista de alineación:"
 
-#: config.py:173
+#: config.py:183
 msgid "ID & CLASS attributs:"
 msgstr "Atributos de ID y CLASE:"
 
-#: config.py:180
+#: config.py:190
 msgid "CSS rule to keep:"
 msgstr "Regla CSS para mantener:"
 
-#: config.py:183
-msgid ""
-"Custom CSS rules to keep in addition to the basic ones. Rules separated by a "
-"space."
-msgstr ""
-"Reglas CSS personalizadas para mantener además de las básicas. Reglas "
-"separadas por un espacio."
+#: config.py:193
+msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
+msgstr "Reglas CSS personalizadas para mantener además de las básicas. Reglas separadas por un espacio."
 
-#: config.py:188
+#: config.py:198
 msgid "Remove all formatting"
 msgstr "Eliminar todo el formato"
 
-#: config.py:200
+#: config.py:210
 msgid "Markdown:"
 msgstr "Reducción:"
 
-#: config.py:203
+#: config.py:213
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Intente convertir las cadenas de Markdown a HTML"
 
-#: config.py:205
+#: config.py:215
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Múltiples 'Retorno de línea' en un párrafo:"
 
-#: config.py:209
+#: config.py:219
 msgid "Convert 'Line Return' into a new paragraph"
 msgstr "Convertir 'Retorno de línea' en un nuevo párrafo"
 
-#: config.py:211
+#: config.py:221
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
 msgstr ""
-"Esta operación se aplica después de \"Multiple 'Linea de Returno' en un "
-"párrafo\"\n"
+"Esta operación se aplica después de \"Multiple 'Linea de Returno' en un párrafo\"\n"
 "y antes de \"Varios párrafos vacíos\""
 
-#: config.py:216
+#: config.py:226
 msgid "Multiple empty paragraph:"
 msgstr "Múltiples párrafos vacíos:"
 
-#: config.py:223
+#: config.py:232
 msgid "Keyboard shortcuts..."
 msgstr "Atajos de teclado..."
 
-#: config.py:224
+#: config.py:233
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Edite los atajos de teclado asociados con este complemento"

@@ -161,7 +161,7 @@ class CleanerProgressDialog(QProgressDialog):
                 
                 # update Progress
                 self.setValue(num)
-                self.setLabelText(_('Book {0} of {1}').format(num, self.book_count))
+                self.setLabelText(_('Book {:d} of {:d}').format(num, self.book_count))
                 
                 if self.book_count < 100:
                     self.hide()
@@ -197,7 +197,7 @@ class CleanerProgressDialog(QProgressDialog):
             if books_dic_count > 0:
                 
                 debug_print('Update the database for {0} books...\n'.format(books_dic_count))
-                self.setLabelText(_('Update the library for {0} books...').format(books_dic_count))
+                self.setLabelText(_('Update the library for {:d} books...').format(books_dic_count))
                 
                 self.books_clean += len(self.books_dic)
                 self.dbA.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})

@@ -365,6 +365,9 @@ def CleanHTML(text):
             # del attibuts for <div> with <p>
             text = regex.loop(r'<div[^>]+>\s*<(p|h\d)', r'<div>\n<\1', text)
             
+            # clean text full heading
+            text = regex.loop(r'^\s*<div>\s*<h(\d)(| [^>]*)>((?:(?:<br>)|[^<>])*?)</h\1>\s*</div>\s*$', r'<div><p\2>\3</p></div>', text)
+            
             # clean text full bold
             text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)>((?:(?:<br>)|[^<>])*?)</p>\s*</div>\s*$', r'<div><p\1\2>\3</p></div>', text)
             
@@ -387,32 +390,13 @@ def CleanHTML(text):
 
 qw = QWidget()
 CommentsEditor = CommentsEdit(qw)
-Comments = -1
-
-# test version CommentsEdit
-try: # calibre < 4.0
-    CommentsEditor.current_val = ' '
-    t = CommentsEditor.current_val
-    Comments = 1
-except: # full error
-    pass
-try: # calibre >= 4.0
-    CommentsEditor.set_value(' ')
-    t = CommentsEditor.current_val
-    Comments = 2
-except:
-    pass
 
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
 def CalibreFormat(text):
     
-    if Comments == 1:
-        CommentsEditor.current_val = text
-        text = CommentsEditor.current_val
-    elif Comments == 2:
-        CommentsEditor.set_value(text)
-        text = CommentsEditor.current_val
+    CommentsEditor.current_val = text
+    text = CommentsEditor.current_val
     
     return text
 

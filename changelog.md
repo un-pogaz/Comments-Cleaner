@@ -1,3 +1,7 @@
+### version 1.4.1
+Clean text full heading
+[Fix] The text of progress dialog is correctly translated, FINALY! \o/
+
 ### version 1.4.0
 Better support of small screens for the config dialog
 Improve <br> in <strong>/<em>

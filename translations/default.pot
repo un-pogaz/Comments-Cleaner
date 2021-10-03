@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-11-12 19:59+0100\n"
+"POT-Creation-Date: 2021-10-03 10:40+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: action.py\n"
@@ -38,22 +38,20 @@ msgstr ""
 msgid "No book selected for cleaning comments"
 msgstr ""
 
-#: action.py:117
+#: action.py:123
 msgid "Cancel"
 msgstr ""
 
-#: action.py:120
+#: action.py:125
 msgid "Comments Cleaner Progress"
 msgstr ""
 
-#: action.py:157
-#, python-brace-format
-msgid "Book {0} of {1}"
+#: action.py:164
+msgid "Book {:d} of {:d}"
 msgstr ""
 
-#: action.py:191
-#, python-brace-format
-msgid "Update the library for {0} books..."
+#: action.py:200
+msgid "Update the library for {:d} books..."
 msgstr ""
 
 #: common_utils.py:223
@@ -64,11 +62,11 @@ msgstr ""
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr ""
 
-#: common_utils.py:293
+#: common_utils.py:299
 msgid "Keyboard shortcut dialog"
 msgstr ""
 
-#: common_utils.py:295
+#: common_utils.py:301
 msgid "Keyboard shortcuts"
 msgstr ""
 
@@ -169,80 +167,80 @@ msgstr ""
 msgid "Comments Cleaner Options"
 msgstr ""
 
-#: config.py:136
+#: config.py:146
 msgid "Hyperlink:"
 msgstr ""
 
-#: config.py:140
+#: config.py:150
 msgid "Headings:"
 msgstr ""
 
-#: config.py:150
+#: config.py:160
 msgid "Remove Italic"
 msgstr ""
 
-#: config.py:154
+#: config.py:164
 msgid "Remove Underline"
 msgstr ""
 
-#: config.py:158
+#: config.py:168
 msgid "Remove Strikethrough"
 msgstr ""
 
-#: config.py:165
+#: config.py:175
 msgid "Justification:"
 msgstr ""
 
-#: config.py:169
+#: config.py:179
 msgid "List alignment:"
 msgstr ""
 
-#: config.py:173
+#: config.py:183
 msgid "ID & CLASS attributs:"
 msgstr ""
 
-#: config.py:180
+#: config.py:190
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:183
+#: config.py:193
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:188
+#: config.py:198
 msgid "Remove all formatting"
 msgstr ""
 
-#: config.py:200
+#: config.py:210
 msgid "Markdown:"
 msgstr ""
 
-#: config.py:203
+#: config.py:213
 msgid "Try to convert the Markdown strings to HTML"
 msgstr ""
 
-#: config.py:205
+#: config.py:215
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr ""
 
-#: config.py:209
+#: config.py:219
 msgid "Convert 'Line Return' into a new paragraph"
 msgstr ""
 
-#: config.py:211
+#: config.py:221
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
 msgstr ""
 
-#: config.py:216
+#: config.py:226
 msgid "Multiple empty paragraph:"
 msgstr ""
 
-#: config.py:223
+#: config.py:232
 msgid "Keyboard shortcuts..."
 msgstr ""
 
-#: config.py:224
+#: config.py:233
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""
