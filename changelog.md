@@ -1,3 +1,6 @@
+### version 1.5.0
+Improvement of "Single 'Line return'" option: Replace by Space, by new paragraph, no change
+
 ### version 1.4.1
 Clean text full heading
 [Fix] The text of progress dialog is correctly translated, FINALY! \o/
