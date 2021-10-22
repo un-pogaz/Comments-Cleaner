@@ -39,7 +39,7 @@ class KEY:
     
     MARKDOWN = 'Markdown'
     DOUBLE_BR = 'DoubleBR'
-    BR_TO_PARA = 'BRtoParagraph'
+    SINGLE_BR = 'SingleBR'
     EMPTY_PARA = 'EmptyParagraph'
 
 
@@ -85,6 +85,11 @@ DOUBLE_BR = OrderedDict([
                         ('new', _('Create a new paragraph')),
                         ('none', _('No change'))])
 
+SINGLE_BR = OrderedDict([
+                        ('para', _('Create a new paragraph')),
+                        ('space', _('Replace with space')),
+                        ('none', _('No change'))])
+
 EMPTY_PARA = OrderedDict([
                         ('merge', _('Merge in a single empty paragraph')),
                         ('none', _('No change')),
@@ -110,7 +115,7 @@ PREFS.defaults[KEY.DEL_FORMATTING] = False
 
 PREFS.defaults[KEY.MARKDOWN] = 'try'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
-PREFS.defaults[KEY.BR_TO_PARA] = False
+PREFS.defaults[KEY.SINGLE_BR] = 'none'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 class ConfigWidget(QWidget):
@@ -216,12 +221,11 @@ class ConfigWidget(QWidget):
         self.comboBoxDOUBLE_BR = KeyValueComboBox(self, DOUBLE_BR, PREFS[KEY.DOUBLE_BR])
         optionsTEXT_GridLayout.addWidget(self.comboBoxDOUBLE_BR, 2, 1, 1, 2)
         
-        self.checkBoxBR_TO_PARA = QCheckBox(_('Convert \'Line Return\' into a new paragraph'), self)
-        self.checkBoxBR_TO_PARA.stateChanged.connect(self.checkBox_click)
-        self.checkBoxBR_TO_PARA.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
+        optionsTEXT_GridLayout.addWidget(QLabel(_('Single \'Line Return\' in a paragraph:'), self), 3, 0, 1, 1)
+        self.comboBoxSINGLE_BR = KeyValueComboBox(self, SINGLE_BR, PREFS[KEY.SINGLE_BR])
+        self.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
                                              'and before "Multiple empty paragraph"'))
-        self.checkBoxBR_TO_PARA.setChecked(PREFS[KEY.BR_TO_PARA])
-        optionsTEXT_GridLayout.addWidget(self.checkBoxBR_TO_PARA, 3, 0, 1, 3)
+        optionsTEXT_GridLayout.addWidget(self.comboBoxSINGLE_BR, 3, 1, 1, 2)
         
         optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), self), 4, 0, 1, 1)
         self.comboBoxEMPTY_PARA = KeyValueComboBox(self, EMPTY_PARA, PREFS[KEY.EMPTY_PARA])
@@ -255,7 +259,7 @@ class ConfigWidget(QWidget):
         
         PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
         PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
-        PREFS[KEY.BR_TO_PARA] = self.checkBoxBR_TO_PARA.isChecked()
+        PREFS[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
         PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
         
         

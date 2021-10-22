@@ -300,14 +300,16 @@ def CleanHTML(text):
         if PREFS[KEY.MARKDOWN] == 'always' and passe == 0:
             text = CleanMarkdown(text)
         
-        # Multiple Line Return
+        # Multiple Line Return <br><br>
         if PREFS[KEY.DOUBLE_BR] == 'new':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text)
         elif PREFS[KEY.DOUBLE_BR] == 'empty':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text)
         
-        # <br> to <p>
-        if PREFS[KEY.BR_TO_PARA]:
+        # Single Line Return <br>
+        if PREFS[KEY.SINGLE_BR] == 'space':
+            text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2 \3</p>', text)
+        elif PREFS[KEY.SINGLE_BR] == 'para':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\1>\3</p>', text)
             text = regex.loop(r'<p(| [^>]*)></p>', r'<p\1>'+nbsp+r'</p>', text)
         
