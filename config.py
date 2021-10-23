@@ -59,7 +59,7 @@ FONT_WEIGHT = OrderedDict([
                         ('del', _('Delete Weights'))])
 
 FORCE_JUSTIFY = OrderedDict([
-                        ('all', _('Force the justification (ecrase "center" and "right")')),
+                        ('all', _('Force the justification (replace "center" and "right")')),
                         ('empty', _('Justification for indeterminate text (keep "center" and "right")')),
                         ('none', _('No change')),
                         ('del', _('Delete all alignment'))])

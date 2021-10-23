@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2021-10-22 12:36+0200\n"
+"POT-Creation-Date: 2021-10-23 08:54+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -108,7 +108,7 @@ msgid "Delete Weights"
 msgstr ""
 
 #: config.py:62
-msgid "Force the justification (ecrase \"center\" and \"right\")"
+msgid "Force the justification (replace \"center\" and \"right\")"
 msgstr ""
 
 #: config.py:63
