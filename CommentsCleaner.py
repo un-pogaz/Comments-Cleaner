@@ -243,7 +243,7 @@ def XMLformat(text):
     
     return text
 
-
+# main function
 def CleanHTML(text):
     
     # if no tag = plain text
