@@ -1,3 +1,6 @@
+### version 1.6.0
+Compatible Calibre6/Qt6
+
 ### version 1.5.0
 Improvement of "Single 'Line return'" option: Replace by Space, by new paragraph, no change
 

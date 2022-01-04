@@ -11,7 +11,11 @@ import os
 # calibre Python 3 compatibility.
 from six import text_type as unicode
 
-from PyQt5.Qt import QWidget
+try:
+    from qt.core import QWidget
+except ImportError:
+    from PyQt5.Qt import QWidget
+
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
 from calibre_plugins.comments_cleaner.config import KEY, PREFS

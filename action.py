@@ -16,10 +16,11 @@ except NameError:
 
 from functools import partial
 from datetime import datetime
+
 try:
-    from PyQt5.Qt import QToolButton, QMenu, QProgressDialog, QTimer
+    from qt.core import QToolButton, QMenu, QProgressDialog, QTimer
 except ImportError:
-    from PyQt4.Qt import QToolButton, QMenu, QProgressDialog, QTimer
+    from PyQt5.Qt import QToolButton, QMenu, QProgressDialog, QTimer
 
 from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata

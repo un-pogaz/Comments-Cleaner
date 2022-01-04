@@ -15,19 +15,16 @@ except NameError:
     pass # load_translations() added in calibre 1.9
 
 try:
-    from PyQt5 import QtWidgets as QtGui
+    from qt.core import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
+                         QTableWidgetItem, QFont, QLineEdit, QComboBox,
+                         QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
+                         QTextEdit, QListWidget, QAbstractItemView)
+        
+except ImportError:
     from PyQt5.Qt import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
                           QTableWidgetItem, QFont, QLineEdit, QComboBox,
                           QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
-                          QRegExpValidator, QRegExp, QTextEdit,
-                          QListWidget, QAbstractItemView)
-except ImportError:
-    from PyQt4 import QtGui
-    from PyQt4.Qt import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
-                          QTableWidgetItem, QFont, QLineEdit, QComboBox,
-                          QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
-                          QRegExpValidator, QRegExp, QTextEdit,
-                          QListWidget, QAbstractItemView)
+                          QTextEdit, QListWidget, QAbstractItemView)
 
 from calibre.constants import iswindows, DEBUG
 from calibre.gui2 import gprefs, error_dialog, UNDEFINED_QDATETIME, info_dialog
