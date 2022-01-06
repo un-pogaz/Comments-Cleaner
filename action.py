@@ -93,22 +93,25 @@ class CommentCleanerAction(InterfaceAction):
             return error_dialog(self.gui, _('No selected book'), _('No book selected for cleaning comments'), show=True)
         book_ids = self.gui.library_view.get_selected_ids()
         
-        cpgb = CleanerProgressDialog(self.gui, book_ids)
+        cpgb = CleanerProgressDialog(self, book_ids)
         cpgb.close()
         del cpgb
         
 
 
 class CleanerProgressDialog(QProgressDialog):
-    
-    def __init__(self, gui, book_ids):
+    def __init__(self, plugin_action, book_ids):
+        
+        # plugin_action
+        self.plugin_action = plugin_action
+        # gui
+        self.gui = self.plugin_action.gui
         
         # DB
-        self.db = gui.current_db
+        self.db = self.gui.current_db
         # DB API
-        self.dbA = gui.current_db.new_api
-        # gui
-        self.gui = gui
+        self.dbAPI = self.db.new_api
+        
         # liste of book id
         self.book_ids = book_ids
         # Count book
@@ -119,6 +122,8 @@ class CleanerProgressDialog(QProgressDialog):
         self.books_clean = 0
         # Exception
         self.exception = None
+        
+        self.time_execut = 0
         
         
         QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, self.gui)
@@ -146,15 +151,17 @@ class CleanerProgressDialog(QProgressDialog):
             debug_print('Cleaning comments as cancelled. An exception has occurred:')
             debug_print(self.exception)
         else:
+            debug_print('Settings: {0}\n'.format(PREFS))
             debug_print('Cleaning launched for {0} books.'.format(self.book_count))
             debug_print('Cleaning performed for {0} comments.'.format(self.books_clean))
-            debug_print('Settings: {0}\n'.format(PREFS))
+            debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
     
     def close(self):
-        super(CleanerProgressDialog, self).close()
+        QProgressDialog.close(self)
     
     def _run_clean_comments(self):
         
+        start = time.time()
         try:
             self.setValue(0)
             
@@ -170,7 +177,7 @@ class CleanerProgressDialog(QProgressDialog):
                     self.show()
                 
                 # get the comment
-                miA = self.dbA.get_metadata(book_id, get_cover=False, get_user_categories=False)
+                miA = self.dbAPI.get_metadata(book_id, get_cover=False, get_user_categories=False)
                 comment = miA.get('comments')
                 
                 if self.wasCanceled():
@@ -201,12 +208,13 @@ class CleanerProgressDialog(QProgressDialog):
                 self.setLabelText(_('Update the library for {:d} books...').format(books_dic_count))
                 
                 self.books_clean += len(self.books_dic)
-                self.dbA.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
+                self.dbAPI.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
                 self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
             
         except Exception as e:
             self.exception = e;
         
+        self.time_execut = round(time.time() - start, 3)
         self.db.clean()
         self.hide()
         return
