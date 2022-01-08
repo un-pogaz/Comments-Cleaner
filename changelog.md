@@ -1,3 +1,6 @@
+### version 1.6.1
+fix a regression of "del align for list <li>"
+
 ### version 1.6.0
 Compatible Calibre6/Qt6
 
