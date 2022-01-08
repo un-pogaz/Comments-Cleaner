@@ -391,6 +391,10 @@ def CleanHTML(text):
     
     text = CalibreFormat(text)
     
+    # del align for list <li>
+    if PREFS[KEY.LIST_ALIGN] == 'del':
+        text = regex.loop(r'<(ol|ul|li)([^>]*) align="[^"]*"', r'<\1\2', text)
+    
     return text
 
 
@@ -450,10 +454,6 @@ def CleanAlign(text):
     
     # del text-align
     text = regex.loop(r' style="([^"]*) text-align:([^;]*);([^"]*)"', r' style="\1\3"', text)
-    
-    # del align for list <li>
-    if PREFS[KEY.LIST_ALIGN] == 'del':
-        text = regex.loop(r'<(ol|ul|li) align="[^"]*"', r'<\1', text)
     
     # del justify for <h1>
     text = regex.loop(r'<(h\d) align="justify"', r'<\1', text)
