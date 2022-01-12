@@ -19,7 +19,7 @@ try:
                          QTableWidgetItem, QFont, QLineEdit, QComboBox,
                          QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
                          QTextEdit, QListWidget, QAbstractItemView)
-        
+    
 except ImportError:
     from PyQt5.Qt import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
                           QTableWidgetItem, QFont, QLineEdit, QComboBox,
