@@ -177,7 +177,7 @@ class CleanerProgressDialog(QProgressDialog):
                     self.show()
                 
                 # get the comment
-                miA = self.dbAPI.get_metadata(book_id, get_cover=False, get_user_categories=False)
+                miA = self.dbAPI.get_proxy_metadata(book_id)
                 comment = miA.get('comments')
                 
                 if self.wasCanceled():
