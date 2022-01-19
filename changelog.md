@@ -1,3 +1,6 @@
+### version 1.6.2
+Various technical improvement
+
 ### version 1.6.1
 fix a regression of "del align for list <li>"
 
