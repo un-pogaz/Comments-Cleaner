@@ -7,7 +7,9 @@ __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import os, time, six
+import os, sys, time
+# calibre Python 3 compatibility.
+from six import text_type as unicode
 
 try:
     load_translations()
@@ -16,15 +18,16 @@ except NameError:
 
 try:
     from qt.core import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
-                         QTableWidgetItem, QFont, QLineEdit, QComboBox,
-                         QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
-                         QTextEdit, QListWidget, QAbstractItemView)
+                            QTableWidgetItem, QFont, QLineEdit, QComboBox,
+                            QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
+                            QTextEdit, QListWidget, QAbstractItemView)
     
 except ImportError:
     from PyQt5.Qt import (Qt, QIcon, QPixmap, QLabel, QDialog, QHBoxLayout,
-                          QTableWidgetItem, QFont, QLineEdit, QComboBox,
-                          QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
-                          QTextEdit, QListWidget, QAbstractItemView)
+                            QTableWidgetItem, QFont, QLineEdit, QComboBox,
+                            QVBoxLayout, QDialogButtonBox, QStyledItemDelegate, QDateTime,
+                            QTextEdit, QListWidget, QAbstractItemView)
+
 
 from calibre.constants import iswindows, DEBUG
 from calibre.gui2 import gprefs, error_dialog, UNDEFINED_QDATETIME, info_dialog
@@ -37,23 +40,33 @@ from calibre.utils.date import now, format_date, qt_to_dt, UNDEFINED_DATE
 from calibre.utils.icu import sort_key
 from calibre import prints
 
+
 # Global definition of our plugin name. Used for common functions that require this.
 plugin_name = None
 # Global definition of our plugin resources. Used to share between the xxxAction and xxxBase
 # classes if you need any zip images to be displayed on the configuration dialog.
 plugin_icon_resources = {}
 
+DEBUG_PRE = None
 BASE_TIME = None
 def debug_print(*args):
-    global BASE_TIME
+    
+    global BASE_TIME, DEBUG_PRE
     if BASE_TIME is None:
         BASE_TIME = time.time()
+    
+    if DEBUG_PRE is None:
+        ns = __name__.split('.')
+        ns.pop(-1)
+        DEBUG_PRE = ns[-1]
+        
+        import importlib
+        DEBUG_PRE = getattr(importlib.import_module('.'.join(ns)), 'DEBUG_PRE', DEBUG_PRE)
+        
+    
     if DEBUG:
-        prints('DEBUG CommentsCleaner: ', *args)
-        #prints('DEBUG CommentsCleaner: %6.1f'%(time.time()-BASE_TIME), *args)
-
-def debug_text(pre, text):
-    debug_print(pre+':::\n'+text+'\n')
+        prints('DEBUG', DEBUG_PRE+':', *args)
+        #prints('DEBUG', DEBUG_PRE+': %6.1f'%(time.time()-BASE_TIME), *args)
 
 def set_plugin_icon_resources(name, resources):
     '''
@@ -66,7 +79,7 @@ def set_plugin_icon_resources(name, resources):
     plugin_icon_resources = resources
 
 
-def get_icon(icon_name):
+def get_icon(icon_name=None):
     '''
     Retrieve a QIcon for the named image from the zip file if it exists,
     or if not then from Calibre's image cache.
@@ -131,6 +144,33 @@ def get_library_uuid(db):
     except:
         library_uuid = ''
     return library_uuid
+
+def create_menu_item(ia, parent_menu, menu_text, image=None, tooltip=None,
+                     shortcut=(), triggered=None, is_checked=None):
+    '''
+    Create a menu action with the specified criteria and action
+    Note that if no shortcut is specified, will not appear in Preferences->Keyboard
+    This method should only be used for actions which either have no shortcuts,
+    or register their menus only once. Use create_menu_action_unique for all else.
+    '''
+    if shortcut is not None:
+        if len(shortcut) == 0:
+            shortcut = ()
+        else:
+            shortcut = _(shortcut)
+    ac = ia.create_action(spec=(menu_text, None, tooltip, shortcut),
+        attr=menu_text)
+    if image:
+        ac.setIcon(get_icon(image))
+    if triggered is not None:
+        ac.triggered.connect(triggered)
+    if is_checked is not None:
+        ac.setCheckable(True)
+        if is_checked:
+            ac.setChecked(True)
+    
+    parent_menu.addAction(ac)
+    return ac
 
 def create_menu_action_unique(ia, parent_menu, menu_text, image=None, tooltip=None,
                               shortcut=None, shortcut_name=None, triggered=None, is_checked=None,
@@ -243,8 +283,107 @@ class SizePersistedDialog(QDialog):
     def save_custom_pref(self, name, value):
         gprefs[self.unique_pref_name+':'+name] = value
 
-class KeyValueComboBox(QComboBox):
+
+class ReadOnlyTableWidgetItem(QTableWidgetItem):
+    def __init__(self, text):
+        if text is None:
+            text = ''
+        QTableWidgetItem.__init__(self, text)
+        self.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+
+class RatingTableWidgetItem(QTableWidgetItem):
+    def __init__(self, rating, is_read_only=False):
+        QTableWidgetItem.__init__(self, '')
+        self.setData(Qt.DisplayRole, rating)
+        if is_read_only:
+            self.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+
+class DateTableWidgetItem(QTableWidgetItem):
+    def __init__(self, date_read, is_read_only=False, default_to_today=False, fmt=None):
+        if (date_read == UNDEFINED_DATE) and default_to_today:
+            date_read = now()
+        if is_read_only:
+            QTableWidgetItem.__init__(self, format_date(date_read, fmt))
+            self.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+        else:
+            QTableWidgetItem.__init__(self, '')
+            dt = UNDEFINED_QDATETIME if date_read is None else QDateTime(date_read)
+            self.setData(Qt.DisplayRole, dt)
+
+class NoWheelComboBox(QComboBox):
     
+    def wheelEvent (self, event):
+        # Disable the mouse wheel on top of the combo box changing selection as plays havoc in a grid
+        event.ignore()
+
+class CheckableTableWidgetItem(QTableWidgetItem):
+    def __init__(self, checked=False, is_tristate=False):
+        QTableWidgetItem.__init__(self, '')
+        self.setFlags(Qt.ItemFlag(Qt.ItemIsSelectable | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled ))
+        if is_tristate:
+            self.setFlags(self.flags() | Qt.ItemIsTristate)
+        if checked:
+            self.setCheckState(Qt.Checked)
+        else:
+            if is_tristate and checked is None:
+                self.setCheckState(Qt.PartiallyChecked)
+            else:
+                self.setCheckState(Qt.Unchecked)
+    
+    def get_boolean_value(self):
+        '''
+        Return a boolean value indicating whether checkbox is checked
+        If this is a tristate checkbox, a partially checked value is returned as None
+        '''
+        if self.checkState() == Qt.PartiallyChecked:
+            return None
+        else:
+            return self.checkState() == Qt.Checked
+
+class TextIconWidgetItem(QTableWidgetItem):
+    def __init__(self, text, icon, tooltip=None, is_read_only=False):
+        QTableWidgetItem.__init__(self, text)
+        if icon:
+            self.setIcon(icon)
+        if tooltip:
+            self.setToolTip(tooltip)
+        if is_read_only:
+            self.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+
+class ReadOnlyTextIconWidgetItem(ReadOnlyTableWidgetItem):
+    def __init__(self, text, icon):
+        ReadOnlyTableWidgetItem.__init__(self, text)
+        if icon:
+            self.setIcon(icon)
+
+class ReadOnlyLineEdit(QLineEdit):
+    def __init__(self, text, parent):
+        if text is None:
+            text = ''
+        QLineEdit.__init__(self, text, parent)
+        self.setEnabled(False)
+
+class ListComboBox(QComboBox):
+    def __init__(self, parent, values, selected_value=None):
+        QComboBox.__init__(self, parent)
+        self.values = values
+        if selected_value is not None:
+            self.populate_combo(selected_value)
+    
+    def populate_combo(self, selected_value):
+        self.clear()
+        selected_idx = idx = -1
+        for value in self.values:
+            idx = idx + 1
+            self.addItem(value)
+            if value == selected_value:
+                selected_idx = idx
+        self.setCurrentIndex(selected_idx)
+    
+    def selected_value(self):
+        return unicode(self.currentText())
+
+class KeyValueComboBox(QComboBox):
     def __init__(self, parent, values, selected_key):
         QComboBox.__init__(self, parent)
         self.values = values
@@ -253,7 +392,7 @@ class KeyValueComboBox(QComboBox):
     def populate_combo(self, selected_key):
         self.clear()
         selected_idx = idx = -1
-        for key, value in six.iteritems(self.values):
+        for key, value in list(self.values.items()):
             idx = idx + 1
             self.addItem(value)
             if key == selected_key:
@@ -261,15 +400,159 @@ class KeyValueComboBox(QComboBox):
         self.setCurrentIndex(selected_idx)
     
     def selected_key(self):
-        for key, value in six.iteritems(self.values):
-            if value == six.text_type(self.currentText()).strip():
+        for key, value in list(self.values.items()):
+            if value == unicode(self.currentText()).strip():
                 return key
 
 class NoWheelComboBox(QComboBox):
-
     def wheelEvent (self, event):
         # Disable the mouse wheel on top of the combo box changing selection as plays havoc in a grid
         event.ignore()
+
+class CustomColumnComboBox(QComboBox):
+    def __init__(self, parent, custom_columns={}, selected_column='', initial_items=['']):
+        QComboBox.__init__(self, parent)
+        self.populate_combo(custom_columns, selected_column, initial_items)
+    
+    def populate_combo(self, custom_columns, selected_column, initial_items=['']):
+        self.clear()
+        self.column_names = list(initial_items)
+        if len(initial_items) > 0:
+            self.addItems(initial_items)
+        selected_idx = 0
+        for idx, value in enumerate(initial_items):
+            if value == selected_column:
+                selected_idx = idx
+        for key in sorted(custom_columns.keys()):
+            self.column_names.append(key)
+            self.addItem('{:s} ({:s})'.format(key, custom_columns[key]['name']))
+            if key == selected_column:
+                selected_idx = len(self.column_names) - 1
+        self.setCurrentIndex(selected_idx)
+    
+    def select_column(self, key):
+        selected_idx = 0
+        for i, val in enumerate(self.column_names):
+            if val == key:
+                selected_idx = i
+                break
+        self.setCurrentIndex(selected_idx)
+    
+    def get_selected_column(self):
+        return self.column_names[self.currentIndex()]
+
+class ReorderedComboBox(QComboBox):
+    def __init__(self, parent, strip_items=True):
+        QComboBox.__init__(self, parent)
+        self.strip_items = strip_items
+        self.setEditable(True)
+        self.setMaxCount(10)
+        self.setInsertPolicy(QComboBox.InsertAtTop)
+    
+    def populate_items(self, items, sel_item):
+        self.blockSignals(True)
+        self.clear()
+        self.clearEditText()
+        for text in items:
+            if text != sel_item:
+                self.addItem(text)
+        if sel_item:
+            self.insertItem(0, sel_item)
+            self.setCurrentIndex(0)
+        else:
+            self.setEditText('')
+        self.blockSignals(False)
+    
+    def reorder_items(self):
+        self.blockSignals(True)
+        text = unicode(self.currentText())
+        if self.strip_items:
+            text = text.strip()
+        if not text.strip():
+            return
+        existing_index = self.findText(text, Qt.MatchExactly)
+        if existing_index:
+            self.removeItem(existing_index)
+            self.insertItem(0, text)
+            self.setCurrentIndex(0)
+        self.blockSignals(False)
+    
+    def get_items_list(self):
+        if self.strip_items:
+            return [unicode(self.itemText(i)).strip() for i in range(0, self.count())]
+        else:
+            return [unicode(self.itemText(i)) for i in range(0, self.count())]
+
+class DragDropLineEdit(QLineEdit):
+    '''
+    Unfortunately there is a flaw in the Qt implementation which means that
+    when the QComboBox is in editable mode that dropEvent is not fired
+    if you drag into the editable text area. Working around this by having
+    a custom LineEdit() set for the parent combobox.
+    '''
+    def __init__(self, parent, drop_mode):
+        QLineEdit.__init__(self, parent)
+        self.drop_mode = drop_mode
+        self.setAcceptDrops(True)
+    
+    def dragMoveEvent(self, event):
+        event.acceptProposedAction()
+    
+    def dragEnterEvent(self, event):
+        if int(event.possibleActions() & Qt.CopyAction) + \
+           int(event.possibleActions() & Qt.MoveAction) == 0:
+            return
+        data = self._get_data_from_event(event)
+        if data:
+            event.acceptProposedAction()
+    
+    def dropEvent(self, event):
+        data = self._get_data_from_event(event)
+        event.setDropAction(Qt.CopyAction)
+        self.setText(data[0])
+    
+    def _get_data_from_event(self, event):
+        md = event.mimeData()
+        if self.drop_mode == 'file':
+            urls, filenames = dnd_get_files(md, ['csv', 'txt'])
+            if not urls:
+                # Nothing found
+                return
+            if not filenames:
+                # Local files
+                return urls
+            else:
+                # Remote files
+                return filenames
+        if event.mimeData().hasFormat('text/uri-list'):
+            urls = [unicode(u.toString()).strip() for u in md.urls()]
+            return urls
+
+class DragDropComboBox(ReorderedComboBox):
+    '''
+    Unfortunately there is a flaw in the Qt implementation which means that
+    when the QComboBox is in editable mode that dropEvent is not fired
+    if you drag into the editable text area. Working around this by having
+    a custom LineEdit() set for the parent combobox.
+    '''
+    def __init__(self, parent, drop_mode='url'):
+        ReorderedComboBox.__init__(self, parent)
+        self.drop_line_edit = DragDropLineEdit(parent, drop_mode)
+        self.setLineEdit(self.drop_line_edit)
+        self.setAcceptDrops(True)
+        self.setEditable(True)
+        self.setMaxCount(10)
+        self.setInsertPolicy(QComboBox.InsertAtTop)
+    
+    def dragMoveEvent(self, event):
+        self.lineEdit().dragMoveEvent(event)
+    
+    def dragEnterEvent(self, event):
+        self.lineEdit().dragEnterEvent(event)
+    
+    def dropEvent(self, event):
+        self.lineEdit().dropEvent(event)
+
 
 class KeyboardConfigDialog(SizePersistedDialog):
     '''
@@ -382,3 +665,37 @@ def CSS_CleanRules(css):
     # join in a string
     css = ' '.join(css)
     return css
+
+def CustomExceptionErrorDialog(parent, exception, custome_title=None, custome_msg=None, show=True):
+    
+    from polyglot.io import PolyglotStringIO
+    import traceback
+    from calibre import as_unicode, prepare_string_for_xml
+    
+    sio = PolyglotStringIO(errors='replace')
+    try:
+        from calibre.debug import print_basic_debug_info
+        print_basic_debug_info(out=sio)
+    except:
+        pass
+    
+    try:
+        traceback.print_exception(type(exception), exception, exception.__traceback__, file=sio)
+    except:
+        traceback.print_exception(type(exception), exception, sys.exc_traceback, file=sio)
+        pass
+    
+    fe = sio.getvalue()
+    
+    if not custome_title:
+        custome_title = _('Unhandled exception')
+    
+    if custome_msg:
+        custome_msg = '<span>' + prepare_string_for_xml(as_unicode(custome_msg +'\n')).replace('\n', '<br>')
+    else:
+        custome_msg = ''
+    
+    msg = custome_msg + '<b>{:s}</b>: '.format(exception.__class__.__name__) + prepare_string_for_xml(as_unicode(str(exception)))
+    
+    return error_dialog(parent, custome_title, msg, det_msg=fe, show=show, show_copy_button=True)
+
