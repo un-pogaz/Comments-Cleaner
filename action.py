@@ -45,7 +45,6 @@ class CommentCleanerAction(InterfaceAction):
     def genesis(self):
         self.is_library_selected = True
         self.menu = QMenu(self.gui)
-        self.menu_actions = []
         
         # Read the plugin icons and store for potential sharing with the config widget
         icon_resources = self.load_resources(PLUGIN_ICONS)
@@ -63,15 +62,13 @@ class CommentCleanerAction(InterfaceAction):
         m.clear()
         
         ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
-                                             triggered=partial(self._clean_comment),
+                                             triggered=self._clean_comment,
                                              shortcut_name='Comments Cleaner')
-        self.menu_actions.append(ac)
         
         self.menu.addSeparator()
-        ac = create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
+        create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
                                              triggered=self.show_configuration,
                                              shortcut=False)
-        self.menu_actions.append(ac)
         
         self.gui.keyboard.finalize()
     
