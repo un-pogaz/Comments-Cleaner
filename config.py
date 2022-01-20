@@ -21,10 +21,12 @@ try:
 except ImportError:
     from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 
+from calibre.gui2.ui import get_gui
 from calibre.utils.config import JSONConfig
 
 from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
 
+GUI = get_gui()
 
 PLUGIN_ICONS = ['images/plugin.png']
 
@@ -124,7 +126,6 @@ PREFS.defaults[KEY.SINGLE_BR] = 'none'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 class ConfigWidget(QWidget):
-
     def __init__(self, plugin_action):
         QWidget.__init__(self)
         
@@ -272,11 +273,10 @@ class ConfigWidget(QWidget):
         
     
     def edit_shortcuts(self):
-        self.save_settings()
-        self.plugin_action.build_menus()
-        d = KeyboardConfigDialog(self.plugin_action.gui, self.plugin_action.action_spec[0])
+        self.plugin_action.rebuild_menus()
+        d = KeyboardConfigDialog(self.plugin_action.action_spec[0])
         if d.exec_() == d.Accepted:
-            self.plugin_action.gui.keyboard.finalize()
+            GUI.keyboard.finalize()
     
     
     def checkBox_click(self, num):

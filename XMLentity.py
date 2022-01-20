@@ -9,7 +9,7 @@ __docformat__ = 'restructuredtext en'
 
 import sys, os
 
-from calibre_plugins.comments_cleaner.common_utils import debug_print, regex, PYTHON2
+from calibre_plugins.comments_cleaner.common_utils import debug_print, regex, PYTHON
 
 regex = regex()
 
@@ -39,7 +39,7 @@ def parseXMLentity(text):
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
         
-        if PYTHON2:
+        if PYTHON[0] == 2:
             text = text.replace('&#'+m+';', unichr(int(m)))
         else:
             text = text.replace('&#'+m+';', chr(int(m)))
@@ -49,7 +49,7 @@ def parseXMLentity(text):
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
         
-        if PYTHON2:
+        if PYTHON[0] == 2:
             text = text.replace('&#x'+m+';', unichr(int(m, base=16)))
         else:
             text = text.replace('&#x'+m+';', chr(int(m, base=16)))
@@ -63,7 +63,7 @@ def parseXMLentity(text):
 
 def XmlHtmlEntity(html, deci):
     
-    if PYTHON2:
+    if PYTHON[0] == 2:
         cara = unichr(deci)
     else:
         cara = chr(deci)

@@ -26,12 +26,14 @@ from calibre.db.legacy import LibraryDatabase
 from calibre.ebooks.metadata.book.base import Metadata
 from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
+from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
 from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS, PREFS
 from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print
-
 from calibre_plugins.comments_cleaner.CommentsCleaner import CleanHTML
+
+GUI = get_gui()
 
 class CommentCleanerAction(InterfaceAction):
     
@@ -44,20 +46,20 @@ class CommentCleanerAction(InterfaceAction):
     
     def genesis(self):
         self.is_library_selected = True
-        self.menu = QMenu(self.gui)
+        self.menu = QMenu(GUI)
         
         # Read the plugin icons and store for potential sharing with the config widget
         icon_resources = self.load_resources(PLUGIN_ICONS)
         set_plugin_icon_resources(self.name, icon_resources)
         
-        self.build_menus()
+        self.rebuild_menus()
         
         # Assign our menu to this action and an icon
         self.qaction.setMenu(self.menu)
         self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]))
         self.qaction.triggered.connect(self.toolbar_triggered)
     
-    def build_menus(self):
+    def rebuild_menus(self):
         m = self.menu
         m.clear()
         
@@ -70,7 +72,7 @@ class CommentCleanerAction(InterfaceAction):
                                              triggered=self.show_configuration,
                                              shortcut=False)
         
-        self.gui.keyboard.finalize()
+        GUI.keyboard.finalize()
     
     def toolbar_triggered(self):
         self._clean_comment()
@@ -78,19 +80,19 @@ class CommentCleanerAction(InterfaceAction):
     
     
     def show_configuration(self):
-        self.interface_action_base_plugin.do_user_config(self.gui)
+        self.interface_action_base_plugin.do_user_config(GUI)
         
     def _clean_comment(self):
         if not self.is_library_selected:
-            return error_dialog(self.gui, _('No selected book'), _('No book selected for cleaning comments'), show=True)
+            return error_dialog(GUI, _('No selected book'), _('No book selected for cleaning comments'), show=True)
             return
         
-        rows = self.gui.library_view.selectionModel().selectedRows()
+        rows = GUI.library_view.selectionModel().selectedRows()
         if not rows or len(rows) == 0:
-            return error_dialog(self.gui, _('No selected book'), _('No book selected for cleaning comments'), show=True)
-        book_ids = self.gui.library_view.get_selected_ids()
+            return error_dialog(GUI, _('No selected book'), _('No book selected for cleaning comments'), show=True)
+        book_ids = GUI.library_view.get_selected_ids()
         
-        cpgb = CleanerProgressDialog(self, book_ids)
+        cpgb = CleanerProgressDialog(book_ids)
         cpgb.close()
         del cpgb
         
@@ -100,15 +102,10 @@ def debug_text(pre, text):
     debug_print(pre+':::\n'+text+'\n')
 
 class CleanerProgressDialog(QProgressDialog):
-    def __init__(self, plugin_action, book_ids):
-        
-        # plugin_action
-        self.plugin_action = plugin_action
-        # gui
-        self.gui = self.plugin_action.gui
+    def __init__(self, book_ids):
         
         # DB
-        self.db = self.gui.current_db
+        self.db = GUI.current_db
         # DB API
         self.dbAPI = self.db.new_api
         
@@ -126,7 +123,7 @@ class CleanerProgressDialog(QProgressDialog):
         self.time_execut = 0
         
         
-        QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, self.gui)
+        QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, GUI)
         
         self.setWindowTitle(_('Comments Cleaner Progress'))
         self.setWindowIcon(get_icon(PLUGIN_ICONS[0]))
@@ -209,7 +206,7 @@ class CleanerProgressDialog(QProgressDialog):
                 
                 self.books_clean += len(self.books_dic)
                 self.dbAPI.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
-                self.gui.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
+                GUI.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
             
         except Exception as e:
             self.exception = e;
