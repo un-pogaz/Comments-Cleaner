@@ -18,9 +18,9 @@ except ImportError:
 
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
-from calibre_plugins.comments_cleaner.config import KEY, PREFS
-from calibre_plugins.comments_cleaner.XMLentity import parseXMLentity
-from calibre_plugins.comments_cleaner.common_utils import debug_print, regex, CSS_CleanRules
+from .config import KEY, PREFS
+from .XMLentity import parseXMLentity
+from .common_utils import debug_print, regex, CSS_CleanRules
 
 regex = regex()
 nbsp = u'\u00A0'

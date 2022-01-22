@@ -29,9 +29,9 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from calibre_plugins.comments_cleaner.config import PLUGIN_ICONS, PREFS
-from calibre_plugins.comments_cleaner.common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print
-from calibre_plugins.comments_cleaner.CommentsCleaner import CleanHTML
+from .config import PLUGIN_ICONS, PREFS
+from .common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print
+from .CommentsCleaner import CleanHTML
 
 GUI = get_gui()
 

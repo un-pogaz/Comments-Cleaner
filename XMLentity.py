@@ -9,7 +9,7 @@ __docformat__ = 'restructuredtext en'
 
 import sys, os
 
-from calibre_plugins.comments_cleaner.common_utils import debug_print, regex, PYTHON
+from .common_utils import debug_print, regex, PYTHON
 
 regex = regex()
 

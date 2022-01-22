@@ -24,7 +24,7 @@ except ImportError:
 from calibre.gui2.ui import get_gui
 from calibre.utils.config import JSONConfig
 
-from calibre_plugins.comments_cleaner.common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
+from .common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
 
 GUI = get_gui()
 
