@@ -7,15 +7,19 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import os, sys, time
+import copy, time
+# python3 compatibility
+from six.moves import range
+from six import text_type as unicode
 
 try:
     load_translations()
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from functools import partial
 from datetime import datetime
+from collections import defaultdict, OrderedDict
+from functools import partial
 
 try:
     from qt.core import QToolButton, QMenu, QProgressDialog, QTimer
@@ -30,16 +34,17 @@ from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
 from .config import PLUGIN_ICONS, PREFS
-from .common_utils import set_plugin_icon_resources, get_icon, create_menu_action_unique, debug_print
-from .CommentsCleaner import CleanHTML
+from .comments_cleaner import CleanComment
+from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, get_selected_BookIds, load_plugin_resources,
+                            create_menu_action_unique, has_restart_pending)
 
 GUI = get_gui()
 
 class CommentCleanerAction(InterfaceAction):
     
-    name = 'Comments Cleaner'
+    name = PLUGIN_NAME
     # Create our top-level menu/toolbar action (text, icon_path, tooltip, keyboard shortcut)
-    action_spec = ('Comments Cleaner', None, _('Remove the scraps CSS in HTML comments'), None)
+    action_spec = (PLUGIN_NAME, None, _('Remove the scraps CSS in HTML comments'), None)
     popup_type = QToolButton.MenuButtonPopup
     action_type = 'current'
     dont_add_to = frozenset(['context-menu-device'])
@@ -49,8 +54,7 @@ class CommentCleanerAction(InterfaceAction):
         self.menu = QMenu(GUI)
         
         # Read the plugin icons and store for potential sharing with the config widget
-        icon_resources = self.load_resources(PLUGIN_ICONS)
-        set_plugin_icon_resources(self.name, icon_resources)
+        load_plugin_resources(self.plugin_path, PLUGIN_ICONS)
         
         self.rebuild_menus()
         
@@ -59,13 +63,16 @@ class CommentCleanerAction(InterfaceAction):
         self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]))
         self.qaction.triggered.connect(self.toolbar_triggered)
     
+    def initialization_complete(self):
+        return
+    
     def rebuild_menus(self):
         m = self.menu
         m.clear()
         
         ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
                                              triggered=self._clean_comment,
-                                             shortcut_name='Comments Cleaner')
+                                             shortcut_name=PLUGIN_NAME)
         
         self.menu.addSeparator()
         create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
@@ -83,14 +90,7 @@ class CommentCleanerAction(InterfaceAction):
         self.interface_action_base_plugin.do_user_config(GUI)
         
     def _clean_comment(self):
-        if not self.is_library_selected:
-            return error_dialog(GUI, _('No selected book'), _('No book selected for cleaning comments'), show=True)
-            return
-        
-        rows = GUI.library_view.selectionModel().selectedRows()
-        if not rows or len(rows) == 0:
-            return error_dialog(GUI, _('No selected book'), _('No book selected for cleaning comments'), show=True)
-        book_ids = GUI.library_view.get_selected_ids()
+        book_ids = get_selected_BookIds()
         
         cpgb = CleanerProgressDialog(book_ids)
         cpgb.close()
@@ -105,7 +105,7 @@ class CleanerProgressDialog(QProgressDialog):
     def __init__(self, book_ids):
         
         # DB
-        self.db = GUI.current_db
+        self.db = current_db()
         # DB API
         self.dbAPI = self.db.new_api
         
@@ -187,7 +187,7 @@ class CleanerProgressDialog(QProgressDialog):
                 # process the comment
                 if comment is not None:
                     debug_text('Comment for '+book_info, comment)
-                    comment_out = CleanHTML(comment)
+                    comment_out = CleanComment(comment)
                     if comment == comment_out:
                         debug_print('Unchanged comment :::\n')
                     else:

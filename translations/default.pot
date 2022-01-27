@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-22 09:43+0100\n"
+"POT-Creation-Date: 2022-01-23 21:01+0100\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:33 action.py:42
+#: __init__.py:33 action.py:43
 msgid "Remove the scraps CSS in HTML comments"
 msgstr ""
 
@@ -30,52 +30,56 @@ msgstr ""
 msgid "&Customize plugin..."
 msgstr ""
 
-#: action.py:87 action.py:92
-msgid "No selected book"
-msgstr ""
-
-#: action.py:87 action.py:92
-msgid "No book selected for cleaning comments"
-msgstr ""
-
-#: action.py:126
+#: action.py:119
 msgid "Cancel"
 msgstr ""
 
-#: action.py:128
+#: action.py:121
 msgid "Comments Cleaner Progress"
 msgstr ""
 
-#: action.py:169
+#: action.py:162
 msgid "Book {:d} of {:d}"
 msgstr ""
 
-#: action.py:205
+#: action.py:198
 msgid "Update the library for {:d} books..."
 msgstr ""
 
-#: common_utils.py:245
+#: common_utils.py:208
+msgid "Could not to launch {:s}"
+msgstr ""
+
+#: common_utils.py:208
+msgid "No book selected"
+msgstr ""
+
+#: common_utils.py:296
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr ""
 
-#: common_utils.py:271
+#: common_utils.py:322
 msgid "Restart required"
 msgstr ""
 
-#: common_utils.py:272
+#: common_utils.py:323
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr ""
 
-#: common_utils.py:604
+#: common_utils.py:670
 msgid "Keyboard shortcut dialog"
 msgstr ""
 
-#: common_utils.py:605
+#: common_utils.py:671
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: common_utils.py:727
+#: common_utils.py:800
 msgid "Unhandled exception"
+msgstr ""
+
+#: common_utils.py:805
+msgid "{:s} an unhandled exception."
 msgstr ""
 
 #: config.py:54

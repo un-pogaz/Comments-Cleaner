@@ -7,8 +7,8 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import os
-# calibre Python 3 compatibility.
+# python3 compatibility
+from six.moves import range
 from six import text_type as unicode
 
 try:
@@ -248,7 +248,7 @@ def XMLformat(text):
     return text
 
 # main function
-def CleanHTML(text):
+def CleanComment(text):
     
     # if no tag = plain text
     if not regex.search(r'<\w+(| [^>]*)>', text):

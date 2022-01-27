@@ -7,15 +7,12 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import sys, os
-
 from .common_utils import debug_print, regex, PYTHON
 
 regex = regex()
 
 
 def parseXMLentity(text):
-    
     #    " & ' < >
     regx = r'&#x(0022|0026|0027|003C|003E);'
     while regex.search(regx, text):
@@ -23,32 +20,28 @@ def parseXMLentity(text):
         text = text.replace('&#x'+m+';', '&#'+str(int(m, base=16))+';')
     
     #    &#38; => &amp
-    for c, h, d in entitysHtmlBase() + entitysHtmlQuot() + entitysHtmlApos():
+    for c, h, d in Entitys.HtmlBase + Entitys.HtmlQuot + Entitys.HtmlApos:
         text = text.replace(d, h)
         #debug_print(h, d, c)
         # &amp; &#38; &
     
     #    &Agrave; &#192; => À
-    for c, h, d in entitysHtml2() + entitysHtml3() + entitysHtml4():
+    for c, h, d in Entitys.Html:
         text = text.replace(h, c).replace(d, c)
         #debug_print(h, d, c)
         # &Agrave; &#192; À
     
-    
     regx = r'&#(\d+);'
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
-        
         if PYTHON[0] == 2:
             text = text.replace('&#'+m+';', unichr(int(m)))
         else:
             text = text.replace('&#'+m+';', chr(int(m)))
-        
     
     regx = r'&#x([0-9a-fA-F]+);'
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
-        
         if PYTHON[0] == 2:
             text = text.replace('&#x'+m+';', unichr(int(m, base=16)))
         else:
@@ -62,7 +55,6 @@ def parseXMLentity(text):
     return text
 
 def XmlHtmlEntity(html, deci):
-    
     if PYTHON[0] == 2:
         cara = unichr(deci)
     else:
@@ -70,25 +62,17 @@ def XmlHtmlEntity(html, deci):
     
     return (cara, '&'+html+';', '&#'+str(ord(cara))+';')
 
-def entitysHtmlQuot():
-        return [
-            XmlHtmlEntity('quot', 34),
-        ]
 
-def entitysHtmlApos():
-        return [
-            XmlHtmlEntity('apos', 39),
-        ]
-
-def entitysHtmlBase():
-        return [
+class Entitys:
+    HtmlQuot = [ XmlHtmlEntity('quot', 34) ]
+    HtmlApos = [ XmlHtmlEntity('apos', 39) ]
+    HtmlBase = [
             XmlHtmlEntity('amp', 38),# &
             XmlHtmlEntity('lt', 60), # <
             XmlHtmlEntity('gt', 62), # >
         ]
-
-def entitysHtml2():
-        return [
+    
+    Html2 = [
             XmlHtmlEntity('Agrave', 192),# À
             XmlHtmlEntity('Aacute', 193),# Á
             XmlHtmlEntity('Acirc', 194), # Â
@@ -155,9 +139,8 @@ def entitysHtml2():
             XmlHtmlEntity('thorn', 254), # þ
             XmlHtmlEntity('yuml', 255),  # ÿ
         ]
-
-def entitysHtml3():
-        return [
+    
+    Html3 = [
             XmlHtmlEntity('nbsp', 160),  #  
             XmlHtmlEntity('iexcl', 161), # ¡
             XmlHtmlEntity('cent', 162),  # ¢
@@ -195,9 +178,8 @@ def entitysHtml3():
             
             XmlHtmlEntity('divide', 247),# ÷
         ]
-
-def entitysHtml4():
-        return [
+    
+    Html4 = [
             XmlHtmlEntity('OElig', 338),   # Œ
             XmlHtmlEntity('oelig', 339),   # œ
             
@@ -330,11 +312,5 @@ def entitysHtml4():
             XmlHtmlEntity('lang', 10216),  # ⟨
             XmlHtmlEntity('rang', 10217),  # ⟩
         ]
-
-
-def main():
-    print('I reached main when I should not have\n')
-    return -1
-
-if __name__ == '__main__':
-    sys.exit(main())
+    
+    Html = Html2 + Html3 + Html4

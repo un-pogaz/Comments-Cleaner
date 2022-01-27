@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-22 09:40+0100\n"
-"PO-Revision-Date: 2022-01-22 09:44+0100\n"
+"POT-Creation-Date: 2022-01-25 10:23+0100\n"
+"PO-Revision-Date: 2022-01-25 10:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,25 +17,17 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:33 action.py:42
+#: __init__.py:33 action.py:47
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
-#: action.py:66
+#: action.py:73
 msgid "&Clean the selecteds Comments"
 msgstr "&Nettoyer les commentaires sélectionnés"
 
-#: action.py:71
+#: action.py:78
 msgid "&Customize plugin..."
 msgstr "&Personnaliser l'extension..."
-
-#: action.py:87 action.py:92
-msgid "No selected book"
-msgstr "Aucun livre sélectionné"
-
-#: action.py:87 action.py:92
-msgid "No book selected for cleaning comments"
-msgstr "Aucun livre sélectionné pour le nettoyage"
 
 #: action.py:126
 msgid "Cancel"
@@ -53,192 +45,204 @@ msgstr "Livre {:d} sur {:d}"
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils.py:245
+#: common_utils.py:223
+msgid "No book selected"
+msgstr "Aucun livre sélectionné"
+
+#: common_utils.py:224
+msgid "Could not to launch {:s}"
+msgstr "Impossible de lancer {:s}"
+
+#: common_utils.py:312
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils.py:271
+#: common_utils.py:338
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:272
+#: common_utils.py:339
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:604
+#: common_utils.py:684
 msgid "Keyboard shortcut dialog"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:605
+#: common_utils.py:685
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:727
+#: common_utils.py:820
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: config.py:54
+#: common_utils.py:825
+msgid "The {:s} plugin has encounter a unhandled exception."
+msgstr "Le plugin {:s} a rencontré une exception non gérée."
+
+#: config.py:59
 msgid "Keep URL"
 msgstr "Conserver les URL"
 
-#: config.py:55
+#: config.py:60
 msgid "Delete URL"
 msgstr "Supprimer les URL"
 
-#: config.py:58
+#: config.py:63
 msgid "Converte to a paragraph"
 msgstr "Convertir en paragraphe"
 
-#: config.py:59
+#: config.py:64
 msgid "Converte to a paragraph but keep the bold"
 msgstr "Convertir en paragraphe mais conserver le gras"
 
-#: config.py:60 config.py:71 config.py:82 config.py:88 config.py:93
-#: config.py:98 config.py:102
+#: config.py:65 config.py:76 config.py:87 config.py:93 config.py:98
+#: config.py:103 config.py:107
 msgid "No change"
 msgstr "Aucune modification"
 
-#: config.py:63
+#: config.py:68
 msgid "Round the Weights value to the hundred"
 msgstr "Arrondir la valeur de la Graisse a la centaine"
 
-#: config.py:64
+#: config.py:69
 msgid "Round to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
-#: config.py:65
+#: config.py:70
 msgid "Do not change the Weights"
 msgstr "Ne pas changer la Graisse"
 
-#: config.py:66
+#: config.py:71
 msgid "Delete Weights"
 msgstr "Supprimer la Graisse"
 
-#: config.py:69
+#: config.py:74
 msgid "Force the justification (replace \"center\" and \"right\")"
 msgstr "Forcer la justification (remplacer \"center\" et \"right\")"
 
-#: config.py:70
+#: config.py:75
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justification pour le texte indéterminé (conserver \"center\" et \"right\")"
 
-#: config.py:72
+#: config.py:77
 msgid "Delete all alignment"
 msgstr "Supprimer tous les alignement"
 
-#: config.py:75
+#: config.py:80
 msgid "Use the 'Justification' setting"
 msgstr "Utilisez le paramètre \"Justification\""
 
-#: config.py:76
+#: config.py:81
 msgid "Delete the alignment in lists"
 msgstr "Supprimer l'alignement dans les listes"
 
-#: config.py:79
+#: config.py:84
 msgid "Delete \"id\" attribut"
 msgstr "Supprimer les attributs \"id\""
 
-#: config.py:80
+#: config.py:85
 msgid "Delete \"class\" attribut"
 msgstr "Supprimer les attributs \"class\""
 
-#: config.py:81
+#: config.py:86
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Supprimer les attributs \"class\" et \"id\""
 
-#: config.py:86
+#: config.py:91
 msgid "Convert in all comments (not recomanded)"
 msgstr "Convertir dans tous les commentaires (non recommandé)"
 
-#: config.py:87
+#: config.py:92
 msgid "Convert only from a plain text comment"
 msgstr "Convertir uniqument les commentaires en text brut"
 
-#: config.py:91
+#: config.py:96
 msgid "Create a empty paragraph"
 msgstr "Crée un paragraphe vide"
 
-#: config.py:92 config.py:96
+#: config.py:97 config.py:101
 msgid "Create a new paragraph"
 msgstr "Crée un nouveau paragraphe"
 
-#: config.py:97
+#: config.py:102
 msgid "Replace with space"
 msgstr "Remplacer par un espace"
 
-#: config.py:101
+#: config.py:106
 msgid "Merge in a single empty paragraph"
 msgstr "Fusionner en un seul paragraphe vide"
 
-#: config.py:103
+#: config.py:108
 msgid "Delete empty paragraph"
 msgstr "Supprimer les paragraphes vide"
 
-#: config.py:136
+#: config.py:141
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:157
+#: config.py:162
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:161
+#: config.py:166
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:171
+#: config.py:176
 msgid "Remove Italic"
 msgstr "Supprimer l'Italique"
 
-#: config.py:175
+#: config.py:180
 msgid "Remove Underline"
 msgstr "Supprimer le soulignement"
 
-#: config.py:179
+#: config.py:184
 msgid "Remove Strikethrough"
 msgstr "Supprimer le texte barré"
 
-#: config.py:186
+#: config.py:191
 msgid "Justification:"
 msgstr "Justification :"
 
-#: config.py:190
+#: config.py:195
 msgid "List alignment:"
 msgstr "Alignement des listes :"
 
-#: config.py:194
+#: config.py:199
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:201
+#: config.py:206
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:204
+#: config.py:209
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:209
+#: config.py:214
 msgid "Remove all formatting"
 msgstr "Effacer toute mise en forme"
 
-#: config.py:221
+#: config.py:226
 msgid "Markdown:"
 msgstr "Markdown :"
 
-#: config.py:224
+#: config.py:229
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Essayer de convertir les chaînes de caractères Markdown en HTML"
 
-#: config.py:226
+#: config.py:231
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:230
+#: config.py:235
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "Simple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:232
+#: config.py:237
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -246,17 +250,20 @@ msgstr ""
 "Cette opération est appliqué aprés « Multiple \"Retour a la ligne\" dans un paragraphe »\n"
 "et avant « Multiple paragraphes vide »"
 
-#: config.py:236
+#: config.py:241
 msgid "Multiple empty paragraph:"
 msgstr "Multiple paragraphes vide :"
 
-#: config.py:242
+#: config.py:247
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:243
+#: config.py:248
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
+
+#~ msgid "No book selected for cleaning comments"
+#~ msgstr "Aucun livre sélectionné pour le nettoyage"
 
 #~ msgid "Convert single 'Line Return':"
 #~ msgstr "Convertir un simple 'retour de ligne' :"

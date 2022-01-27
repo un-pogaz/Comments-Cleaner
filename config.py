@@ -7,14 +7,19 @@ __license__   = 'GPL v3'
 __copyright__ = '2011, Grant Drake <grant.drake@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy, os
+import copy
+# python3 compatibility
+from six.moves import range
+from six import text_type as unicode
 
 try:
     load_translations()
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from collections import OrderedDict
+from datetime import datetime
+from collections import defaultdict, OrderedDict
+from functools import partial
 
 try:
     from qt.core import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
@@ -22,9 +27,9 @@ except ImportError:
     from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 
 from calibre.gui2.ui import get_gui
-from calibre.utils.config import JSONConfig
 
-from .common_utils import KeyValueComboBox, KeyboardConfigDialog, ImageTitleLayout, get_library_uuid, debug_print, CSS_CleanRules
+from .common_utils import (debug_print, PREFS_json, ImageTitleLayout, KeyboardConfigDialog,
+                            KeyValueComboBox, CSS_CleanRules)
 
 GUI = get_gui()
 
@@ -104,7 +109,7 @@ EMPTY_PARA = OrderedDict([
 
 
 # This is where all preferences for this plugin are stored
-PREFS = JSONConfig('plugins/Comment Cleaner')
+PREFS = PREFS_json()
 
 # Set defaults
 PREFS.defaults[KEY.KEEP_URL] = 'keep'
@@ -273,10 +278,7 @@ class ConfigWidget(QWidget):
         
     
     def edit_shortcuts(self):
-        self.plugin_action.rebuild_menus()
-        d = KeyboardConfigDialog(self.plugin_action.action_spec[0])
-        if d.exec_() == d.Accepted:
-            GUI.keyboard.finalize()
+        KeyboardConfigDialog.edit_shortcuts(self.plugin_action)
     
     
     def checkBox_click(self, num):
