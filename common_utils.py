@@ -1077,4 +1077,3 @@ def get_decorators_names(func):
         for line in source[:index].strip().splitlines()
         if line.strip()[0] == "@"
     ]
-                
