@@ -40,7 +40,7 @@ from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, get_s
 
 GUI = get_gui()
 
-class CommentCleanerAction(InterfaceAction):
+class CommentsCleanerAction(InterfaceAction):
     
     name = PLUGIN_NAME
     # Create our top-level menu/toolbar action (text, icon_path, tooltip, keyboard shortcut)
@@ -125,7 +125,7 @@ class CleanerProgressDialog(QProgressDialog):
         
         QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, GUI)
         
-        self.setWindowTitle(_('{:s} progress').format(PLUGIN_NAME))
+        self.setWindowTitle(_('Comments Cleaner progress').format(PLUGIN_NAME))
         self.setWindowIcon(get_icon(PLUGIN_ICONS[0]))
         
         self.setValue(0)

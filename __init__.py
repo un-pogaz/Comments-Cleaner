@@ -17,9 +17,9 @@ except NameError:
 # The class that all Interface Action plugin wrappers must inherit from
 from calibre.customize import InterfaceActionBase
 
-DEBUG_PRE = 'CommentCleaner'
+DEBUG_PRE = 'CommentsCleaner'
 
-class ActionCommentCleaner(InterfaceActionBase):
+class ActionCommentsCleaner(InterfaceActionBase):
     '''
     This class is a simple wrapper that provides information about the actual
     plugin class. The actual interface plugin class is called InterfacePlugin
@@ -39,7 +39,7 @@ class ActionCommentCleaner(InterfaceActionBase):
     #: This field defines the GUI plugin class that contains all the code
     #: that actually does something. Its format is module_path:class_name
     #: The specified class must be defined in the specified module.
-    actual_plugin           = 'calibre_plugins.comments_cleaner.action:CommentCleanerAction'
+    actual_plugin           = 'calibre_plugins.comments_cleaner.action:CommentsCleanerAction'
 
     def is_customizable(self):
         '''
