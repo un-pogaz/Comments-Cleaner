@@ -125,7 +125,7 @@ class CleanerProgressDialog(QProgressDialog):
         
         QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, GUI)
         
-        self.setWindowTitle(_('Comments Cleaner Progress'))
+        self.setWindowTitle(_('{:s} progress').format(PLUGIN_NAME))
         self.setWindowIcon(get_icon(PLUGIN_ICONS[0]))
         
         self.setValue(0)
