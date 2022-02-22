@@ -70,7 +70,7 @@ class CommentsCleanerAction(InterfaceAction):
         m = self.menu
         m.clear()
         
-        ac = create_menu_action_unique(self, m, _('&Clean the selecteds Comments'), PLUGIN_ICONS[0],
+        ac = create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICONS[0],
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         
@@ -209,7 +209,7 @@ class CleanerProgressDialog(QProgressDialog):
                 GUI.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
             
         except Exception as e:
-            self.exception = e;
+            self.exception = e
         
         self.time_execut = round(time.time() - start, 3)
         self.db.clean()
