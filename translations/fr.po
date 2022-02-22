@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-01-25 10:23+0100\n"
-"PO-Revision-Date: 2022-01-25 10:23+0100\n"
+"POT-Creation-Date: 2022-02-22 22:41+0100\n"
+"PO-Revision-Date: 2022-02-22 22:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -22,7 +22,7 @@ msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
 #: action.py:73
-msgid "&Clean the selecteds Comments"
+msgid "&Clean the selected comments"
 msgstr "&Nettoyer les commentaires sélectionnés"
 
 #: action.py:78
@@ -34,7 +34,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: action.py:128
-msgid "Comments Cleaner Progress"
+msgid "Comments Cleaner progress"
 msgstr "Progression de Comments Cleaner"
 
 #: action.py:169
@@ -45,39 +45,39 @@ msgstr "Livre {:d} sur {:d}"
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils.py:223
+#: common_utils.py:266
 msgid "No book selected"
 msgstr "Aucun livre sélectionné"
 
-#: common_utils.py:224
+#: common_utils.py:267
 msgid "Could not to launch {:s}"
 msgstr "Impossible de lancer {:s}"
 
-#: common_utils.py:312
+#: common_utils.py:355
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils.py:338
+#: common_utils.py:381
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:339
+#: common_utils.py:382
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:684
+#: common_utils.py:726
 msgid "Keyboard shortcut dialog"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:685
+#: common_utils.py:727
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:820
+#: common_utils.py:856
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils.py:825
+#: common_utils.py:861
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 
