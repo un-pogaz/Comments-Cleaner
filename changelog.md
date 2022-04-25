@@ -1,4 +1,4 @@
-### version 1.6.2
+### version 1.6.3
 Improve a bad parse for raw text comment but containing \<br\> tags
 
 ### version 1.6.2
