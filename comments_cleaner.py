@@ -251,8 +251,9 @@ def XMLformat(text):
 def CleanComment(text):
     
     # if no tag = plain text
-    if not regex.search(r'<\w+(| [^>]*)>', text):
+    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
         text = regex.loop(r'(\r\n|\r)', r'\n', text)
+        text = regex.loop(r'<br(| [^>]*)/?>', r'\n', text)
         text = '<div><p>' + regex.loop(r'\n{2,}', r'</p><p>', text) + '</p></div>'
         text = regex.loop(r'\n', r'<br>', text)
         text = regex.loop(r'(<p>|<br>)\s+', r'\1', text)

@@ -1,8 +1,11 @@
 ### version 1.6.2
+Improve a bad parse for raw text comment but containing \<br\> tags
+
+### version 1.6.2
 Various technical improvement
 
 ### version 1.6.1
-fix a regression of "del align for list <li>"
+fix a regression of "del align for list \<li\>"
 
 ### version 1.6.0
 Compatible Calibre6/Qt6
@@ -11,20 +14,20 @@ Compatible Calibre6/Qt6
 Improvement of "Single 'Line return'" option: Replace by Space, by new paragraph, no change
 
 ### version 1.4.1
-Clean text full heading
+Clean text full heading<br>
 [Fix] The text of progress dialog is correctly translated, FINALY! \o/
 
 ### version 1.4.0
-Better support of small screens for the config dialog
-Improve <br> in <strong>/<em>
-Improve clean for text fully bold and <sup>/<sub> paragraphe
+Better support of small screens for the config dialog<br>
+Improve \<br\> in \<strong\>/<em\><br>
+Improve clean for text fully bold and \<sup\>/\<sub\> paragraphe<br>
 Improved uniformity with the Calibre comment format
 
 ### version 1.3.4
 Clean text fully bold
 
 ### version 1.3.3
-Clean a very rare invalid comment fomat (all in <sub>/<sup>)
+Clean a very rare invalid comment fomat (all in \<sub\>/\<sup\>)
 
 ### version 1.3.2
 [Fix] convert to list a plain text beginning with a year
