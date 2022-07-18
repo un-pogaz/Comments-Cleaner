@@ -29,7 +29,7 @@ except ImportError:
 from calibre.gui2.ui import get_gui
 
 from .common_utils import (debug_print, PREFS_json, ImageTitleLayout, KeyboardConfigDialog,
-                            KeyValueComboBox, CSS_CleanRules)
+                            KeyValueComboBox, CSS_CleanRules, calibre_version)
 
 GUI = get_gui()
 
@@ -69,6 +69,7 @@ FONT_WEIGHT = OrderedDict([
                         ('bold', _('Round to Bold (value 600)')),
                         ('none', _('Do not change the Weights')),
                         ('del', _('Delete Weights'))])
+FONT_WEIGHT_ALT = _('Round to Bold (value \'bold\')')
 
 FORCE_JUSTIFY = OrderedDict([
                         ('all', _('Force the justification (replace "center" and "right")')),
@@ -129,6 +130,15 @@ PREFS.defaults[KEY.MARKDOWN] = 'try'
 PREFS.defaults[KEY.DOUBLE_BR] = 'new'
 PREFS.defaults[KEY.SINGLE_BR] = 'none'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
+
+#fix a imcompatibility change in Calibre 6
+if calibre_version >= (6,0,0):
+    del FONT_WEIGHT['trunc']
+    FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
+    if PREFS[KEY.FONT_WEIGHT] == 'trunc':
+        PREFS[KEY.FONT_WEIGHT] = 'bold'
+
+
 
 class ConfigWidget(QWidget):
     def __init__(self, plugin_action):

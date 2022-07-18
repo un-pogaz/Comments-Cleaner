@@ -1,3 +1,6 @@
+### version 1.7.0
+Small technical change due compatibility with Calibre 6
+
 ### version 1.6.3
 Improve a bad parse for raw text comment but containing \<br\> tags
 

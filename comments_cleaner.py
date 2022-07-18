@@ -20,7 +20,7 @@ from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
 from .config import KEY, PREFS
 from .XMLentity import parseXMLentity
-from .common_utils import debug_print, regex, CSS_CleanRules
+from .common_utils import debug_print, regex, CSS_CleanRules, calibre_version
 
 regex = regex()
 nbsp = u'\u00A0'
@@ -390,6 +390,10 @@ def CleanComment(text):
         text = CleanBasic(text)
         #
     
+    #fix a imcompatibility change in Calibre 6
+    if calibre_version >= (6,0,0):
+        text = regex.loop(r' style="([^"]*)font-weight: 600([^"]*)"', r' style="\1font-weight: bold\2"', text)
+    
     text = CalibreFormat(text)
     
     # del align for list <li>
@@ -485,9 +489,9 @@ def CleanStyle(text):
     
     # font-weight
     text = regex.loop(r' style="([^"]*) font-weight: (?!bold|bolder|\d+)[^;]*;([^"]*)"', r' style="\1\2"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1font-weight: 600\3"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (\d){4,}(?:\.\d+)?;([^"]*)"', r' style="\1font-weight: 900;\3"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (\d){1,2}(?:\.\d+)?;([^"]*)"', r' style="\1font-weight: 100;\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1 font-weight: 600;\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (\d){4,}(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 900;\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (\d){1,2}(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 100;\3"', text)
     
     if PREFS[KEY.FONT_WEIGHT] == 'trunc' or PREFS[KEY.FONT_WEIGHT] == 'bold':
         
