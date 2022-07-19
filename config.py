@@ -66,10 +66,10 @@ HEADINGS = OrderedDict([
 
 FONT_WEIGHT = OrderedDict([
                         ('trunc', _('Round the Weights value to the hundred')),
-                        ('bold', _('Round to Bold (value 600)')),
+                        ('bold', _('Round to Bold (value \'bold\')')),
                         ('none', _('Do not change the Weights')),
                         ('del', _('Delete Weights'))])
-FONT_WEIGHT_ALT = _('Round to Bold (value \'bold\')')
+FONT_WEIGHT_ALT = _('Round to Bold (value 600)')
 
 FORCE_JUSTIFY = OrderedDict([
                         ('all', _('Force the justification (replace "center" and "right")')),
@@ -131,10 +131,17 @@ PREFS.defaults[KEY.DOUBLE_BR] = 'new'
 PREFS.defaults[KEY.SINGLE_BR] = 'none'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
-#fix a imcompatibility change in Calibre 6
+
+
+#fix a imcompatibility betwen multiple Calibre version
+def CalibreVersions_Bold():
+    return calibre_version < (4,0,0) or calibre_version >= (6,0,0)
+
+if not CalibreVersions_Bold():
+    FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
+
 if calibre_version >= (6,0,0):
     del FONT_WEIGHT['trunc']
-    FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
     if PREFS[KEY.FONT_WEIGHT] == 'trunc':
         PREFS[KEY.FONT_WEIGHT] = 'bold'
 

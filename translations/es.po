@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-07-18 17:41+0200\n"
-"PO-Revision-Date: 2022-07-18 17:41+0200\n"
+"POT-Creation-Date: 2022-07-19 16:39+0200\n"
+"PO-Revision-Date: 2022-07-19 16:39+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -107,8 +107,8 @@ msgid "Round the Weights value to the hundred"
 msgstr "Redondea el valor de carga a cien"
 
 #: config.py:69
-msgid "Round to Bold (value 600)"
-msgstr "Redonda a negrita (valor 600)"
+msgid "Round to Bold (value 'bold')"
+msgstr "Redonda a negrita (valor \"bold\")"
 
 #: config.py:70
 msgid "Do not change the Weights"
@@ -119,8 +119,8 @@ msgid "Delete Weights"
 msgstr "Eliminar Cargas"
 
 #: config.py:72
-msgid "Round to Bold (value 'bold')"
-msgstr "Redonda a negrita (valor \"bold\")"
+msgid "Round to Bold (value 600)"
+msgstr "Redonda a negrita (valor 600)"
 
 #: config.py:75
 msgid "Force the justification (replace \"center\" and \"right\")"
@@ -182,71 +182,71 @@ msgstr "Combinar en un solo párrafo vacío"
 msgid "Delete empty paragraph"
 msgstr "Eliminar párrafo vacío"
 
-#: config.py:152
+#: config.py:158
 msgid "Comments Cleaner Options"
 msgstr "Comments Cleaner Opciones"
 
-#: config.py:173
+#: config.py:179
 msgid "Hyperlink:"
 msgstr "Hipervinculo:"
 
-#: config.py:177
+#: config.py:183
 msgid "Headings:"
 msgstr "Encabezados:"
 
-#: config.py:187
+#: config.py:193
 msgid "Remove Italic"
 msgstr "Quitar cursiva"
 
-#: config.py:191
+#: config.py:197
 msgid "Remove Underline"
 msgstr "Quitar subrayado"
 
-#: config.py:195
+#: config.py:201
 msgid "Remove Strikethrough"
 msgstr "Quitar tachado"
 
-#: config.py:202
+#: config.py:208
 msgid "Justification:"
 msgstr "Justificación:"
 
-#: config.py:206
+#: config.py:212
 msgid "List alignment:"
 msgstr "Alineación de lista:"
 
-#: config.py:210
+#: config.py:216
 msgid "ID & CLASS attributs:"
 msgstr "ID & CLASS atributos:"
 
-#: config.py:217
+#: config.py:223
 msgid "CSS rule to keep:"
 msgstr "Regla CSS para mantener:"
 
-#: config.py:220
+#: config.py:226
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Reglas CSS personalizadas para mantener además de las básicas. Reglas separadas por un espacio."
 
-#: config.py:225
+#: config.py:231
 msgid "Remove all formatting"
 msgstr "Eliminar todo el formato"
 
-#: config.py:237
+#: config.py:243
 msgid "Markdown:"
 msgstr "Markdown:"
 
-#: config.py:240
+#: config.py:246
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Intenta convertir las cadenas de Markdown a HTML"
 
-#: config.py:242
+#: config.py:248
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Múltiples 'Retorno de línea' en un párrafo:"
 
-#: config.py:246
+#: config.py:252
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "'Retorno de línea' único en un párrafo:"
 
-#: config.py:248
+#: config.py:254
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -254,15 +254,15 @@ msgstr ""
 "Esta operación se aplica después de \"Múltiples 'Retorno de línea' en un párrafo\"\n"
 "y antes de \"Varios párrafos vacíos\""
 
-#: config.py:252
+#: config.py:258
 msgid "Multiple empty paragraph:"
 msgstr "Múltiples párrafos vacíos:"
 
-#: config.py:258
+#: config.py:264
 msgid "Keyboard shortcuts..."
 msgstr "Atajos de Teclado..."
 
-#: config.py:259
+#: config.py:265
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Edite los atajos de teclado asociados con este complemento"
 

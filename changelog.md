@@ -1,3 +1,6 @@
+### version 1.7.1
+Small improvement of betwen multiple Calibre version
+
 ### version 1.7.0
 Small technical change due compatibility with Calibre 6
 

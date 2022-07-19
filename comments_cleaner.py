@@ -18,9 +18,9 @@ except ImportError:
 
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
-from .config import KEY, PREFS
+from .config import KEY, PREFS, CalibreVersions_Bold
 from .XMLentity import parseXMLentity
-from .common_utils import debug_print, regex, CSS_CleanRules, calibre_version
+from .common_utils import debug_print, regex, CSS_CleanRules
 
 regex = regex()
 nbsp = u'\u00A0'
@@ -390,9 +390,7 @@ def CleanComment(text):
         text = CleanBasic(text)
         #
     
-    #fix a imcompatibility change in Calibre 6
-    if calibre_version >= (6,0,0):
-        text = regex.loop(r' style="([^"]*)font-weight: 600([^"]*)"', r' style="\1font-weight: bold\2"', text)
+    text = FixWeight(text)
     
     text = CalibreFormat(text)
     
@@ -413,6 +411,18 @@ def CalibreFormat(text):
     CommentsEditor.current_val = text
     text = CommentsEditor.current_val
     
+    return text
+
+
+#fix a imcompatibility betwen multiple Calibre version
+if CalibreVersions_Bold():
+    font_weight = 'font-weight: 700'
+else:
+    font_weight = 'font-weight: 600'
+
+def FixWeight(text):
+    if CalibreVersions_Bold():
+        text = regex.loop(r' style="([^"]*)'+font_weight+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
 
 
@@ -489,29 +499,31 @@ def CleanStyle(text):
     
     # font-weight
     text = regex.loop(r' style="([^"]*) font-weight: (?!bold|bolder|\d+)[^;]*;([^"]*)"', r' style="\1\2"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1 font-weight: 600;\3"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (\d){4,}(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 900;\3"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (\d){1,2}(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 100;\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1 '+font_weight+r';\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (\d{4,})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 900;\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (\d{1,2})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 100;\3"', text)
+    text = regex.simple(r' style="([^"]*) font-weight: (\d{3})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: \2;\3"', text)
     
     if PREFS[KEY.FONT_WEIGHT] == 'trunc' or PREFS[KEY.FONT_WEIGHT] == 'bold':
         
-        text = regex.loop(r' style="([^"]*) font-weight: (?P<name>\d\d)0(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text)
-        regx = r' style="([^"]*) font-weight: (?P<name>\d\d[1-9])(?:\.\d+)?;([^"]*)"'
+        text = regex.loop(r' style="([^"]*) font-weight: (?P<name>\d\d)0;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text)
+        regx = r' style="([^"]*) font-weight: (?P<name>\d\d[1-9]);([^"]*)"'
         while regex.search(regx, text):
             
             m = regex.search(regx, text)
-            d = regex.search(regx, text).group('name')
-            rpl = regex.loop(regx, r' style="\1 font-weight: '+str(round(int(d),-2))+r';\3"', m.group(0))
+            d = m.group('name')
+            rpl = regex.loop(regx, r' style="\1 font-weight: '+str(int(round(int(d),-2)))+r';\3"', m.group(0))
             text = text.replace(m.group(0), rpl)
     
     if PREFS[KEY.FONT_WEIGHT] == 'bold':
-        text = regex.loop(r' style="([^"]*) font-weight: [5-9]\d\d(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
-        text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 font-weight: 600;\2"', text)
-        text = regex.loop(r' style="([^"]*) font-weight: [1-4]\d\d(?:\.\d+)?;([^"]*)"', r' style="\1\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: [5-9]\d\d;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 '+font_weight+r';\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: [1-4]\d\d;([^"]*)"', r' style="\1\2"', text)
         
     elif PREFS[KEY.FONT_WEIGHT] == 'del':
         text = regex.loop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]*) font-weight:[^;]*;([^"]*)"', r' style="\1\2"', text)
+    
     
     # font-style
     text = regex.loop(r' style="([^"]*) font-style: (?!oblique|italic)[^;]*;([^"]*)"', r' style="\1\2"', text)
