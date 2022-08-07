@@ -19,11 +19,11 @@ except ImportError:
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
 from .config import KEY, PREFS, CalibreVersions_Bold
-from .XMLentity import parseXMLentity
+from .XMLentity import parseXMLentity, Entitys
 from .common_utils import debug_print, regex, CSS_CleanRules
 
 regex = regex()
-nbsp = u'\u00A0'
+nbsp = Entitys.nbsp.char
 
 # Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
 TAGS = [

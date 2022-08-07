@@ -1,3 +1,6 @@
+### version 1.7.2
+[internal] Small improvement of XMLentity
+
 ### version 1.7.1
 Small improvement of compatibility betwen multiple Calibre version
 
