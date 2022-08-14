@@ -35,7 +35,7 @@ from calibre.library import current_library_name
 
 from .config import PLUGIN_ICONS, PREFS
 from .comments_cleaner import CleanComment
-from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, get_selected_BookIds, load_plugin_resources,
+from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, get_BookIds_selected, load_plugin_resources,
                             create_menu_action_unique, has_restart_pending)
 
 GUI = get_gui()
@@ -90,7 +90,7 @@ class CommentsCleanerAction(InterfaceAction):
         self.interface_action_base_plugin.do_user_config(GUI)
         
     def _clean_comment(self):
-        book_ids = get_selected_BookIds()
+        book_ids = get_BookIds_selected()
         
         cpgb = CleanerProgressDialog(book_ids)
         cpgb.close()
