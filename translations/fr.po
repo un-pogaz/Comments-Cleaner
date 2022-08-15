@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-07-19 16:39+0200\n"
-"PO-Revision-Date: 2022-07-19 16:39+0200\n"
+"POT-Creation-Date: 2022-08-15 16:58+0200\n"
+"PO-Revision-Date: 2022-08-15 16:58+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -45,39 +45,51 @@ msgstr "Livre {:d} sur {:d}"
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils.py:266
-msgid "No book selected"
-msgstr "Aucun livre sélectionné"
-
-#: common_utils.py:267
+#: common_utils.py:258
 msgid "Could not to launch {:s}"
 msgstr "Impossible de lancer {:s}"
 
-#: common_utils.py:355
+#: common_utils.py:278
+msgid "No book selected"
+msgstr "Aucun livre sélectionné"
+
+#: common_utils.py:283
+msgid "No book in the library"
+msgstr "Pas de livres dans bibliothèque"
+
+#: common_utils.py:290 common_utils.py:298
+msgid "No book in the virtual library"
+msgstr "Pas de livres dans la bibliothèque virtuel"
+
+#: common_utils.py:305
+msgid "No book in the current search"
+msgstr "Pas de livres dans la recherche actuelle"
+
+#: common_utils.py:435
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils.py:381
+#: common_utils.py:461
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:382
+#: common_utils.py:462
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:726
+#: common_utils.py:806
 msgid "Keyboard shortcut dialog"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:727
+#: common_utils.py:807
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:856
+#: common_utils.py:936
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils.py:861
+#: common_utils.py:941
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 

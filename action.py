@@ -90,7 +90,7 @@ class CommentsCleanerAction(InterfaceAction):
         self.interface_action_base_plugin.do_user_config(GUI)
         
     def _clean_comment(self):
-        book_ids = get_BookIds_selected()
+        book_ids = get_BookIds_selected(show_error=True)
         
         cpgb = CleanerProgressDialog(book_ids)
         cpgb.close()
