@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-15 16:58+0200\n"
-"PO-Revision-Date: 2022-08-15 16:58+0200\n"
+"POT-Creation-Date: 2022-08-16 15:53+0200\n"
+"PO-Revision-Date: 2022-08-16 15:53+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,79 +17,79 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:33 action.py:47
+#: __init__.py:33 action.py:48
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
-#: action.py:73
+#: action.py:74
 msgid "&Clean the selected comments"
 msgstr "&Nettoyer les commentaires sélectionnés"
 
-#: action.py:78
+#: action.py:79
 msgid "&Customize plugin..."
 msgstr "&Personnaliser l'extension..."
 
-#: action.py:126
+#: action.py:127
 msgid "Cancel"
 msgstr "Annuler"
 
-#: action.py:128
+#: action.py:129
 msgid "Comments Cleaner progress"
 msgstr "Progression de Comments Cleaner"
 
-#: action.py:169
+#: action.py:170
 msgid "Book {:d} of {:d}"
 msgstr "Livre {:d} sur {:d}"
 
-#: action.py:205
+#: action.py:206
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils.py:258
-msgid "Could not to launch {:s}"
-msgstr "Impossible de lancer {:s}"
-
-#: common_utils.py:278
-msgid "No book selected"
-msgstr "Aucun livre sélectionné"
-
-#: common_utils.py:283
-msgid "No book in the library"
-msgstr "Pas de livres dans bibliothèque"
-
-#: common_utils.py:290 common_utils.py:298
-msgid "No book in the virtual library"
-msgstr "Pas de livres dans la bibliothèque virtuel"
-
-#: common_utils.py:305
-msgid "No book in the current search"
-msgstr "Pas de livres dans la recherche actuelle"
-
-#: common_utils.py:435
+#: common_utils.py:252
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils.py:461
+#: common_utils.py:265
+msgid "Could not to launch {:s}"
+msgstr "Impossible de lancer {:s}"
+
+#: common_utils.py:281
+msgid "No book selected"
+msgstr "Aucun livre sélectionné"
+
+#: common_utils.py:286
+msgid "No book in the library"
+msgstr "Pas de livres dans bibliothèque"
+
+#: common_utils.py:291 common_utils.py:297
+msgid "No book in the virtual library"
+msgstr "Pas de livres dans la bibliothèque virtuel"
+
+#: common_utils.py:302
+msgid "No book in the current search"
+msgstr "Pas de livres dans la recherche actuelle"
+
+#: common_utils.py:502
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:462
+#: common_utils.py:503
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:806
+#: common_utils.py:847
 msgid "Keyboard shortcut dialog"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:807
+#: common_utils.py:848
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:936
+#: common_utils.py:968
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils.py:941
+#: common_utils.py:973
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 
@@ -172,7 +172,7 @@ msgstr "Convertir dans tous les commentaires (non recommandé)"
 
 #: config.py:93
 msgid "Convert only from a plain text comment"
-msgstr "Convertir uniqument les commentaires en text brut"
+msgstr "Convertir uniqument les commentaires en texte brut"
 
 #: config.py:97
 msgid "Create a empty paragraph"
@@ -194,71 +194,71 @@ msgstr "Fusionner en un seul paragraphe vide"
 msgid "Delete empty paragraph"
 msgstr "Supprimer les paragraphes vide"
 
-#: config.py:158
+#: config.py:169
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:179
+#: config.py:190
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:183
+#: config.py:194
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:193
+#: config.py:204
 msgid "Remove Italic"
 msgstr "Supprimer l'Italique"
 
-#: config.py:197
+#: config.py:208
 msgid "Remove Underline"
 msgstr "Supprimer le soulignement"
 
-#: config.py:201
+#: config.py:212
 msgid "Remove Strikethrough"
 msgstr "Supprimer le texte barré"
 
-#: config.py:208
+#: config.py:219
 msgid "Justification:"
 msgstr "Justification :"
 
-#: config.py:212
+#: config.py:223
 msgid "List alignment:"
 msgstr "Alignement des listes :"
 
-#: config.py:216
+#: config.py:227
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:223
+#: config.py:234
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:226
+#: config.py:237
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:231
+#: config.py:242
 msgid "Remove all formatting"
 msgstr "Effacer toute mise en forme"
 
-#: config.py:243
+#: config.py:254
 msgid "Markdown:"
 msgstr "Markdown :"
 
-#: config.py:246
+#: config.py:257
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Essayer de convertir les chaînes de caractères Markdown en HTML"
 
-#: config.py:248
+#: config.py:259
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:252
+#: config.py:263
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "Simple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:254
+#: config.py:265
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -266,15 +266,15 @@ msgstr ""
 "Cette opération est appliqué aprés « Multiple \"Retour a la ligne\" dans un paragraphe »\n"
 "et avant « Multiple paragraphes vide »"
 
-#: config.py:258
+#: config.py:269
 msgid "Multiple empty paragraph:"
 msgstr "Multiple paragraphes vide :"
 
-#: config.py:264
+#: config.py:275
 msgid "Keyboard shortcuts..."
 msgstr "Raccourcis clavier..."
 
-#: config.py:265
+#: config.py:276
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
 

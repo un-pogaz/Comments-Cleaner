@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-15 16:58+0200\n"
-"PO-Revision-Date: 2022-08-15 16:58+0200\n"
+"POT-Creation-Date: 2022-08-16 15:53+0200\n"
+"PO-Revision-Date: 2022-08-16 15:53+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -17,79 +17,79 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:33 action.py:47
+#: __init__.py:33 action.py:48
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Eliminar el CSS para el bloc de notas en los comentarios HTML"
 
-#: action.py:73
+#: action.py:74
 msgid "&Clean the selected comments"
 msgstr "&Limpiar los comentarios seleccionados"
 
-#: action.py:78
+#: action.py:79
 msgid "&Customize plugin..."
 msgstr "&Personalizar complemento..."
 
-#: action.py:126
+#: action.py:127
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: action.py:128
+#: action.py:129
 msgid "Comments Cleaner progress"
 msgstr "Comments Cleaner progreso"
 
-#: action.py:169
+#: action.py:170
 msgid "Book {:d} of {:d}"
 msgstr "Libro {:d} de {:d}"
 
-#: action.py:205
+#: action.py:206
 msgid "Update the library for {:d} books..."
 msgstr "Actualice la biblioteca de {:d} libros..."
 
-#: common_utils.py:258
-msgid "Could not to launch {:s}"
-msgstr "No se pudo iniciar {:s}"
-
-#: common_utils.py:278
-msgid "No book selected"
-msgstr "Ningún libro seleccionado"
-
-#: common_utils.py:283
-msgid "No book in the library"
-msgstr ""
-
-#: common_utils.py:290 common_utils.py:298
-msgid "No book in the virtual library"
-msgstr ""
-
-#: common_utils.py:305
-msgid "No book in the current search"
-msgstr ""
-
-#: common_utils.py:435
+#: common_utils.py:252
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr ""
 
-#: common_utils.py:461
+#: common_utils.py:265
+msgid "Could not to launch {:s}"
+msgstr "No se pudo iniciar {:s}"
+
+#: common_utils.py:281
+msgid "No book selected"
+msgstr "Ningún libro seleccionado"
+
+#: common_utils.py:286
+msgid "No book in the library"
+msgstr ""
+
+#: common_utils.py:291 common_utils.py:297
+msgid "No book in the virtual library"
+msgstr ""
+
+#: common_utils.py:302
+msgid "No book in the current search"
+msgstr ""
+
+#: common_utils.py:502
 msgid "Restart required"
 msgstr "Reinicio requerido"
 
-#: common_utils.py:462
+#: common_utils.py:503
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "No se encontró la imagen del título - debe reiniciar Calibre antes de usar este complemento!"
 
-#: common_utils.py:806
+#: common_utils.py:847
 msgid "Keyboard shortcut dialog"
 msgstr "Atajo de Teclado diálogo"
 
-#: common_utils.py:807
+#: common_utils.py:848
 msgid "Keyboard shortcuts"
 msgstr "Atajos de Teclado"
 
-#: common_utils.py:936
+#: common_utils.py:968
 msgid "Unhandled exception"
 msgstr "Excepción no controlada"
 
-#: common_utils.py:941
+#: common_utils.py:973
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Del complemento {:s} encontró una excepción no controlada."
 
@@ -194,71 +194,71 @@ msgstr "Combinar en un solo párrafo vacío"
 msgid "Delete empty paragraph"
 msgstr "Eliminar párrafo vacío"
 
-#: config.py:158
+#: config.py:169
 msgid "Comments Cleaner Options"
 msgstr "Comments Cleaner Opciones"
 
-#: config.py:179
+#: config.py:190
 msgid "Hyperlink:"
 msgstr "Hipervinculo:"
 
-#: config.py:183
+#: config.py:194
 msgid "Headings:"
 msgstr "Encabezados:"
 
-#: config.py:193
+#: config.py:204
 msgid "Remove Italic"
 msgstr "Quitar cursiva"
 
-#: config.py:197
+#: config.py:208
 msgid "Remove Underline"
 msgstr "Quitar subrayado"
 
-#: config.py:201
+#: config.py:212
 msgid "Remove Strikethrough"
 msgstr "Quitar tachado"
 
-#: config.py:208
+#: config.py:219
 msgid "Justification:"
 msgstr "Justificación:"
 
-#: config.py:212
+#: config.py:223
 msgid "List alignment:"
 msgstr "Alineación de lista:"
 
-#: config.py:216
+#: config.py:227
 msgid "ID & CLASS attributs:"
 msgstr "ID & CLASS atributos:"
 
-#: config.py:223
+#: config.py:234
 msgid "CSS rule to keep:"
 msgstr "Regla CSS para mantener:"
 
-#: config.py:226
+#: config.py:237
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Reglas CSS personalizadas para mantener además de las básicas. Reglas separadas por un espacio."
 
-#: config.py:231
+#: config.py:242
 msgid "Remove all formatting"
 msgstr "Eliminar todo el formato"
 
-#: config.py:243
+#: config.py:254
 msgid "Markdown:"
 msgstr "Markdown:"
 
-#: config.py:246
+#: config.py:257
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Intenta convertir las cadenas de Markdown a HTML"
 
-#: config.py:248
+#: config.py:259
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Múltiples 'Retorno de línea' en un párrafo:"
 
-#: config.py:252
+#: config.py:263
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "'Retorno de línea' único en un párrafo:"
 
-#: config.py:254
+#: config.py:265
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -266,15 +266,15 @@ msgstr ""
 "Esta operación se aplica después de \"Múltiples 'Retorno de línea' en un párrafo\"\n"
 "y antes de \"Varios párrafos vacíos\""
 
-#: config.py:258
+#: config.py:269
 msgid "Multiple empty paragraph:"
 msgstr "Múltiples párrafos vacíos:"
 
-#: config.py:264
+#: config.py:275
 msgid "Keyboard shortcuts..."
 msgstr "Atajos de Teclado..."
 
-#: config.py:265
+#: config.py:276
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Edite los atajos de teclado asociados con este complemento"
 
