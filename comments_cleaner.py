@@ -18,11 +18,10 @@ except ImportError:
 
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
-from .config import KEY, PREFS, CalibreVersions_Bold
+from .config import KEY, PREFS, CalibreVersions_Bold, CSS_CleanRules
 from .XMLentity import parseXMLentity, Entitys
-from .common_utils import debug_print, regex, CSS_CleanRules
+from .common_utils import debug_print, regex
 
-regex = regex()
 nbsp = Entitys.nbsp.char
 
 # Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
@@ -91,6 +90,19 @@ ATTRIBUTES = [
     'align',
     'href',
 ]
+
+
+#fix a imcompatibility betwen multiple Calibre version
+if CalibreVersions_Bold:
+    font_weight = 'font-weight: 700'
+else:
+    font_weight = 'font-weight: 600'
+
+def FixWeight(text):
+    if CalibreVersions_Bold:
+        text = regex.loop(r' style="([^"]*)'+font_weight+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
+    return text
+
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
 def CleanBasic(text):
@@ -247,6 +259,19 @@ def XMLformat(text):
     
     return text
 
+qw = QWidget()
+CommentsEditor = CommentsEdit(qw)
+
+# passe the comment in the Calibre comment editor
+# fix some last errors, better interpolarity Calibre <> plugin
+def CalibreFormat(text):
+    
+    CommentsEditor.current_val = text
+    text = CommentsEditor.current_val
+    
+    return text
+
+
 # main function
 def CleanComment(text):
     
@@ -400,30 +425,6 @@ def CleanComment(text):
     
     return text
 
-
-qw = QWidget()
-CommentsEditor = CommentsEdit(qw)
-
-# passe the comment in the Calibre comment editor
-# fix some last errors, better interpolarity Calibre <> plugin
-def CalibreFormat(text):
-    
-    CommentsEditor.current_val = text
-    text = CommentsEditor.current_val
-    
-    return text
-
-
-#fix a imcompatibility betwen multiple Calibre version
-if CalibreVersions_Bold():
-    font_weight = 'font-weight: 700'
-else:
-    font_weight = 'font-weight: 600'
-
-def FixWeight(text):
-    if CalibreVersions_Bold():
-        text = regex.loop(r' style="([^"]*)'+font_weight+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
-    return text
 
 
 def CleanAlign(text):

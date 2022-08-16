@@ -9,8 +9,6 @@ __docformat__ = 'restructuredtext en'
 
 from .common_utils import debug_print, regex, PYTHON, calibre_version
 
-regex = regex()
-
 if PYTHON[0] == 2:
     unichr = unichr
 else:

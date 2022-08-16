@@ -35,8 +35,9 @@ from calibre.library import current_library_name
 
 from .config import PLUGIN_ICONS, PREFS
 from .comments_cleaner import CleanComment
-from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, get_BookIds_selected, load_plugin_resources,
-                            create_menu_action_unique, has_restart_pending)
+from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, load_plugin_resources,
+                            get_BookIds_selected,
+                            create_menu_action_unique)
 
 GUI = get_gui()
 

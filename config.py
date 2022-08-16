@@ -28,8 +28,8 @@ except ImportError:
 
 from calibre.gui2.ui import get_gui
 
-from .common_utils import (debug_print, PREFS_json, ImageTitleLayout, KeyboardConfigDialog,
-                            KeyValueComboBox, CSS_CleanRules, calibre_version)
+from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, KeyboardConfigDialog, calibre_version,
+                            KeyValueComboBox, regex)
 
 GUI = get_gui()
 
@@ -134,10 +134,9 @@ PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
 
 #fix a imcompatibility betwen multiple Calibre version
-def CalibreVersions_Bold():
-    return calibre_version < (4,0,0) or calibre_version >= (6,0,0)
+CalibreVersions_Bold = calibre_version < (4,0,0) or calibre_version >= (6,0,0)
 
-if not CalibreVersions_Bold():
+if not CalibreVersions_Bold:
     FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
 
 if calibre_version >= (6,0,0):
@@ -146,6 +145,18 @@ if calibre_version >= (6,0,0):
         PREFS[KEY.FONT_WEIGHT] = 'bold'
 
 
+def CSS_CleanRules(css):
+    #remove space and invalid character
+    css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower())
+    css = regex.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css)
+    css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css)
+    # split to table and remove duplicate
+    css = list(dict.fromkeys(css.split(' ')))
+    # sort
+    css = sorted(css)
+    # join in a string
+    css = ' '.join(css)
+    return css
 
 class ConfigWidget(QWidget):
     def __init__(self, plugin_action):
@@ -155,7 +166,7 @@ class ConfigWidget(QWidget):
         layout = QVBoxLayout(self)
         self.setLayout(layout)
         
-        title_layout = ImageTitleLayout(self, PLUGIN_ICONS[0], _('Comments Cleaner Options'))
+        title_layout = ImageTitleLayout(self, get_icon(PLUGIN_ICONS[0]), _('Comments Cleaner Options'))
         layout.addLayout(title_layout)
         
         # Make dialog box scrollable (for smaller screens)
