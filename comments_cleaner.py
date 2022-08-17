@@ -417,6 +417,8 @@ def CleanComment(text):
     
     text = FixWeight(text)
     
+    text = regex.loop(r'<p( [^>]*)style="[^"]*"([^>]*)>'+nbsp+r'</p>', r'<p\1\2>'+nbsp+r'</p>', text)
+    
     text = CalibreFormat(text)
     
     # del align for list <li>
