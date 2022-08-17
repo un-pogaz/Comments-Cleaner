@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-16 15:53+0200\n"
-"PO-Revision-Date: 2022-08-16 15:53+0200\n"
+"POT-Creation-Date: 2022-08-17 13:05+0200\n"
+"PO-Revision-Date: 2022-08-17 13:05+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -47,7 +47,7 @@ msgstr "Actualice la biblioteca de {:d} libros..."
 
 #: common_utils.py:252
 msgid "You cannot configure this plugin before calibre is restarted."
-msgstr ""
+msgstr "No puede configurar este complemento antes de reiniciar calibre."
 
 #: common_utils.py:265
 msgid "Could not to launch {:s}"
@@ -59,15 +59,15 @@ msgstr "Ningún libro seleccionado"
 
 #: common_utils.py:286
 msgid "No book in the library"
-msgstr ""
+msgstr "No hay libro en la biblioteca"
 
 #: common_utils.py:291 common_utils.py:297
 msgid "No book in the virtual library"
-msgstr ""
+msgstr "No hay libro en la biblioteca virtual"
 
 #: common_utils.py:302
 msgid "No book in the current search"
-msgstr ""
+msgstr "Ningún libro en la búsqueda actual"
 
 #: common_utils.py:502
 msgid "Restart required"
@@ -75,15 +75,15 @@ msgstr "Reinicio requerido"
 
 #: common_utils.py:503
 msgid "Title image not found - you must restart Calibre before using this plugin!"
-msgstr "No se encontró la imagen del título - debe reiniciar Calibre antes de usar este complemento!"
+msgstr "No se encontró la imagen del título. ¡Debe reiniciar Calibre antes de usar este complemento!"
 
 #: common_utils.py:847
 msgid "Keyboard shortcut dialog"
-msgstr "Atajo de Teclado diálogo"
+msgstr "Diálogo de atajo de teclado"
 
 #: common_utils.py:848
 msgid "Keyboard shortcuts"
-msgstr "Atajos de Teclado"
+msgstr "Atajos de teclado"
 
 #: common_utils.py:968
 msgid "Unhandled exception"
@@ -91,7 +91,7 @@ msgstr "Excepción no controlada"
 
 #: common_utils.py:973
 msgid "The {:s} plugin has encounter a unhandled exception."
-msgstr "Del complemento {:s} encontró una excepción no controlada."
+msgstr "El complemento {:s} ha encontrado una excepción no controlada."
 
 #: config.py:59
 msgid "Keep URL"
@@ -277,9 +277,3 @@ msgstr "Atajos de Teclado..."
 #: config.py:276
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Edite los atajos de teclado asociados con este complemento"
-
-#~ msgid "Round to Bold (value bold)"
-#~ msgstr "Redonda a negrita (valor 'bold')"
-
-#~ msgid "No book selected for cleaning comments"
-#~ msgstr "Ningún libro seleccionado para comentarios de limpieza"
