@@ -1,5 +1,5 @@
 ### version 1.7.3
-[fix] theme color not correctly appli to the icons
+[fix] icon not display when a theme colors is used
 
 ### version 1.7.2
 [internal] Small improvement of XMLentity
