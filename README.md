@@ -22,7 +22,7 @@ https://github.com/un-pogaz/Comments-Cleaner
 [license-image]: https://img.shields.io/badge/License-GPL-yellow.svg
 [license-url]: LICENSE
 
-[calibre-image]: https://img.shields.io/badge/calibre-2.00.0-green
+[calibre-image]: https://img.shields.io/badge/calibre-2.00.0_and_above-green
 [calibre-url]: https://www.calibre-ebook.com/
 
 [status-image]: https://img.shields.io/badge/Status-Stable-green
