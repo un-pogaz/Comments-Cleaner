@@ -71,7 +71,7 @@ class CommentsCleanerAction(InterfaceAction):
         m = self.menu
         m.clear()
         
-        ac = create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICONS[0],
+        create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICONS[0],
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         

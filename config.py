@@ -28,7 +28,7 @@ except ImportError:
 
 from calibre.gui2.ui import get_gui
 
-from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, KeyboardConfigDialog, calibre_version,
+from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, edit_keyboard_shortcuts, calibre_version,
                             KeyValueComboBox, regex)
 
 GUI = get_gui()
@@ -306,7 +306,7 @@ class ConfigWidget(QWidget):
         
     
     def edit_shortcuts(self):
-        KeyboardConfigDialog.edit_shortcuts(self.plugin_action)
+        edit_keyboard_shortcuts(self.plugin_action)
     
     
     def checkBox_click(self, num):

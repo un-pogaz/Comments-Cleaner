@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-08-17 13:05+0200\n"
-"PO-Revision-Date: 2022-08-17 13:05+0200\n"
+"POT-Creation-Date: 2022-10-05 02:42+0200\n"
+"PO-Revision-Date: 2022-10-05 02:42+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-SearchPath-2: __init__.py\n"
 "X-Poedit-SearchPath-3: common_utils.py\n"
 
-#: __init__.py:33 action.py:48
+#: __init__.py:32 action.py:48
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
@@ -45,51 +45,111 @@ msgstr "Livre {:d} sur {:d}"
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils.py:252
+#: common_utils.py:220
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils.py:265
+#: common_utils.py:234
 msgid "Could not to launch {:s}"
 msgstr "Impossible de lancer {:s}"
 
-#: common_utils.py:281
+#: common_utils.py:249
 msgid "No book selected"
 msgstr "Aucun livre sélectionné"
 
-#: common_utils.py:286
+#: common_utils.py:254
 msgid "No book in the library"
 msgstr "Pas de livres dans bibliothèque"
 
-#: common_utils.py:291 common_utils.py:297
+#: common_utils.py:259 common_utils.py:265
 msgid "No book in the virtual library"
 msgstr "Pas de livres dans la bibliothèque virtuel"
 
-#: common_utils.py:302
+#: common_utils.py:270
 msgid "No book in the current search"
 msgstr "Pas de livres dans la recherche actuelle"
 
-#: common_utils.py:502
+#: common_utils.py:530
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:503
+#: common_utils.py:531
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:847
+#: common_utils.py:580
+msgid "Undefined"
+msgstr ""
+
+#: common_utils.py:944
 msgid "Keyboard shortcut dialog"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:848
+#: common_utils.py:946
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:968
+#: common_utils.py:979
+msgid "Prefs Viewer dialog"
+msgstr ""
+
+#: common_utils.py:980
+msgid "Preferences for:"
+msgstr ""
+
+#: common_utils.py:1012
+msgid "Clear"
+msgstr ""
+
+#: common_utils.py:1014
+msgid "Clear all settings for this plugin"
+msgstr ""
+
+#: common_utils.py:1041
+msgid "Are you sure you want to change your settings in this library for this plugin?"
+msgstr ""
+
+#: common_utils.py:1042 common_utils.py:1062
+msgid "Any settings in other libraries or stored in a JSON file in your calibre plugins folder will not be touched."
+msgstr ""
+
+#: common_utils.py:1044 common_utils.py:1064
+msgid "You must restart calibre afterwards."
+msgstr ""
+
+#: common_utils.py:1052
+msgid "Settings changed"
+msgstr ""
+
+#: common_utils.py:1053
+msgid "Settings for this plugin in this library have been changed."
+msgstr ""
+
+#: common_utils.py:1054 common_utils.py:1075
+msgid "Please restart calibre now."
+msgstr ""
+
+#: common_utils.py:1061
+msgid "Are you sure you want to clear your settings in this library for this plugin?"
+msgstr ""
+
+#: common_utils.py:1073
+msgid "Settings deleted"
+msgstr ""
+
+#: common_utils.py:1074
+msgid "All settings for this plugin in this library have been cleared."
+msgstr ""
+
+#: common_utils.py:1145
+msgid "Copy to clipboard"
+msgstr ""
+
+#: common_utils.py:1257
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils.py:973
+#: common_utils.py:1262
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 
