@@ -272,7 +272,7 @@ class ConfigWidget(QWidget):
         
         
         # --- Keyboard shortcuts ---
-        keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts...'), self)
+        keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts')+'...', self)
         keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
         keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
         layout.addWidget(keyboard_shortcuts_button)
