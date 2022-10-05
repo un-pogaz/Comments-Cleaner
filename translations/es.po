@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-10-05 02:42+0200\n"
-"PO-Revision-Date: 2022-10-05 02:42+0200\n"
+"POT-Creation-Date: 2022-10-05 14:54+0200\n"
+"PO-Revision-Date: 2022-10-05 14:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -29,19 +29,19 @@ msgstr "&Limpiar los comentarios seleccionados"
 msgid "&Customize plugin..."
 msgstr "&Personalizar complemento..."
 
-#: action.py:127
+#: action.py:126
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: action.py:129
+#: action.py:128
 msgid "Comments Cleaner progress"
 msgstr "Comments Cleaner progreso"
 
-#: action.py:170
+#: action.py:169
 msgid "Book {:d} of {:d}"
 msgstr "Libro {:d} de {:d}"
 
-#: action.py:206
+#: action.py:205
 msgid "Update the library for {:d} books..."
 msgstr "Actualice la biblioteca de {:d} libros..."
 
@@ -69,87 +69,59 @@ msgstr "No hay libro en la biblioteca virtual"
 msgid "No book in the current search"
 msgstr "Ningún libro en la búsqueda actual"
 
-#: common_utils.py:530
+#: common_utils.py:532
 msgid "Restart required"
 msgstr "Reinicio requerido"
 
-#: common_utils.py:531
+#: common_utils.py:533
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "No se encontró la imagen del título. ¡Debe reiniciar Calibre antes de usar este complemento!"
 
-#: common_utils.py:580
+#: common_utils.py:582
 msgid "Undefined"
-msgstr ""
+msgstr "Indefinido"
 
-#: common_utils.py:944
-msgid "Keyboard shortcut dialog"
-msgstr "Diálogo de atajo de teclado"
-
-#: common_utils.py:946
+#: common_utils.py:950 config.py:275
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
 
-#: common_utils.py:979
-msgid "Prefs Viewer dialog"
-msgstr ""
-
-#: common_utils.py:980
+#: common_utils.py:984
 msgid "Preferences for:"
-msgstr ""
+msgstr "Preferencias para:"
 
-#: common_utils.py:1012
+#: common_utils.py:1018
 msgid "Clear"
-msgstr ""
+msgstr "Borrar"
 
-#: common_utils.py:1014
+#: common_utils.py:1020
 msgid "Clear all settings for this plugin"
-msgstr ""
+msgstr "Borrar todas las configuraciones para este complemento"
 
-#: common_utils.py:1041
+#: common_utils.py:1060
+msgid "The changes cannot be applied."
+msgstr "Los cambios no se pueden aplicar."
+
+#: common_utils.py:1064
 msgid "Are you sure you want to change your settings in this library for this plugin?"
-msgstr ""
+msgstr "¿Está seguro de que desea cambiar su configuración en esta biblioteca para este complemento?"
 
-#: common_utils.py:1042 common_utils.py:1062
+#: common_utils.py:1065 common_utils.py:1077
 msgid "Any settings in other libraries or stored in a JSON file in your calibre plugins folder will not be touched."
-msgstr ""
+msgstr "Cualquier configuración en otras bibliotecas o almacenada en un archivo JSON en su carpeta de complementos de calibre no se modificará."
 
-#: common_utils.py:1044 common_utils.py:1064
-msgid "You must restart calibre afterwards."
-msgstr ""
-
-#: common_utils.py:1052
-msgid "Settings changed"
-msgstr ""
-
-#: common_utils.py:1053
-msgid "Settings for this plugin in this library have been changed."
-msgstr ""
-
-#: common_utils.py:1054 common_utils.py:1075
-msgid "Please restart calibre now."
-msgstr ""
-
-#: common_utils.py:1061
+#: common_utils.py:1076
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
-msgstr ""
+msgstr "¿Está seguro de que desea borrar su configuración en esta biblioteca para este complemento?"
 
-#: common_utils.py:1073
-msgid "Settings deleted"
-msgstr ""
-
-#: common_utils.py:1074
-msgid "All settings for this plugin in this library have been cleared."
-msgstr ""
-
-#: common_utils.py:1145
+#: common_utils.py:1158
 msgid "Copy to clipboard"
-msgstr ""
+msgstr "Copiar al portapapeles"
 
-#: common_utils.py:1257
+#: common_utils.py:1271
 msgid "Unhandled exception"
 msgstr "Excepción no controlada"
 
-#: common_utils.py:1262
+#: common_utils.py:1274
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "El complemento {:s} ha encontrado una excepción no controlada."
 
@@ -329,10 +301,6 @@ msgstr ""
 #: config.py:269
 msgid "Multiple empty paragraph:"
 msgstr "Múltiples párrafos vacíos:"
-
-#: config.py:275
-msgid "Keyboard shortcuts..."
-msgstr "Atajos de Teclado..."
 
 #: config.py:276
 msgid "Edit the keyboard shortcuts associated with this plugin"

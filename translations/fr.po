@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-10-05 02:42+0200\n"
-"PO-Revision-Date: 2022-10-05 02:42+0200\n"
+"POT-Creation-Date: 2022-10-05 14:53+0200\n"
+"PO-Revision-Date: 2022-10-05 14:53+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -29,19 +29,19 @@ msgstr "&Nettoyer les commentaires sélectionnés"
 msgid "&Customize plugin..."
 msgstr "&Personnaliser l'extension..."
 
-#: action.py:127
+#: action.py:126
 msgid "Cancel"
 msgstr "Annuler"
 
-#: action.py:129
+#: action.py:128
 msgid "Comments Cleaner progress"
 msgstr "Progression de Comments Cleaner"
 
-#: action.py:170
+#: action.py:169
 msgid "Book {:d} of {:d}"
 msgstr "Livre {:d} sur {:d}"
 
-#: action.py:206
+#: action.py:205
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
@@ -69,87 +69,59 @@ msgstr "Pas de livres dans la bibliothèque virtuel"
 msgid "No book in the current search"
 msgstr "Pas de livres dans la recherche actuelle"
 
-#: common_utils.py:530
+#: common_utils.py:532
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils.py:531
+#: common_utils.py:533
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils.py:580
+#: common_utils.py:582
 msgid "Undefined"
-msgstr ""
+msgstr "Non défini"
 
-#: common_utils.py:944
-msgid "Keyboard shortcut dialog"
-msgstr "Raccourcis clavier"
-
-#: common_utils.py:946
+#: common_utils.py:950 config.py:275
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils.py:979
-msgid "Prefs Viewer dialog"
-msgstr ""
-
-#: common_utils.py:980
+#: common_utils.py:984
 msgid "Preferences for:"
-msgstr ""
+msgstr "Préférences pour :"
 
-#: common_utils.py:1012
+#: common_utils.py:1018
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
-#: common_utils.py:1014
+#: common_utils.py:1020
 msgid "Clear all settings for this plugin"
-msgstr ""
+msgstr "Effacer tous les paramètres de ce plugin"
 
-#: common_utils.py:1041
+#: common_utils.py:1060
+msgid "The changes cannot be applied."
+msgstr "Les modifications ne peuvent pas être appliquées."
+
+#: common_utils.py:1064
 msgid "Are you sure you want to change your settings in this library for this plugin?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir modifier vos paramètres dans cette bibliothèque pour ce plugin ?"
 
-#: common_utils.py:1042 common_utils.py:1062
+#: common_utils.py:1065 common_utils.py:1077
 msgid "Any settings in other libraries or stored in a JSON file in your calibre plugins folder will not be touched."
-msgstr ""
+msgstr "Les paramètres présents dans d'autres bibliothèques ou stockés dans un fichier JSON dans le dossier des plugins de Calibre ne seront pas modifiés."
 
-#: common_utils.py:1044 common_utils.py:1064
-msgid "You must restart calibre afterwards."
-msgstr ""
-
-#: common_utils.py:1052
-msgid "Settings changed"
-msgstr ""
-
-#: common_utils.py:1053
-msgid "Settings for this plugin in this library have been changed."
-msgstr ""
-
-#: common_utils.py:1054 common_utils.py:1075
-msgid "Please restart calibre now."
-msgstr ""
-
-#: common_utils.py:1061
+#: common_utils.py:1076
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir effacer vos paramètres dans cette bibliothèque pour ce plugin ?"
 
-#: common_utils.py:1073
-msgid "Settings deleted"
-msgstr ""
-
-#: common_utils.py:1074
-msgid "All settings for this plugin in this library have been cleared."
-msgstr ""
-
-#: common_utils.py:1145
+#: common_utils.py:1158
 msgid "Copy to clipboard"
-msgstr ""
+msgstr "Copier dans le presse-papiers"
 
-#: common_utils.py:1257
+#: common_utils.py:1271
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils.py:1262
+#: common_utils.py:1274
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 
@@ -330,27 +302,6 @@ msgstr ""
 msgid "Multiple empty paragraph:"
 msgstr "Multiple paragraphes vide :"
 
-#: config.py:275
-msgid "Keyboard shortcuts..."
-msgstr "Raccourcis clavier..."
-
 #: config.py:276
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
-
-#~ msgid "Round to Bold (value bold)"
-#~ msgstr "Arrondir au Gras (valeur bold)"
-
-#, fuzzy
-#~| msgid "Round to Bold (value 600)"
-#~ msgid "Set to Bold (value bold)"
-#~ msgstr "Arrondir au Gras (valeur 600)"
-
-#~ msgid "No book selected for cleaning comments"
-#~ msgstr "Aucun livre sélectionné pour le nettoyage"
-
-#~ msgid "Convert single 'Line Return':"
-#~ msgstr "Convertir un simple 'retour de ligne' :"
-
-#~ msgid "Convert 'Line Return' into a new paragraph"
-#~ msgstr "Convertir les \"Retour a la ligne\" en un nouveau paragraphe"
