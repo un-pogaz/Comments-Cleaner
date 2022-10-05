@@ -33,7 +33,7 @@ from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, 
 
 GUI = get_gui()
 
-PLUGIN_ICONS = ['images/plugin.png']
+PLUGIN_ICON = 'images/plugin.png'
 
 class KEY:
     KEEP_URL = 'KeepUrl'
@@ -166,7 +166,7 @@ class ConfigWidget(QWidget):
         layout = QVBoxLayout(self)
         self.setLayout(layout)
         
-        title_layout = ImageTitleLayout(self, PLUGIN_ICONS[0], _('Comments Cleaner Options'))
+        title_layout = ImageTitleLayout(self, PLUGIN_ICON, _('Comments Cleaner Options'))
         layout.addLayout(title_layout)
         
         # Make dialog box scrollable (for smaller screens)

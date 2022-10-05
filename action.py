@@ -33,7 +33,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from .config import PLUGIN_ICONS, PREFS
+from .config import PLUGIN_ICON, PREFS
 from .comments_cleaner import CleanComment
 from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, load_plugin_resources,
                             get_BookIds_selected,
@@ -55,13 +55,13 @@ class CommentsCleanerAction(InterfaceAction):
         self.menu = QMenu(GUI)
         
         # Read the plugin icons and store for potential sharing with the config widget
-        load_plugin_resources(self.plugin_path, PLUGIN_ICONS)
+        load_plugin_resources(self.plugin_path)
         
         self.rebuild_menus()
         
         # Assign our menu to this action and an icon
         self.qaction.setMenu(self.menu)
-        self.qaction.setIcon(get_icon(PLUGIN_ICONS[0]))
+        self.qaction.setIcon(get_icon(PLUGIN_ICON))
         self.qaction.triggered.connect(self.toolbar_triggered)
     
     def initialization_complete(self):
@@ -71,7 +71,7 @@ class CommentsCleanerAction(InterfaceAction):
         m = self.menu
         m.clear()
         
-        create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICONS[0],
+        create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICON,
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         
@@ -96,7 +96,6 @@ class CommentsCleanerAction(InterfaceAction):
         cpgb = CleanerProgressDialog(book_ids)
         cpgb.close()
         del cpgb
-        
 
 
 def debug_text(pre, text):
@@ -127,7 +126,7 @@ class CleanerProgressDialog(QProgressDialog):
         QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, GUI)
         
         self.setWindowTitle(_('Comments Cleaner progress').format(PLUGIN_NAME))
-        self.setWindowIcon(get_icon(PLUGIN_ICONS[0]))
+        self.setWindowIcon(get_icon(PLUGIN_ICON))
         
         self.setValue(0)
         self.setMinimumWidth(500)
