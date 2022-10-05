@@ -367,7 +367,10 @@ def get_possible_idents():
     
     return: list(str)
     """
-    return current_db().get_all_identifier_types()
+    if current_db():
+        return current_db().get_all_identifier_types()
+    else:
+        return []
 
 
 def is_enum_value(name, value):
