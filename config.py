@@ -26,6 +26,7 @@ try:
 except ImportError:
     from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
 
+from calibre import prints
 from calibre.gui2.ui import get_gui
 
 from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, edit_keyboard_shortcuts, calibre_version,
