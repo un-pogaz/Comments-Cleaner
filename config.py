@@ -30,9 +30,8 @@ from calibre import prints
 from calibre.gui2.ui import get_gui
 
 from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
-from .common_utils.controls import KeyValueComboBox
 from .common_utils.dialog import edit_keyboard_shortcuts
-from .common_utils.widgets import ImageTitleLayout
+from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox
 
 
 PLUGIN_ICON = 'images/plugin.png'
