@@ -29,10 +29,11 @@ except ImportError:
 from calibre import prints
 from calibre.gui2.ui import get_gui
 
-from .common_utils import (debug_print, get_icon, PREFS_json, ImageTitleLayout, edit_keyboard_shortcuts, calibre_version,
-                            KeyValueComboBox, regex)
+from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
+from .common_utils.controls import KeyValueComboBox
+from .common_utils.dialog import edit_keyboard_shortcuts
+from .common_utils.widgets import ImageTitleLayout
 
-GUI = get_gui()
 
 PLUGIN_ICON = 'images/plugin.png'
 

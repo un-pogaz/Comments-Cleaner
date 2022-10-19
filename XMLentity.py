@@ -7,9 +7,10 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-from .common_utils import debug_print, regex, PYTHON, calibre_version
+import sys
+from .common_utils import debug_print, regex, calibre_version
 
-if PYTHON[0] == 2:
+if sys.version_info < (3,):
     unichr = unichr
 else:
     unichr = chr
@@ -312,7 +313,7 @@ class Entitys:
         build('rang', 10217),      # ⟩
     ]
     
-    if PYTHON[0] > 2:
+    if sys.version_info >= (3,):
         Html5 = [
         build('Abreve', 258),                          # Ă
         build('abreve', 259),                          # ă

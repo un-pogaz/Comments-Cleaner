@@ -35,11 +35,10 @@ from calibre.library import current_library_name
 
 from .config import PLUGIN_ICON, PREFS
 from .comments_cleaner import CleanComment
-from .common_utils import (debug_print, get_icon, PLUGIN_NAME, current_db, load_plugin_resources,
-                            get_BookIds_selected,
-                            create_menu_action_unique)
+from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
+from .common_utils.library import get_BookIds_selected
+from .common_utils.menu import create_menu_action_unique
 
-GUI = get_gui()
 
 class CommentsCleanerAction(InterfaceAction):
     
