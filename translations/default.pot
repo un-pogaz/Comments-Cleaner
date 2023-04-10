@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-10-19 14:18+0200\n"
+"POT-Creation-Date: 2023-04-10 15:07+0200\n"
 "PO-Revision-Date: 2020-10-12 14:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -11,84 +11,84 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: __init__.py:32 action.py:47
+#: __init__.py:32 action.py:48
 msgid "Remove the scraps CSS in HTML comments"
 msgstr ""
 
-#: action.py:73
+#: action.py:74
 msgid "&Clean the selected comments"
 msgstr ""
 
-#: action.py:78
+#: action.py:79
 msgid "&Customize plugin..."
 msgstr ""
 
-#: action.py:125
+#: action.py:131
 msgid "Cancel"
 msgstr ""
 
-#: action.py:127
+#: action.py:133
 msgid "Comments Cleaner progress"
 msgstr ""
 
-#: action.py:168
+#: action.py:174
 msgid "Book {:d} of {:d}"
 msgstr ""
 
-#: action.py:204
+#: action.py:231
 msgid "Update the library for {:d} books..."
 msgstr ""
 
-#: common_utils/__init__.py:225
+#: common_utils/__init__.py:224
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr ""
 
-#: common_utils/__init__.py:321
-msgid "Unhandled exception"
-msgstr ""
-
-#: common_utils/__init__.py:324
-msgid "The {:s} plugin has encounter a unhandled exception."
-msgstr ""
-
-#: common_utils/dialog.py:95 config.py:276
+#: common_utils/dialog.py:94 config.py:285
 msgid "Keyboard shortcuts"
 msgstr ""
 
-#: common_utils/dialog.py:129
+#: common_utils/dialog.py:128
 msgid "Preferences for:"
 msgstr ""
 
-#: common_utils/dialog.py:163
+#: common_utils/dialog.py:162
 msgid "Clear"
 msgstr ""
 
-#: common_utils/dialog.py:165
+#: common_utils/dialog.py:164
 msgid "Clear all settings for this plugin"
 msgstr ""
 
-#: common_utils/dialog.py:202
+#: common_utils/dialog.py:201
 msgid "The changes cannot be applied."
 msgstr ""
 
-#: common_utils/dialog.py:206
+#: common_utils/dialog.py:205
 msgid "Are you sure you want to change your settings in this library for this plugin?"
 msgstr ""
 
-#: common_utils/dialog.py:207 common_utils/dialog.py:219
+#: common_utils/dialog.py:206 common_utils/dialog.py:218
 msgid "Any settings in other libraries or stored in a JSON file in your calibre plugins folder will not be touched."
 msgstr ""
 
-#: common_utils/dialog.py:218
+#: common_utils/dialog.py:217
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
 msgstr ""
 
-#: common_utils/dialog.py:300
+#: common_utils/dialog.py:299
 msgid "Copy to clipboard"
+msgstr ""
+
+#: common_utils/dialog.py:336
+msgid "Unhandled exception"
+msgstr ""
+
+#: common_utils/dialog.py:339
+msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr ""
 
 #: common_utils/library.py:61
@@ -111,193 +111,197 @@ msgstr ""
 msgid "No book in the current search"
 msgstr ""
 
-#: common_utils/widgets.py:71
+#: common_utils/widgets.py:70
 msgid "Restart required"
 msgstr ""
 
-#: common_utils/widgets.py:72
+#: common_utils/widgets.py:71
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr ""
 
-#: common_utils/widgets.py:121
+#: common_utils/widgets.py:120
 msgid "Undefined"
 msgstr ""
 
-#: config.py:60
+#: config.py:61
 msgid "Keep URL"
 msgstr ""
 
-#: config.py:61
+#: config.py:62
 msgid "Delete URL"
 msgstr ""
 
-#: config.py:64
+#: config.py:65
 msgid "Converte to a paragraph"
 msgstr ""
 
-#: config.py:65
+#: config.py:66
 msgid "Converte to a paragraph but keep the bold"
 msgstr ""
 
-#: config.py:66 config.py:78 config.py:89 config.py:95 config.py:100
-#: config.py:105 config.py:109
+#: config.py:67 config.py:79 config.py:90 config.py:96 config.py:101
+#: config.py:106 config.py:110
 msgid "No change"
 msgstr ""
 
-#: config.py:69
+#: config.py:70
 msgid "Round the Weights value to the hundred"
 msgstr ""
 
-#: config.py:70
+#: config.py:71
 msgid "Round to Bold (value 'bold')"
 msgstr ""
 
-#: config.py:71
+#: config.py:72
 msgid "Do not change the Weights"
 msgstr ""
 
-#: config.py:72
+#: config.py:73
 msgid "Delete Weights"
 msgstr ""
 
-#: config.py:73
+#: config.py:74
 msgid "Round to Bold (value 600)"
 msgstr ""
 
-#: config.py:76
+#: config.py:77
 msgid "Force the justification (replace \"center\" and \"right\")"
 msgstr ""
 
-#: config.py:77
+#: config.py:78
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr ""
 
-#: config.py:79
+#: config.py:80
 msgid "Delete all alignment"
 msgstr ""
 
-#: config.py:82
+#: config.py:83
 msgid "Use the 'Justification' setting"
 msgstr ""
 
-#: config.py:83
+#: config.py:84
 msgid "Delete the alignment in lists"
 msgstr ""
 
-#: config.py:86
+#: config.py:87
 msgid "Delete \"id\" attribut"
 msgstr ""
 
-#: config.py:87
+#: config.py:88
 msgid "Delete \"class\" attribut"
 msgstr ""
 
-#: config.py:88
+#: config.py:89
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr ""
 
-#: config.py:93
+#: config.py:94
 msgid "Convert in all comments (not recomanded)"
 msgstr ""
 
-#: config.py:94
+#: config.py:95
 msgid "Convert only from a plain text comment"
 msgstr ""
 
-#: config.py:98
+#: config.py:99
 msgid "Create a empty paragraph"
 msgstr ""
 
-#: config.py:99 config.py:103
+#: config.py:100 config.py:104
 msgid "Create a new paragraph"
 msgstr ""
 
-#: config.py:104
+#: config.py:105
 msgid "Replace with space"
 msgstr ""
 
-#: config.py:108
+#: config.py:109
 msgid "Merge in a single empty paragraph"
 msgstr ""
 
-#: config.py:110
+#: config.py:111
 msgid "Delete empty paragraph"
 msgstr ""
 
-#: config.py:170
+#: config.py:171
 msgid "Comments Cleaner Options"
 msgstr ""
 
-#: config.py:191
+#: config.py:192
 msgid "Hyperlink:"
 msgstr ""
 
-#: config.py:195
+#: config.py:196
 msgid "Headings:"
 msgstr ""
 
-#: config.py:205
+#: config.py:206
 msgid "Remove Italic"
 msgstr ""
 
-#: config.py:209
+#: config.py:210
 msgid "Remove Underline"
 msgstr ""
 
-#: config.py:213
+#: config.py:214
 msgid "Remove Strikethrough"
 msgstr ""
 
-#: config.py:220
+#: config.py:221
 msgid "Justification:"
 msgstr ""
 
-#: config.py:224
+#: config.py:225
 msgid "List alignment:"
 msgstr ""
 
-#: config.py:228
+#: config.py:229
 msgid "ID & CLASS attributs:"
 msgstr ""
 
-#: config.py:235
+#: config.py:236
 msgid "CSS rule to keep:"
 msgstr ""
 
-#: config.py:238
+#: config.py:239
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr ""
 
-#: config.py:243
+#: config.py:244
 msgid "Remove all formatting"
 msgstr ""
 
-#: config.py:255
+#: config.py:256
 msgid "Markdown:"
 msgstr ""
 
-#: config.py:258
+#: config.py:259
 msgid "Try to convert the Markdown strings to HTML"
 msgstr ""
 
-#: config.py:260
+#: config.py:261
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr ""
 
-#: config.py:264
+#: config.py:265
 msgid "Single 'Line Return' in a paragraph:"
 msgstr ""
 
-#: config.py:266
+#: config.py:267
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
 msgstr ""
 
-#: config.py:270
+#: config.py:271
 msgid "Multiple empty paragraph:"
 msgstr ""
 
 #: config.py:277
+msgid "Apply to others custom HTML columns"
+msgstr ""
+
+#: config.py:286
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr ""
