@@ -33,11 +33,12 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from .config import PLUGIN_ICON, PREFS
+from .config import PLUGIN_ICON, PREFS, KEY
 from .comments_cleaner import CleanComment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
 from .common_utils.library import get_BookIds_selected
 from .common_utils.menu import create_menu_action_unique
+from .common_utils.columns import get_html
 
 
 class CommentsCleanerAction(InterfaceAction):
@@ -114,6 +115,11 @@ class CleanerProgressDialog(QProgressDialog):
         self.book_count = len(self.book_ids)
         # book comment dic
         self.books_dic = {}
+        # book custom columns dic
+        self.custom_columns_dic = {}
+        if PREFS[KEY.CUSTOM_COLUMN]:
+            for cc in get_html(True):
+                self.custom_columns_dic[cc] = {}
         # Count of cleaned comments
         self.books_clean = 0
         # Exception
@@ -196,16 +202,40 @@ class CleanerProgressDialog(QProgressDialog):
                 else:
                     debug_print('Empty comment '+book_info+':::\n')
                 
+                for cc_html in self.custom_columns_dic:
+                    comment = miA.get(cc_html)
+                    if comment is not None:
+                        debug_text(cc_html+' for '+book_info, comment)
+                        comment_out = CleanComment(comment)
+                        if comment == comment_out:
+                            debug_print('Unchanged '+cc_html+' :::\n')
+                        else:
+                            debug_text(cc_html+' out', comment_out)
+                            
+                            if book_id not in self.custom_columns_dic[cc_html]:
+                                self.custom_columns_dic[cc_html][book_id] = comment_out
+                    
+                    else:
+                        debug_print('Empty comment '+book_info+':::\n')
+                    
+                    pass
+                
             
-            books_dic_count = len(self.books_dic)
-            if books_dic_count > 0:
+            ids = set(self.books_dic.keys())
+            for ccbv in self.custom_columns_dic.values():
+                ids.update(ccbv.keys())
+            books_edit_count = len(ids)
+            if books_edit_count > 0:
                 
-                debug_print('Update the database for {0} books...\n'.format(books_dic_count))
-                self.setLabelText(_('Update the library for {:d} books...').format(books_dic_count))
+                debug_print('Update the database for {0} books...\n'.format(books_edit_count))
+                self.setLabelText(_('Update the library for {:d} books...').format(books_edit_count))
                 
-                self.books_clean += len(self.books_dic)
-                self.dbAPI.set_field('comments', {id:self.books_dic[id] for id in self.books_dic.keys()})
-                GUI.iactions['Edit Metadata'].refresh_gui(self.books_dic.keys(), covers_changed=False)
+                self.books_clean = books_edit_count
+                self.dbAPI.set_field('comments', self.books_dic)
+                for cck,ccbv in self.custom_columns_dic.items():
+                    if ccbv:
+                        self.dbAPI.set_field(cck, ccbv)
+                GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
             
         except Exception as e:
             self.exception = e

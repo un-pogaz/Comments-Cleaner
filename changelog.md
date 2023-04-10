@@ -1,3 +1,6 @@
+### version 1.10.0
+Support of custom html columns
+
 ### version 1.9.0
 [internal] again, big rework of common_utils (use submodule)
 

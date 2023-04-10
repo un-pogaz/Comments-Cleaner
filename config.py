@@ -54,7 +54,8 @@ class KEY:
     DOUBLE_BR = 'DoubleBR'
     SINGLE_BR = 'SingleBR'
     EMPTY_PARA = 'EmptyParagraph'
-
+    
+    CUSTOM_COLUMN = 'CustomColumn'
 
 KEEP_URL = OrderedDict([
                     ('keep', _('Keep URL')),
@@ -132,7 +133,7 @@ PREFS.defaults[KEY.DOUBLE_BR] = 'new'
 PREFS.defaults[KEY.SINGLE_BR] = 'none'
 PREFS.defaults[KEY.EMPTY_PARA] = 'merge'
 
-
+PREFS.defaults[KEY.CUSTOM_COLUMN] = False
 
 #fix a imcompatibility betwen multiple Calibre version
 CalibreVersions_Bold = calibre_version < (4,0,0) or calibre_version >= (6,0,0)
@@ -272,7 +273,15 @@ class ConfigWidget(QWidget):
         optionsTEXT_GridLayout.addWidget(self.comboBoxEMPTY_PARA, 4, 1, 1, 2)
         
         
+        # --- Custom columns ---
+        self.checkBoxCUSTOM_COLUMN = QCheckBox(_('Apply to others custom HTML columns'), self)
+        self.checkBoxCUSTOM_COLUMN.stateChanged.connect(self.checkBox_click)
+        self.checkBoxCUSTOM_COLUMN.setChecked(PREFS[KEY.CUSTOM_COLUMN])
+        layout.addWidget(self.checkBoxCUSTOM_COLUMN)
+        
+        
         # --- Keyboard shortcuts ---
+        layout.addWidget(QLabel(' ', self))
         keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts')+'...', self)
         keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
         keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
@@ -301,6 +310,9 @@ class ConfigWidget(QWidget):
         PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
         PREFS[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
         PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
+        
+        
+        PREFS[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
         
         
         debug_print('Save settings: {0}\n'.format(PREFS))
