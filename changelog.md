@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.11.0] - date
+
+### Changed
+- Update common_utils
+
 ## [1.10.0] - 2023/04/10
 
 ### Added

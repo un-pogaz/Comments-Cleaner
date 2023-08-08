@@ -7,7 +7,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy, time
+import copy
 # python3 compatibility
 from six.moves import range
 from six import text_type as unicode
@@ -36,8 +36,9 @@ from calibre.library import current_library_name
 from .config import PLUGIN_ICON, PREFS, KEY
 from .comments_cleaner import CleanComment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
-from .common_utils.library import get_BookIds_selected
-from .common_utils.menu import create_menu_action_unique
+from .common_utils.dialogs import ProgressDialog
+from .common_utils.librarys import get_BookIds_selected
+from .common_utils.menus import create_menu_action_unique
 from .common_utils.columns import get_html
 
 
@@ -93,26 +94,15 @@ class CommentsCleanerAction(InterfaceAction):
     def _clean_comment(self):
         book_ids = get_BookIds_selected(show_error=True)
         
-        cpgb = CleanerProgressDialog(book_ids)
-        cpgb.close()
-        del cpgb
+        CleanerProgressDialog(book_ids)
 
 
 def debug_text(pre, text):
     debug_print(pre+':::\n'+text+'\n')
 
-class CleanerProgressDialog(QProgressDialog):
-    def __init__(self, book_ids):
-        
-        # DB
-        self.db = GUI.current_db
-        # DB API
-        self.dbAPI = self.db.new_api
-        
-        # liste of book id
-        self.book_ids = book_ids
-        # Count book
-        self.book_count = len(self.book_ids)
+class CleanerProgressDialog(ProgressDialog):
+    
+    def setup_progress(self, **kvargs):
         # book comment dic
         self.books_dic = {}
         # book custom columns dic
@@ -124,28 +114,8 @@ class CleanerProgressDialog(QProgressDialog):
         self.books_clean = 0
         # Exception
         self.exception = None
-        
-        self.time_execut = 0
-        
-        
-        QProgressDialog.__init__(self, '', _('Cancel'), 0, self.book_count, GUI)
-        
-        self.setWindowTitle(_('Comments Cleaner progress').format(PLUGIN_NAME))
-        self.setWindowIcon(get_icon(PLUGIN_ICON))
-        
-        self.setValue(0)
-        self.setMinimumWidth(500)
-        self.setMinimumDuration(100)
-        
-        self.setAutoClose(True)
-        self.setAutoReset(False)
-        
-        self.hide()
-        debug_print('Launch cleaning for {0} books.'.format(self.book_count))
-        debug_print(str(PREFS)+'\n')
-        
-        QTimer.singleShot(0, self._run_clean_comments)
-        self.exec_()
+    
+    def end_progress(self):
         
         if self.wasCanceled():
             debug_print('Cleaning comments as cancelled. No change.')
@@ -158,32 +128,23 @@ class CleanerProgressDialog(QProgressDialog):
             debug_print('Cleaning performed for {0} comments.'.format(self.books_clean))
             debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
     
-    def close(self):
-        QProgressDialog.close(self)
-    
-    def _run_clean_comments(self):
+    def job_progress(self):
         
-        start = time.time()
+        debug_print('Launch Comments Cleaner for {:d} books.'.format(self.book_count))
+        debug_print(PREFS)
+        
         try:
-            self.setValue(0)
             
-            for num, book_id in enumerate(self.book_ids, start=1):
+            for book_id in self.book_ids:
                 
                 # update Progress
-                self.setValue(num)
-                self.setLabelText(_('Book {:d} of {:d}').format(num, self.book_count))
-                
-                if self.book_count < 100:
-                    self.hide()
-                else:
-                    self.show()
+                num = self.increment()
                 
                 # get the comment
                 miA = self.dbAPI.get_proxy_metadata(book_id)
                 comment = miA.get('comments')
                 
                 if self.wasCanceled():
-                    self.close()
                     return
                 
                 # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
@@ -217,9 +178,7 @@ class CleanerProgressDialog(QProgressDialog):
                     
                     else:
                         debug_print('Empty comment '+book_info+':::\n')
-                    
-                    pass
-                
+            
             
             ids = set(self.books_dic.keys())
             for ccbv in self.custom_columns_dic.values():
@@ -228,7 +187,7 @@ class CleanerProgressDialog(QProgressDialog):
             if books_edit_count > 0:
                 
                 debug_print('Update the database for {0} books...\n'.format(books_edit_count))
-                self.setLabelText(_('Update the library for {:d} books...').format(books_edit_count))
+                self.set_value(-1, text=_('Update the library for {:d} books...').format(books_edit_count))
                 
                 self.books_clean = books_edit_count
                 self.dbAPI.set_field('comments', self.books_dic)
@@ -240,7 +199,3 @@ class CleanerProgressDialog(QProgressDialog):
         except Exception as e:
             self.exception = e
         
-        self.time_execut = round(time.time() - start, 3)
-        self.db.clean()
-        self.hide()
-        return

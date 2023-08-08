@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-04-10 15:07+0200\n"
-"PO-Revision-Date: 2023-04-10 15:12+0200\n"
+"POT-Creation-Date: 2023-08-08 19:22+0200\n"
+"PO-Revision-Date: 2023-08-08 19:22+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -10,39 +10,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: __init__.py:32 action.py:48
+#: __init__.py:32 action.py:49
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
-#: action.py:74
+#: action.py:75
 msgid "&Clean the selected comments"
 msgstr "&Nettoyer les commentaires sélectionnés"
 
-#: action.py:79
+#: action.py:80
 msgid "&Customize plugin..."
 msgstr "&Personnaliser l'extension..."
 
-#: action.py:131
-msgid "Cancel"
-msgstr "Annuler"
-
-#: action.py:133
-msgid "Comments Cleaner progress"
-msgstr "Progression de Comments Cleaner"
-
-#: action.py:174
-msgid "Book {:d} of {:d}"
-msgstr "Livre {:d} sur {:d}"
-
-#: action.py:231
+#: action.py:190
 msgid "Update the library for {:d} books..."
 msgstr "Mise a jour de la bibliothèque pour {:d} livres..."
 
-#: common_utils/__init__.py:224
+#: common_utils/__init__.py:226
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
@@ -78,15 +66,27 @@ msgstr "Les paramètres présents dans d'autres bibliothèques ou stockés dans 
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
 msgstr "Êtes-vous sûr de vouloir effacer vos paramètres dans cette bibliothèque pour ce plugin ?"
 
-#: common_utils/dialog.py:299
+#: common_utils/dialog.py:300
+msgid "Cancel"
+msgstr "Annuler"
+
+#: common_utils/dialog.py:310
+msgid "{} progress"
+msgstr "Progression de {}"
+
+#: common_utils/dialog.py:366
+msgid "Book {:d} of {:d}"
+msgstr "Livre {:d} sur {:d}"
+
+#: common_utils/dialog.py:396
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
 
-#: common_utils/dialog.py:336
+#: common_utils/dialog.py:433
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils/dialog.py:339
+#: common_utils/dialog.py:436
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr "Le plugin {:s} a rencontré une exception non gérée."
 
@@ -306,3 +306,6 @@ msgstr "Appliquer à d'autres colonnes HTML personnalisées"
 #: config.py:286
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
+
+#~ msgid "Comments Cleaner progress"
+#~ msgstr "Progression de Comments Cleaner"

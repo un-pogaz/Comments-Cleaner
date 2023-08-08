@@ -2,8 +2,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-04-10 15:07+0200\n"
-"PO-Revision-Date: 2020-10-12 14:49+0200\n"
+"POT-Creation-Date: 2023-08-08 19:22+0200\n"
+"PO-Revision-Date: 2023-08-08 19:22+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -11,39 +11,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: __init__.py:32 action.py:48
+#: __init__.py:32 action.py:49
 msgid "Remove the scraps CSS in HTML comments"
 msgstr ""
 
-#: action.py:74
+#: action.py:75
 msgid "&Clean the selected comments"
 msgstr ""
 
-#: action.py:79
+#: action.py:80
 msgid "&Customize plugin..."
 msgstr ""
 
-#: action.py:131
-msgid "Cancel"
-msgstr ""
-
-#: action.py:133
-msgid "Comments Cleaner progress"
-msgstr ""
-
-#: action.py:174
-msgid "Book {:d} of {:d}"
-msgstr ""
-
-#: action.py:231
+#: action.py:190
 msgid "Update the library for {:d} books..."
 msgstr ""
 
-#: common_utils/__init__.py:224
+#: common_utils/__init__.py:226
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr ""
 
@@ -79,15 +67,27 @@ msgstr ""
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
 msgstr ""
 
-#: common_utils/dialog.py:299
+#: common_utils/dialog.py:300
+msgid "Cancel"
+msgstr ""
+
+#: common_utils/dialog.py:310
+msgid "{} progress"
+msgstr ""
+
+#: common_utils/dialog.py:366
+msgid "Book {:d} of {:d}"
+msgstr ""
+
+#: common_utils/dialog.py:396
 msgid "Copy to clipboard"
 msgstr ""
 
-#: common_utils/dialog.py:336
+#: common_utils/dialog.py:433
 msgid "Unhandled exception"
 msgstr ""
 
-#: common_utils/dialog.py:339
+#: common_utils/dialog.py:436
 msgid "The {:s} plugin has encounter a unhandled exception."
 msgstr ""
 
