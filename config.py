@@ -165,22 +165,22 @@ class ConfigWidget(QWidget):
         QWidget.__init__(self)
         
         self.plugin_action = plugin_action
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout()
         self.setLayout(layout)
+        
+        if calibre_version < (6,26,0):
+            # Make dialog box scrollable (for smaller screens)
+            scrollable = QScrollArea()
+            scrollcontent = QWidget()
+            scrollable.setWidget(scrollcontent)
+            scrollable.setWidgetResizable(True)
+            layout.addWidget(scrollable)
+            
+            layout = QVBoxLayout()
+            scrollcontent.setLayout(layout)
         
         title_layout = ImageTitleLayout(self, PLUGIN_ICON, _('Comments Cleaner Options'))
         layout.addLayout(title_layout)
-        
-        # Make dialog box scrollable (for smaller screens)
-        scrollable = QScrollArea()
-        scrollcontent = QWidget()
-        scrollable.setWidget(scrollcontent)
-        scrollable.setWidgetResizable(True)
-        layout.addWidget(scrollable)
-        
-        layout = QVBoxLayout()
-        scrollcontent.setLayout(layout)
-        
         
         # --- options HTML ---
         optionsHTML_GroupBox = QGroupBox(' ', self)

@@ -3,7 +3,7 @@
 ## [1.11.0] - date
 
 ### Changed
-- Update common_utils
+- Fix double ScrollArea in config dialog
 
 ## [1.10.0] - 2023/04/10
 
