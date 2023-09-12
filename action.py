@@ -12,6 +12,14 @@ import copy
 from six.moves import range
 from six import text_type as unicode
 
+try: #polyglot added in calibre 4.0
+    from polyglot.builtins import iteritems, itervalues
+except ImportError:
+    def iteritems(d):
+        return d.iteritems()
+    def itervalues(d):
+        return d.itervalues()
+
 try:
     load_translations()
 except NameError:
@@ -34,7 +42,7 @@ from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
 from .config import PLUGIN_ICON, PREFS, KEY
-from .comments_cleaner import CleanComment
+from .comments_cleaner import clean_comment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
 from .common_utils.dialogs import ProgressDialog
 from .common_utils.librarys import get_BookIds_selected
@@ -102,11 +110,16 @@ def debug_text(pre, text):
 class CleanerProgressDialog(ProgressDialog):
     
     def setup_progress(self, **kvargs):
+        
+        self.used_prefs = PREFS.copy()
+        if KEY.NOTES_SETTINGS in self.used_prefs:
+            del self.used_prefs[KEY.NOTES_SETTINGS]
+        
         # book comment dic
         self.books_dic = {}
         # book custom columns dic
         self.custom_columns_dic = {}
-        if PREFS[KEY.CUSTOM_COLUMN]:
+        if self.used_prefs[KEY.CUSTOM_COLUMN]:
             for cc in get_html(True):
                 self.custom_columns_dic[cc] = {}
         # Count of cleaned comments
@@ -122,7 +135,7 @@ class CleanerProgressDialog(ProgressDialog):
             debug_print('Cleaning comments as cancelled. An exception has occurred:')
             debug_print(self.exception)
         else:
-            debug_print('Settings: {0}\n'.format(PREFS))
+            debug_print('Settings: {0}\n'.format(self.used_prefs))
             debug_print('Cleaning launched for {0} books.'.format(self.book_count))
             debug_print('Cleaning performed for {0} comments.'.format(self.books_clean))
             debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
@@ -130,7 +143,8 @@ class CleanerProgressDialog(ProgressDialog):
     def job_progress(self):
         
         debug_print('Launch Comments Cleaner for {:d} books.'.format(self.book_count))
-        debug_print(PREFS)
+        
+        debug_print(self.used_prefs)
         
         try:
             
@@ -152,7 +166,7 @@ class CleanerProgressDialog(ProgressDialog):
                 # process the comment
                 if comment is not None:
                     debug_text('Comment for '+book_info, comment)
-                    comment_out = CleanComment(comment)
+                    comment_out = clean_comment(comment, is_note=False)
                     if comment == comment_out:
                         debug_print('Unchanged comment :::\n')
                     else:
@@ -166,7 +180,7 @@ class CleanerProgressDialog(ProgressDialog):
                     comment = miA.get(cc_html)
                     if comment is not None:
                         debug_text(cc_html+' for '+book_info, comment)
-                        comment_out = CleanComment(comment)
+                        comment_out = clean_comment(comment)
                         if comment == comment_out:
                             debug_print('Unchanged '+cc_html+' :::\n')
                         else:
@@ -190,6 +204,111 @@ class CleanerProgressDialog(ProgressDialog):
                 
                 self.books_clean = books_edit_count
                 self.dbAPI.set_field('comments', self.books_dic)
+                for cck,ccbv in self.custom_columns_dic.items():
+                    if ccbv:
+                        self.dbAPI.set_field(cck, ccbv)
+                GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
+            
+        except Exception as e:
+            self.exception = e
+        
+
+class CleanerNoteProgressDialog(ProgressDialog):
+    
+    def setup_progress(self, **kvargs):
+        
+        self.used_prefs = PREFS[KEY.NOTES_SETTINGS].copy()
+        
+        self.note_count = set()
+        self.note_src = {}
+        for field_value in self.book_ids:
+            if ':' in field_value:
+                # one value
+                self.note_count.add(field_value)
+                field, value = tuple(field_value.split(':', 1))
+                if field not in self.note_src:
+                    self.note_src[field] = []
+                self.note_src[field].append(value)
+            else:
+                # complet field
+                pass
+        
+        self.note_count = len(self.note_count)
+        
+        
+        self.note_clean = 0
+        self.note_dic = {}
+        
+        # Exception
+        self.exception = None
+        
+        return self.note_count
+    
+    def progress_text(self):
+        return _('Note {:d} of {:d}').format(self.value(), self.note_count)
+    
+    def end_progress(self):
+        
+        if self.wasCanceled():
+            debug_print('Cleaning notes as cancelled. No change.')
+        elif self.exception:
+            debug_print('Cleaning notes as cancelled. An exception has occurred:')
+            debug_print(self.exception)
+        else:
+            debug_print('Settings: {0}\n'.format(self.used_prefs))
+            debug_print('Cleaning launched for {0} notes.'.format(self.note_count))
+            debug_print('Cleaning performed for {0} notes.'.format(self.note_clean))
+            debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
+    
+    def job_progress(self):
+        
+        debug_print('Launch Notes Cleaner for {:d} notes.'.format(self.note_count))
+        debug_print(self.used_prefs)
+        
+        try:
+            
+            for field,values in iteritems(self.note_src):
+                for value in values:
+                    
+                    # update Progress
+                    num = self.increment()
+                    
+                    # get the note
+                    note = self.dbAPI.get_note(field, value)
+                    
+                    note_info = field+':'+value+' [note: '+str(num)+'/'+str(self.note_count)+']'
+                    
+                    if self.wasCanceled():
+                        return
+                    
+                    # process the note
+                    if note is not None:
+                        debug_text('Note for '+note_info, note)
+                        note_out = clean_comment(note, is_note=True)
+                        if note == note_out:
+                            debug_print('Unchanged note :::\n')
+                        else:
+                            debug_text('Note out', note_out)
+                            if field not in self.note_dic:
+                                self.note_dic[field] = {}
+                            self.note_dic[field][value] = note_out
+                    
+                    else:
+                        debug_print('Empty note '+note_info+':::\n')
+                
+            
+            
+            ids = set(self.note_dic.keys())
+            for ccbv in self.custom_columns_dic.values():
+                ids.update(ccbv.keys())
+            books_edit_count = len(ids)
+            if books_edit_count > 0:
+                
+                debug_print('Update the database for {0} notes...\n'.format(books_edit_count))
+                self.set_value(-1, text=_('Update the library for {:d} notes...').format(books_edit_count))
+                
+                self.books_clean = books_edit_count
+                self.dbAPI.set_note()
                 for cck,ccbv in self.custom_columns_dic.items():
                     if ccbv:
                         self.dbAPI.set_field(cck, ccbv)

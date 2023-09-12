@@ -18,7 +18,7 @@ except ImportError:
 
 from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
-from .config import KEY, PREFS, CalibreVersions_Bold, CSS_CleanRules
+from .config import KEY, CalibreVersions_Bold, CSS_CleanRules
 from .XMLentity import parseXMLentity, Entitys
 from .common_utils import debug_print, regex
 
@@ -98,14 +98,22 @@ if CalibreVersions_Bold:
 else:
     font_weight = 'font-weight: 600'
 
-def FixWeight(text):
+def _fix_weight(text):
     if CalibreVersions_Bold:
         text = regex.loop(r' style="([^"]*)'+font_weight+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
 
+def _set_PREFS(is_note):
+    global PREFS
+    from .config import PREFS
+    if is_note:
+        PREFS = PREFS[KEY.NOTES_SETTINGS]
+    
+    return PREFS
+
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
-def CleanBasic(text):
+def clean_basic(text, is_note=False):
     
     text = XMLformat(text)
     
@@ -135,8 +143,11 @@ def CleanBasic(text):
     text = regex.loop(r' (?!'+ '|'.join(ATTRIBUTES) +r')[\w\-]+="[^"]*"', r'', text)
     
     # filtre not desired tag
-    text = regex.loop(r'</?(font|img|html|body|section|form|dl)(| [^>]*)>', r'', text)
+    text = regex.loop(r'</?(font|html|body|section|form|dl)(| [^>]*)>', r'', text)
     text = regex.loop(r'</?(address|big|code|kbd|meta|nobr|qt|samp|small|tt)(| [^>]*)>', r'', text)
+    
+    if not is_note:
+        text = regex.loop(r'</?(img)(| [^>]*)>', r'', text)
     
     # invalid attribut tag 
     text = regex.loop(r'<((?!a)\w+)(| [^>]*) href="[^"]*"(| [^>]*)>', r'<\1\2\3>', text)
@@ -259,21 +270,39 @@ def XMLformat(text):
     
     return text
 
-qw = QWidget()
-CommentsEditor = CommentsEdit(qw)
+
+CommentsEditor = CommentsEdit(QWidget())
 
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
-def CalibreFormat(text):
+def calibre_format(text):
     
     CommentsEditor.current_val = text
     text = CommentsEditor.current_val
     
     return text
 
+try:
+    from calibre.gui2.dialogs.edit_category_notes import NoteEditor
+except:
+    def NoteEditor(*args):
+        pass
+NotesEditor = NoteEditor(QWidget())
+
+def note_format(text):
+    
+    if NotesEditor:
+        NotesEditor.html = text
+        NotesEditor.wyswyg_dirtied()
+        text = NotesEditor.html
+    
+    return text
 
 # main function
-def CleanComment(text):
+def clean_comment(text, is_note=False):
+    _set_PREFS(is_note)
+    
+    debug_print('comments_cleaner.is_note', is_note)
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
@@ -285,14 +314,14 @@ def CleanComment(text):
         text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
         # Markdown
         if PREFS[KEY.MARKDOWN] == 'try':
-            text = CleanMarkdown(text)
+            text = clean_markdown(text, is_note=is_note)
         
     
     # double passe
     # Empirical tests have shown that it was necessary for some very rare and specific cases.
     for passe in range(2):
         
-        text = CleanBasic(text)
+        text = clean_basic(text, is_note=is_note)
         
         # If <div> is not the racine tag
         if not regex.search(r'<div(| [^>]*)>\s*<(p|div|h\d)(| [^>]*)>', text):
@@ -328,7 +357,7 @@ def CleanComment(text):
         
         # Markdown
         if PREFS[KEY.MARKDOWN] == 'always' and passe == 0:
-            text = CleanMarkdown(text)
+            text = clean_markdown(text)
         
         # Multiple Line Return <br><br>
         if PREFS[KEY.DOUBLE_BR] == 'new':
@@ -375,16 +404,16 @@ def CleanComment(text):
             if PREFS[KEY.KEEP_URL] == 'del':
                 text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
             
-            text = CleanBasic(text)
+            text = clean_basic(text, is_note=is_note)
             # style standardization:  insert ; at the end
             text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
             # style standardization: insert space at the start
             text = text.replace(' style="', ' style=" ')
             
             
-            text = CleanAlign(text)
+            text = clean_align(text, is_note=is_note)
             
-            text = CleanStyle(text)
+            text = clean_style(text, is_note=is_note)
             
             
             # Del <sup>/<sub> paragraphe
@@ -412,14 +441,14 @@ def CleanComment(text):
                 r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
         
         
-        text = CleanBasic(text)
+        text = clean_basic(text, is_note=is_note)
         #
     
-    text = FixWeight(text)
+    text = _fix_weight(text)
     
     text = regex.loop(r'<p( [^>]*)style="[^"]*"([^>]*)>'+nbsp+r'</p>', r'<p\1\2>'+nbsp+r'</p>', text)
     
-    text = CalibreFormat(text)
+    text = calibre_format(text)
     
     # del align for list <li>
     if PREFS[KEY.LIST_ALIGN] == 'del':
@@ -429,7 +458,8 @@ def CleanComment(text):
 
 
 
-def CleanAlign(text):
+def clean_align(text, is_note=False):
+    _set_PREFS(is_note)
     
     text = OrderedAttributs(text)
     
@@ -483,7 +513,8 @@ def CleanAlign(text):
     return text
 
 
-def CleanStyle(text):
+def clean_style(text, is_note=False):
+    _set_PREFS(is_note)
     
     text = OrderedAttributs(text)
     
@@ -558,7 +589,7 @@ def CleanStyle(text):
 
 
 # Try to convert Markdown to HTML
-def CleanMarkdown(text): # key word: TRY!
+def clean_markdown(text, is_note=False): # key word: TRY!
     # image
     text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink

@@ -1,6 +1,11 @@
 # Changelog - Comments Cleaner
 
-## [1.11.1] - 2023/09/31
+## [1.12.0] - date
+
+### Added
+- Support for Category Notes
+
+## [0.11.1] - 2023/09/31
 
 ### Bug fixes
 - Don't update the config file when Calibre start
