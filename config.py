@@ -289,29 +289,27 @@ class ConfigWidget(QWidget):
     
     def save_settings(self):
         
-        PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key()
-        PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key()
-        PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key()
-        PREFS[KEY.DEL_ITALIC] = self.checkBoxDEL_ITALIC.isChecked()
-        PREFS[KEY.DEL_UNDER] = self.checkBoxDEL_UNDER.isChecked()
-        PREFS[KEY.DEL_STRIKE] = self.checkBoxDEL_STRIKE.isChecked()
-        PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key()
-        PREFS[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
-        PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
-        
-        PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
-        
-        
-        PREFS[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
-        
-        
-        PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
-        PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
-        PREFS[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
-        PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
-        
-        
-        PREFS[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
+        with PREFS:
+            PREFS[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key()
+            PREFS[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key()
+            PREFS[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key()
+            PREFS[KEY.DEL_ITALIC] = self.checkBoxDEL_ITALIC.isChecked()
+            PREFS[KEY.DEL_UNDER] = self.checkBoxDEL_UNDER.isChecked()
+            PREFS[KEY.DEL_STRIKE] = self.checkBoxDEL_STRIKE.isChecked()
+            PREFS[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key()
+            PREFS[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
+            PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
+            
+            PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
+            
+            PREFS[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
+            
+            PREFS[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
+            PREFS[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
+            PREFS[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
+            PREFS[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
+            
+            PREFS[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
         
         
         debug_print('Save settings: {0}\n'.format(PREFS))

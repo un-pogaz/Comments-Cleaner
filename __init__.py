@@ -32,7 +32,7 @@ class ActionCommentsCleaner(InterfaceActionBase):
     description             = _('Remove the scraps CSS in HTML comments')
     supported_platforms     = ['windows', 'osx', 'linux']
     author                  = 'un_pogaz'
-    version                 = (1, 11, 0)
+    version                 = (1, 11, 1)
     minimum_calibre_version = (2, 0, 0)
     
     #: This field defines the GUI plugin class that contains all the code
@@ -83,7 +83,6 @@ class ActionCommentsCleaner(InterfaceActionBase):
         :param config_widget: The widget returned by :meth:`config_widget`.
         '''
         config_widget.save_settings()
-
 
 
 # For testing, run from command line with this:

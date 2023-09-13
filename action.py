@@ -85,7 +85,6 @@ class CommentsCleanerAction(InterfaceAction):
     
     def toolbar_triggered(self):
         self._clean_comment()
-        #self.show_configuration()
     
     
     def show_configuration(self):

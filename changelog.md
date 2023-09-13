@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.11.1] - 2023/09/31
+
+### Bug fixes
+- Don't update the config file when Calibre start
+
 ## [1.11.0] - 2023/09/08
 
 ### Changed
