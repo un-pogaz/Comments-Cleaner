@@ -177,7 +177,7 @@ class CleanerProgressDialog(ProgressDialog):
                                 self.custom_columns_dic[cc_html][book_id] = comment_out
                     
                     else:
-                        debug_print('Empty comment '+book_info+':::\n')
+                        debug_print('Empty '+cc_html+' '+book_info+':::\n')
             
             
             ids = set(self.books_dic.keys())

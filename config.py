@@ -153,7 +153,7 @@ def CSS_CleanRules(css):
     css = regex.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css)
     css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css)
     # split to table and remove duplicate
-    css = list(dict.fromkeys(css.split(' ')))
+    css = list(set(css.split(' ')))
     # sort
     css = sorted(css)
     # join in a string
@@ -275,7 +275,6 @@ class ConfigWidget(QWidget):
         
         # --- Custom columns ---
         self.checkBoxCUSTOM_COLUMN = QCheckBox(_('Apply to others custom HTML columns'), self)
-        self.checkBoxCUSTOM_COLUMN.stateChanged.connect(self.checkBox_click)
         self.checkBoxCUSTOM_COLUMN.setChecked(PREFS[KEY.CUSTOM_COLUMN])
         layout.addWidget(self.checkBoxCUSTOM_COLUMN)
         
