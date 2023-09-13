@@ -41,7 +41,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from .config import PLUGIN_ICON, PREFS, KEY
+from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CalibreHasNotes
 from .comments_cleaner import clean_comment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
 from .common_utils.dialogs import ProgressDialog
@@ -84,6 +84,11 @@ class CommentsCleanerAction(InterfaceAction):
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         
+        if CalibreHasNotes:
+            create_menu_action_unique(self, m, _('&Clean category notes'), NOTES_ICON,
+                                                 triggered=self._clean_note,
+                                                 shortcut_name='Notes Cleaner')
+        
         self.menu.addSeparator()
         create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
                                              triggered=self.show_configuration,
@@ -97,11 +102,16 @@ class CommentsCleanerAction(InterfaceAction):
     
     def show_configuration(self):
         self.interface_action_base_plugin.do_user_config(GUI)
-        
+    
     def _clean_comment(self):
         book_ids = get_BookIds_selected(show_error=True)
         
         CleanerProgressDialog(book_ids)
+    
+    def _clean_note(self):
+        notes_lst = []
+        
+        CleanerNoteProgressDialog(notes_lst)
 
 
 def debug_text(pre, text):
@@ -112,8 +122,7 @@ class CleanerProgressDialog(ProgressDialog):
     def setup_progress(self, **kvargs):
         
         self.used_prefs = PREFS.copy()
-        if KEY.NOTES_SETTINGS in self.used_prefs:
-            del self.used_prefs[KEY.NOTES_SETTINGS]
+        self.used_prefs.pop(KEY.NOTES_SETTINGS, None)
         
         # book comment dic
         self.books_dic = {}
@@ -214,6 +223,9 @@ class CleanerProgressDialog(ProgressDialog):
         
 
 class CleanerNoteProgressDialog(ProgressDialog):
+    
+    icon = NOTES_ICON
+    title = _('Notes Cleaner progress')
     
     def setup_progress(self, **kvargs):
         

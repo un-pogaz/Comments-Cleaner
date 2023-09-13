@@ -22,9 +22,9 @@ from collections import defaultdict, OrderedDict
 from functools import partial
 
 try:
-    from qt.core import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
+    from qt.core import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QHBoxLayout, QLineEdit, QCheckBox, QObject
 except ImportError:
-    from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QCheckBox, QObject
+    from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QHBoxLayout, QLineEdit, QCheckBox, QObject
 
 from calibre import prints
 from calibre.gui2.ui import get_gui
@@ -35,6 +35,7 @@ from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox
 
 
 PLUGIN_ICON = 'images/plugin.png'
+NOTES_ICON = 'images/notes.png'
 
 class KEY:
     KEEP_URL = 'KeepUrl'
@@ -153,7 +154,7 @@ if calibre_version >= (6,0,0):
 
 CalibreHasNotes = False
 try:
-    from calibre.gui2.dialogs.edit_category_notes import NoteEditor
+    import calibre.gui2.dialogs.edit_category_notes
     CalibreHasNotes = True
 except:
     pass
@@ -235,7 +236,7 @@ def build_optionsHTML_GroupBox(parent, layout, prefs):
 
 def build_optionsDEL_FORMATTING(parent, layout, prefs):
     parent.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), parent)
-    parent.checkBoxDEL_FORMATTING.stateChanged.connect(parent.checkBox_click)
+    parent.checkBoxDEL_FORMATTING.stateChanged.connect(partial(action_checkBox_click, parent))
     parent.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
     layout.addWidget(parent.checkBoxDEL_FORMATTING)
 
@@ -265,12 +266,20 @@ def build_optionsTEXT_GroupBox(parent, layout, prefs):
         parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
         optionsTEXT_GridLayout.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
 
-def build_KeyboardShortcuts(parent, layout):
-    layout.addWidget(QLabel(' ', parent))
-    keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts')+'...', parent)
-    keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
-    keyboard_shortcuts_button.clicked.connect(parent.edit_shortcuts)
-    layout.addWidget(keyboard_shortcuts_button)
+def action_checkBox_click(parent, num):
+    
+    b = not parent.checkBoxDEL_FORMATTING.isChecked()
+    
+    parent.comboBoxKEEP_URL.setEnabled(b)
+    parent.comboBoxHEADINGS.setEnabled(b)
+    parent.comboBoxFONT_WEIGHT.setEnabled(b)
+    parent.checkBoxDEL_ITALIC.setEnabled(b)
+    parent.checkBoxDEL_UNDER.setEnabled(b)
+    parent.checkBoxDEL_STRIKE.setEnabled(b)
+    parent.comboBoxFORCE_JUSTIFY.setEnabled(b)
+    parent.comboBoxLIST_ALIGN.setEnabled(b)
+    parent.comboBoxID_CLASS.setEnabled(b)
+    parent.lineEditCSS_KEEP.setEnabled(b)
 
 
 class ConfigWidget(QWidget):
@@ -306,7 +315,23 @@ class ConfigWidget(QWidget):
         layout.addWidget(self.checkBoxCUSTOM_COLUMN)
         
         # --- Keyboard shortcuts ---
-        build_KeyboardShortcuts(self, layout)
+        if CalibreHasNotes:
+            layout.addWidget(QLabel(' ', self))
+            button_layout = QHBoxLayout()
+            layout.addLayout(button_layout)
+            
+            notes_options_button = QPushButton(get_icon(NOTES_ICON), _('Notes Cleaner Options'), self)
+            notes_options_button.setToolTip(_('Edit the options for the notes cleaner action'))
+            notes_options_button.clicked.connect(self.edit_notes_options)
+            button_layout.addStretch(1)
+            button_layout.addWidget(notes_options_button)
+        
+        # --- Keyboard shortcuts ---
+        layout.addWidget(QLabel(' ', self))
+        keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts')+'...', self)
+        keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
+        keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
+        layout.addWidget(keyboard_shortcuts_button)
         layout.addStretch(1)
     
     def save_settings(self):
@@ -333,28 +358,18 @@ class ConfigWidget(QWidget):
             
             PREFS[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
         
+        prefs = PREFS.copy()
+        prefs.pop(KEY.NOTES_SETTINGS, None)
         
-        debug_print('Save settings: {0}\n'.format(PREFS))
+        debug_print('Save settings: {0}\n'.format(prefs))
         
     
     def edit_shortcuts(self):
         edit_keyboard_shortcuts(self.plugin_action)
     
-    
-    def checkBox_click(self, num):
-        
-        b = not self.checkBoxDEL_FORMATTING.isChecked()
-        
-        self.comboBoxKEEP_URL.setEnabled(b)
-        self.comboBoxHEADINGS.setEnabled(b)
-        self.comboBoxFONT_WEIGHT.setEnabled(b)
-        self.checkBoxDEL_ITALIC.setEnabled(b)
-        self.checkBoxDEL_UNDER.setEnabled(b)
-        self.checkBoxDEL_STRIKE.setEnabled(b)
-        self.comboBoxFORCE_JUSTIFY.setEnabled(b)
-        self.comboBoxLIST_ALIGN.setEnabled(b)
-        self.comboBoxID_CLASS.setEnabled(b)
-        self.lineEditCSS_KEEP.setEnabled(b)
+    def edit_notes_options(self):
+        d = ConfigNotesDialog()
+        d.exec_()
 
 
 # workaround to run one Calibre 2
@@ -365,4 +380,61 @@ except:
         pass
 
 class ConfigNotesDialog(Dialog):
-    pass
+    
+    def __init__(self):
+        Dialog.__init__(self,
+            title=_('Customize') + ' ' + _('Notes Cleaner'),
+            name = 'plugin config dialog:User Action Interface:Notes Cleaner',
+        )
+    
+    def setup_ui(self):
+        v = QVBoxLayout(self)
+        
+        scrollable = QScrollArea()
+        v.addWidget(scrollable)
+        v.addWidget(self.bb)
+        
+        # Make dialog box scrollable (for smaller screens)
+        scrollcontent = QWidget()
+        scrollable.setWidget(scrollcontent)
+        scrollable.setWidgetResizable(True)
+        layout = QVBoxLayout()
+        scrollcontent.setLayout(layout)
+        
+        
+        prefs = PREFS[KEY.NOTES_SETTINGS]
+        
+        # --- options ---
+        build_optionsHTML_GroupBox(self, layout, prefs)
+        build_optionsDEL_FORMATTING(self, layout, prefs)
+        build_optionsTEXT_GroupBox(self, layout, prefs)
+        layout.addStretch(1)
+    
+    def accept(self):
+        
+        with PREFS:
+            prefs = PREFS[KEY.NOTES_SETTINGS]
+            
+            prefs[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key()
+            prefs[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key()
+            prefs[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key()
+            prefs[KEY.DEL_ITALIC] = self.checkBoxDEL_ITALIC.isChecked()
+            prefs[KEY.DEL_UNDER] = self.checkBoxDEL_UNDER.isChecked()
+            prefs[KEY.DEL_STRIKE] = self.checkBoxDEL_STRIKE.isChecked()
+            prefs[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key()
+            prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
+            prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
+            
+            prefs[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
+            
+            prefs[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
+            
+            prefs[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
+            prefs[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
+            prefs[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
+            prefs[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
+            
+            PREFS[KEY.NOTES_SETTINGS] = prefs
+        
+        debug_print('Notes settings: {0}\n'.format(prefs))
+        Dialog.accept(self)

@@ -16,9 +16,8 @@ try:
 except ImportError:
     from PyQt5.Qt import QWidget
 
-from calibre.gui2.metadata.basic_widgets import CommentsEdit
 
-from .config import KEY, CalibreVersions_Bold, CSS_CleanRules
+from .config import KEY, CalibreVersions_Bold, CalibreHasNotes, CSS_CleanRules
 from .XMLentity import parseXMLentity, Entitys
 from .common_utils import debug_print, regex
 
@@ -271,32 +270,35 @@ def XMLformat(text):
     return text
 
 
-CommentsEditor = CommentsEdit(QWidget())
-
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
 def calibre_format(text):
+    try:
+        ce = calibre_format.CommentsEditor
+    except AttributeError:
+        from calibre.gui2.metadata.basic_widgets import CommentsEdit
+        ce = calibre_format.CommentsEditor = CommentsEdit(QWidget())
     
-    CommentsEditor.current_val = text
-    text = CommentsEditor.current_val
+    ce.current_val = text
+    text = ce.current_val
     
     return text
-
-try:
-    from calibre.gui2.dialogs.edit_category_notes import NoteEditor
-except:
-    def NoteEditor(*args):
-        pass
-NotesEditor = NoteEditor(QWidget())
 
 def note_format(text):
     
-    if NotesEditor:
-        NotesEditor.html = text
-        NotesEditor.wyswyg_dirtied()
-        text = NotesEditor.html
+    if CalibreHasNotes:
+        try:
+            ne = note_format.NoteEditor
+        except AttributeError:
+            from calibre.gui2.dialogs.edit_category_notes import NoteEditor
+            ne = note_format.NoteEditor = NoteEditor(QWidget())
+        
+        ne.html = text
+        ne.wyswyg_dirtied()
+        text = ne.html
     
     return text
+
 
 # main function
 def clean_comment(text, is_note=False):
@@ -314,7 +316,7 @@ def clean_comment(text, is_note=False):
         text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
         # Markdown
         if PREFS[KEY.MARKDOWN] == 'try':
-            text = clean_markdown(text, is_note=is_note)
+            text = clean_markdown(text)
         
     
     # double passe
@@ -457,7 +459,6 @@ def clean_comment(text, is_note=False):
     return text
 
 
-
 def clean_align(text, is_note=False):
     _set_PREFS(is_note)
     
@@ -589,7 +590,7 @@ def clean_style(text, is_note=False):
 
 
 # Try to convert Markdown to HTML
-def clean_markdown(text, is_note=False): # key word: TRY!
+def clean_markdown(text): # key word: TRY!
     # image
     text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink
