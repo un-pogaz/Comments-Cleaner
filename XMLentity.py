@@ -19,7 +19,7 @@ else:
 from collections import namedtuple
 XmlHtmlEntity = namedtuple('XmlHtmlEntity', ['char','name','html','xml','codepoint'])
 
-def parseXMLentity(text):
+def parse_XMLentity(text):
     # " & ' < >
     regx = r'&#x0*(22|26|27|3C|3E);'
     while regex.search(regx, text):

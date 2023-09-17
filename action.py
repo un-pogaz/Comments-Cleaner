@@ -41,7 +41,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CalibreHasNotes
+from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES
 from .comments_cleaner import clean_comment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
 from .common_utils.dialogs import ProgressDialog
@@ -84,7 +84,7 @@ class CommentsCleanerAction(InterfaceAction):
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         
-        if CalibreHasNotes:
+        if CALIBRE_HAS_NOTES:
             create_menu_action_unique(self, m, _('&Clean category notes'), NOTES_ICON,
                                                  triggered=self._clean_note,
                                                  shortcut_name='Notes Cleaner')

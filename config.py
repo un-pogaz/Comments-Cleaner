@@ -115,36 +115,36 @@ EMPTY_PARA = OrderedDict([
 
 
 # Set defaults
-defaults = {}
-defaults[KEY.KEEP_URL] = 'keep'
-defaults[KEY.HEADINGS] = 'none'
-defaults[KEY.FONT_WEIGHT] = 'bold'
-defaults[KEY.DEL_ITALIC] = False
-defaults[KEY.DEL_UNDER] = False
-defaults[KEY.DEL_STRIKE] = False
-defaults[KEY.FORCE_JUSTIFY] = 'empty'
-defaults[KEY.LIST_ALIGN] = 'del'
-defaults[KEY.ID_CLASS] = 'id_class'
-defaults[KEY.CSS_KEEP] = ''
+_defaults = {}
+_defaults[KEY.KEEP_URL] = 'keep'
+_defaults[KEY.HEADINGS] = 'none'
+_defaults[KEY.FONT_WEIGHT] = 'bold'
+_defaults[KEY.DEL_ITALIC] = False
+_defaults[KEY.DEL_UNDER] = False
+_defaults[KEY.DEL_STRIKE] = False
+_defaults[KEY.FORCE_JUSTIFY] = 'empty'
+_defaults[KEY.LIST_ALIGN] = 'del'
+_defaults[KEY.ID_CLASS] = 'id_class'
+_defaults[KEY.CSS_KEEP] = ''
 
-defaults[KEY.DEL_FORMATTING] = False
+_defaults[KEY.DEL_FORMATTING] = False
 
-defaults[KEY.MARKDOWN] = 'try'
-defaults[KEY.DOUBLE_BR] = 'new'
-defaults[KEY.SINGLE_BR] = 'none'
-defaults[KEY.EMPTY_PARA] = 'merge'
+_defaults[KEY.MARKDOWN] = 'try'
+_defaults[KEY.DOUBLE_BR] = 'new'
+_defaults[KEY.SINGLE_BR] = 'none'
+_defaults[KEY.EMPTY_PARA] = 'merge'
 
 # This is where all preferences for this plugin are stored
 PREFS = PREFS_json()
-PREFS.defaults = defaults
+PREFS.defaults = _defaults
 PREFS.defaults[KEY.CUSTOM_COLUMN] = False
-PREFS.defaults[KEY.NOTES_SETTINGS] = defaults.copy()
+PREFS.defaults[KEY.NOTES_SETTINGS] = _defaults.copy()
 
 
 #fix a imcompatibility betwen multiple Calibre version
-CalibreVersions_Bold = calibre_version < (4,0,0) or calibre_version >= (6,0,0)
+CALIBRE_VERSIONS_BOLD = calibre_version < (4,0,0) or calibre_version >= (6,0,0)
 
-if not CalibreVersions_Bold:
+if not CALIBRE_VERSIONS_BOLD:
     FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
 
 if calibre_version >= (6,0,0):
@@ -152,15 +152,14 @@ if calibre_version >= (6,0,0):
     if PREFS[KEY.FONT_WEIGHT] == 'trunc':
         PREFS[KEY.FONT_WEIGHT] = 'bold'
 
-CalibreHasNotes = False
 try:
     import calibre.gui2.dialogs.edit_category_notes
-    CalibreHasNotes = True
+    CALIBRE_HAS_NOTES = True
 except:
-    pass
+    CALIBRE_HAS_NOTES = False
 
 
-def CSS_CleanRules(css):
+def css_clean_rules(css):
     #remove space and invalid character
     css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower())
     css = regex.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css)
@@ -174,7 +173,7 @@ def CSS_CleanRules(css):
     return css
 
 
-def build_optionsHTML_GroupBox(parent, layout, prefs):
+def _build_optionsHTML_GroupBox(parent, layout, prefs):
     rslt = QGroupBox(' ', parent)
     layout.addWidget(rslt)
     
@@ -234,13 +233,13 @@ def build_optionsHTML_GroupBox(parent, layout, prefs):
     
     return rslt
 
-def build_optionsDEL_FORMATTING(parent, layout, prefs):
+def _build_optionsDEL_FORMATTING(parent, layout, prefs):
     parent.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), parent)
-    parent.checkBoxDEL_FORMATTING.stateChanged.connect(partial(action_checkBox_click, parent))
+    parent.checkBoxDEL_FORMATTING.stateChanged.connect(partial(_action_checkBoxDEL_FORMATTING, parent))
     parent.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
     layout.addWidget(parent.checkBoxDEL_FORMATTING)
 
-def build_optionsTEXT_GroupBox(parent, layout, prefs):
+def _build_optionsTEXT_GroupBox(parent, layout, prefs):
         optionsTEXT_GroupBox = QGroupBox(' ', parent)
         layout.addWidget(optionsTEXT_GroupBox)
         
@@ -266,7 +265,7 @@ def build_optionsTEXT_GroupBox(parent, layout, prefs):
         parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
         optionsTEXT_GridLayout.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
 
-def action_checkBox_click(parent, num):
+def _action_checkBoxDEL_FORMATTING(parent, num):
     
     b = not parent.checkBoxDEL_FORMATTING.isChecked()
     
@@ -305,9 +304,9 @@ class ConfigWidget(QWidget):
         layout.addLayout(title_layout)
         
         # --- options ---
-        build_optionsHTML_GroupBox(self, layout, PREFS)
-        build_optionsDEL_FORMATTING(self, layout, PREFS)
-        build_optionsTEXT_GroupBox(self, layout, PREFS)
+        _build_optionsHTML_GroupBox(self, layout, PREFS)
+        _build_optionsDEL_FORMATTING(self, layout, PREFS)
+        _build_optionsTEXT_GroupBox(self, layout, PREFS)
         
         # --- Custom columns ---
         self.checkBoxCUSTOM_COLUMN = QCheckBox(_('Apply to others custom HTML columns'), self)
@@ -315,7 +314,7 @@ class ConfigWidget(QWidget):
         layout.addWidget(self.checkBoxCUSTOM_COLUMN)
         
         # --- Keyboard shortcuts ---
-        if CalibreHasNotes:
+        if CALIBRE_HAS_NOTES:
             layout.addWidget(QLabel(' ', self))
             button_layout = QHBoxLayout()
             layout.addLayout(button_layout)
@@ -347,7 +346,7 @@ class ConfigWidget(QWidget):
             PREFS[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
             PREFS[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
             
-            PREFS[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
+            PREFS[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP.text())
             
             PREFS[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
             
@@ -405,9 +404,9 @@ class ConfigNotesDialog(Dialog):
         prefs = PREFS[KEY.NOTES_SETTINGS]
         
         # --- options ---
-        build_optionsHTML_GroupBox(self, layout, prefs)
-        build_optionsDEL_FORMATTING(self, layout, prefs)
-        build_optionsTEXT_GroupBox(self, layout, prefs)
+        _build_optionsHTML_GroupBox(self, layout, prefs)
+        _build_optionsDEL_FORMATTING(self, layout, prefs)
+        _build_optionsTEXT_GroupBox(self, layout, prefs)
         layout.addStretch(1)
     
     def accept(self):
@@ -425,7 +424,7 @@ class ConfigNotesDialog(Dialog):
             prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
             prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
             
-            prefs[KEY.CSS_KEEP] = CSS_CleanRules(self.lineEditCSS_KEEP.text())
+            prefs[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP.text())
             
             prefs[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
             

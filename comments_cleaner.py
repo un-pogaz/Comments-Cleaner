@@ -17,11 +17,11 @@ except ImportError:
     from PyQt5.Qt import QWidget
 
 
-from .config import KEY, CalibreVersions_Bold, CalibreHasNotes, CSS_CleanRules
-from .XMLentity import parseXMLentity, Entitys
+from .config import KEY, CALIBRE_VERSIONS_BOLD, CALIBRE_HAS_NOTES, css_clean_rules
+from .XMLentity import parse_XMLentity, Entitys
 from .common_utils import debug_print, regex
 
-nbsp = Entitys.nbsp.char
+NBSP = Entitys.nbsp.char
 
 # Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
 TAGS = [
@@ -92,14 +92,14 @@ ATTRIBUTES = [
 
 
 #fix a imcompatibility betwen multiple Calibre version
-if CalibreVersions_Bold:
-    font_weight = 'font-weight: 700'
+if CALIBRE_VERSIONS_BOLD:
+    FONT_WEIGHT = 'font-weight: 700'
 else:
-    font_weight = 'font-weight: 600'
+    FONT_WEIGHT = 'font-weight: 600'
 
 def _fix_weight(text):
-    if CalibreVersions_Bold:
-        text = regex.loop(r' style="([^"]*)'+font_weight+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
+    if CALIBRE_VERSIONS_BOLD:
+        text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
 
 def _set_PREFS(is_note):
@@ -116,7 +116,7 @@ def clean_basic(text, is_note=False):
     
     text = XMLformat(text)
     
-    text = parseXMLentity(text)
+    text = parse_XMLentity(text)
     
     
     # convert tag
@@ -158,8 +158,8 @@ def clean_basic(text, is_note=False):
     
     # management of <br>
     text = regex.loop(r'<(b|h)r[^>]+>', r'<\1r>', text)
-    text = regex.loop(r'(\s|'+nbsp+r')+<(b|h)r>', r'<\2r>', text)
-    text = regex.loop(r'<(b|h)r>(\s|'+nbsp+r')+', r'<\1r>', text)
+    text = regex.loop(r'(\s|'+NBSP+r')+<(b|h)r>', r'<\2r>', text)
+    text = regex.loop(r'<(b|h)r>(\s|'+NBSP+r')+', r'<\1r>', text)
     text = regex.loop(r'<((?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*))><(b|h)r>', r'<\2r><\1>', text)
     text = regex.loop(r'<(b|h)r></(em|strong|sup|sub|u|s|span|a)>', r'</\2><\1r>', text)
     
@@ -195,15 +195,15 @@ def clean_basic(text, is_note=False):
     
     # space and <br> before/after <p>
     rgx = r'((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)(</?(?:p|div|h\d|li)(?:| [^>]*)>)((?:</?(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
-    text = regex.loop(r'(?:\s|'+nbsp+r'|<br>)*'+rgx+r'(?:\s|'+nbsp+r'|<br>)+', r'\1\2\3', text)
-    text = regex.loop(r'(?:\s|'+nbsp+r'|<br>)+'+rgx+r'(?:\s|'+nbsp+r'|<br>)*', r'\1\2\3', text)
+    text = regex.loop(r'(?:\s|'+NBSP+r'|<br>)*'+rgx+r'(?:\s|'+NBSP+r'|<br>)+', r'\1\2\3', text)
+    text = regex.loop(r'(?:\s|'+NBSP+r'|<br>)+'+rgx+r'(?:\s|'+NBSP+r'|<br>)*', r'\1\2\3', text)
     # restore empty <p>
-    text = regex.loop(r'<(p|div|h\d|li)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+nbsp+r'</\1>', text)
+    text = regex.loop(r'<(p|div|h\d|li)(| [^>]*)>(<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*(?:<br>)*(</(?:em|strong|sup|sub|u|s|span|a)>)*</\1>', r'<\1\2>'+NBSP+r'</\1>', text)
     
     # space with inline before/after <br>
     rgx = r'((?:</(?:em|strong|sup|sub|u|s|span|a)>)*)(<br>)((?:<(?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*)>)*)'
-    text = regex.loop(r'(?:\s|'+nbsp+r')*'+rgx+r'(?:\s|'+nbsp+r')+', r'\1\2\3', text)
-    text = regex.loop(r'(?:\s|'+nbsp+r')+'+rgx+r'(?:\s|'+nbsp+r')*', r'\1\2\3', text)
+    text = regex.loop(r'(?:\s|'+NBSP+r')*'+rgx+r'(?:\s|'+NBSP+r')+', r'\1\2\3', text)
+    text = regex.loop(r'(?:\s|'+NBSP+r')+'+rgx+r'(?:\s|'+NBSP+r')*', r'\1\2\3', text)
     
     # space line return for lists
     text = regex.loop(r'><(p|div|h\d|li|ol|ul)', r'>\n<\1', text)
@@ -243,12 +243,12 @@ def clean_basic(text, is_note=False):
     
     text = XMLformat(text)
     
-    text = OrderedAttributs(text)
+    text = ordered_attributs(text)
     
     return text
 
 # Ordered the attributs
-def OrderedAttributs(text):
+def ordered_attributs(text):
     
     for atr in reversed(sorted(ATTRIBUTES)):
         text = regex.loop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+atr+r'="([^"]*)"', r'<\1 '+atr+r'="\3" \2', text)
@@ -286,7 +286,7 @@ def calibre_format(text):
 
 def note_format(text):
     
-    if CalibreHasNotes:
+    if CALIBRE_HAS_NOTES:
         try:
             ne = note_format.NoteEditor
         except AttributeError:
@@ -330,7 +330,7 @@ def clean_comment(text, is_note=False):
             text = '<div>'+text+'</div>'
         
         # Del empty <div>
-        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+nbsp+r'</div>', r'<div>\2', text)
+        text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>'+NBSP+r'</div>', r'<div>\2', text)
         
         # Convert <div> after a <div> in <p>
         text = regex.loop(r'<div(| [^>]*)>(.*?)<div(| [^>]*)>(.*?)</div>', r'<div>\2<p\3>\4</p>', text)
@@ -345,11 +345,11 @@ def clean_comment(text, is_note=False):
         text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<p(| [^>]*)>((?:(?!</p>).)*?)</p>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\3>\4</p><p\1>\5</p>', text)
         
         # Del empty <p> at the start/end
-        text = regex.loop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>', r'<div>', text)
-        text = regex.loop(r'<(p|h\d)(| [^>]*)>'+nbsp+r'</\1>\s*</div>', r'</div>', text)
+        text = regex.loop(r'<div(?:| [^>]*)>\s*<(p|h\d)(| [^>]*)>'+NBSP+r'</\1>', r'<div>', text)
+        text = regex.loop(r'<(p|h\d)(| [^>]*)>'+NBSP+r'</\1>\s*</div>', r'</div>', text)
         
         # Convert empty <table>to empty <p>
-        text = regex.loop(r'<table(| [^>]*)>(?:\s*<tbody>)?\s*(?:<tr(?:| [^>]*)>(?:\s*<td(| [^>]*)>\s*</td>)+\s*</tr>)+(?:\s*</tbody>)?\s*</table>', r'<p\1\2>'+nbsp+r'</p>', text)
+        text = regex.loop(r'<table(| [^>]*)>(?:\s*<tbody>)?\s*(?:<tr(?:| [^>]*)>(?:\s*<td(| [^>]*)>\s*</td>)+\s*</tr>)+(?:\s*</tbody>)?\s*</table>', r'<p\1\2>'+NBSP+r'</p>', text)
         
         # Convert <table> with only 1 row and 1 cell to <p>
         text = regex.loop(r'<table(| [^>]*)>(?:\s*<tbody>)?\s*<tr(?:| [^>]*)>\s*<td(| [^>]*)>(.*?)</td>\s*</tr>(?:\s*</tbody>)?\s*</table>', r'<p\1\2>\3</p>', text)
@@ -365,20 +365,20 @@ def clean_comment(text, is_note=False):
         if PREFS[KEY.DOUBLE_BR] == 'new':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text)
         elif PREFS[KEY.DOUBLE_BR] == 'empty':
-            text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+nbsp+r'</p><p\1>', text)
+            text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+NBSP+r'</p><p\1>', text)
         
         # Single Line Return <br>
         if PREFS[KEY.SINGLE_BR] == 'space':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2 \3</p>', text)
         elif PREFS[KEY.SINGLE_BR] == 'para':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\1>\3</p>', text)
-            text = regex.loop(r'<p(| [^>]*)></p>', r'<p\1>'+nbsp+r'</p>', text)
+            text = regex.loop(r'<p(| [^>]*)></p>', r'<p\1>'+NBSP+r'</p>', text)
         
         # Empty paragraph
         if PREFS[KEY.EMPTY_PARA] == 'merge':
-            text = regex.loop(r'(?:<p(| [^>]*)>'+nbsp+r'</p>\s*){2,}', r'<p\1>'+nbsp+r'</p>', text)
+            text = regex.loop(r'(?:<p(| [^>]*)>'+NBSP+r'</p>\s*){2,}', r'<p\1>'+NBSP+r'</p>', text)
         elif PREFS[KEY.EMPTY_PARA] == 'del':
-            text = regex.loop(r'<p(| [^>]*)>'+nbsp+r'</p>', r'', text)
+            text = regex.loop(r'<p(| [^>]*)>'+NBSP+r'</p>', r'', text)
         
         
         if PREFS[KEY.DEL_FORMATTING]:
@@ -448,7 +448,7 @@ def clean_comment(text, is_note=False):
     
     text = _fix_weight(text)
     
-    text = regex.loop(r'<p( [^>]*)style="[^"]*"([^>]*)>'+nbsp+r'</p>', r'<p\1\2>'+nbsp+r'</p>', text)
+    text = regex.loop(r'<p( [^>]*)style="[^"]*"([^>]*)>'+NBSP+r'</p>', r'<p\1\2>'+NBSP+r'</p>', text)
     
     text = calibre_format(text)
     
@@ -462,7 +462,7 @@ def clean_comment(text, is_note=False):
 def clean_align(text, is_note=False):
     _set_PREFS(is_note)
     
-    text = OrderedAttributs(text)
+    text = ordered_attributs(text)
     
     # set align
     if PREFS[KEY.FORCE_JUSTIFY] == 'del':
@@ -517,13 +517,13 @@ def clean_align(text, is_note=False):
 def clean_style(text, is_note=False):
     _set_PREFS(is_note)
     
-    text = OrderedAttributs(text)
+    text = ordered_attributs(text)
     
     text = regex.loop(r' x-style="[^"]*"', r'', text)
     text = text.replace(' style="', ' x-style="" style=" ')
     
     rule_all = 'text-align font-weight font-style text-decoration'
-    rule_tbl = CSS_CleanRules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ')
+    rule_tbl = css_clean_rules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ')
     
     for rule in rule_tbl:
         text = regex.loop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text)
@@ -534,7 +534,7 @@ def clean_style(text, is_note=False):
     
     # font-weight
     text = regex.loop(r' style="([^"]*) font-weight: (?!bold|bolder|\d+)[^;]*;([^"]*)"', r' style="\1\2"', text)
-    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1 '+font_weight+r';\3"', text)
+    text = regex.loop(r' style="([^"]*) font-weight: (bold|bolder);([^"]*)"', r' style="\1 '+FONT_WEIGHT+r';\3"', text)
     text = regex.loop(r' style="([^"]*) font-weight: (\d{4,})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 900;\3"', text)
     text = regex.loop(r' style="([^"]*) font-weight: (\d{1,2})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 100;\3"', text)
     text = regex.simple(r' style="([^"]*) font-weight: (\d{3})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: \2;\3"', text)
@@ -552,7 +552,7 @@ def clean_style(text, is_note=False):
     
     if PREFS[KEY.FONT_WEIGHT] == 'bold':
         text = regex.loop(r' style="([^"]*) font-weight: [5-9]\d\d;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
-        text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 '+font_weight+r';\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 '+FONT_WEIGHT+r';\2"', text)
         text = regex.loop(r' style="([^"]*) font-weight: [1-4]\d\d;([^"]*)"', r' style="\1\2"', text)
         
     elif PREFS[KEY.FONT_WEIGHT] == 'del':
