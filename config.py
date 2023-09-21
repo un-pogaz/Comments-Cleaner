@@ -22,12 +22,19 @@ from collections import defaultdict, OrderedDict
 from functools import partial
 
 try:
-    from qt.core import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QHBoxLayout, QLineEdit, QCheckBox, QObject
+    from qt.core import (Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox,
+                         QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea,
+                         QSize, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget,
+                        )
 except ImportError:
-    from PyQt5.Qt import QWidget, QGridLayout, QScrollArea, QLabel, QPushButton, QGroupBox, QVBoxLayout, QHBoxLayout, QLineEdit, QCheckBox, QObject
+    from PyQt5.Qt import (Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox,
+                          QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea,
+                          QSize, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget,
+                        )
 
 from calibre import prints
 from calibre.gui2.ui import get_gui
+from calibre.library.field_metadata import category_icon_map
 
 from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
 from .common_utils.dialogs import edit_keyboard_shortcuts
@@ -280,6 +287,11 @@ def _action_checkBoxDEL_FORMATTING(parent, num):
     parent.comboBoxID_CLASS.setEnabled(b)
     parent.lineEditCSS_KEEP.setEnabled(b)
 
+def _build_notes_options_button(parent, layout):
+    rslt = QPushButton(get_icon(NOTES_ICON), _('Notes Cleaner Options'), parent)
+    rslt.setToolTip(_('Edit the options for the notes cleaner action'))
+    rslt.clicked.connect(parent.edit_notes_options)
+    layout.addWidget(rslt)
 
 class ConfigWidget(QWidget):
     def __init__(self, plugin_action):
@@ -319,11 +331,8 @@ class ConfigWidget(QWidget):
             button_layout = QHBoxLayout()
             layout.addLayout(button_layout)
             
-            notes_options_button = QPushButton(get_icon(NOTES_ICON), _('Notes Cleaner Options'), self)
-            notes_options_button.setToolTip(_('Edit the options for the notes cleaner action'))
-            notes_options_button.clicked.connect(self.edit_notes_options)
             button_layout.addStretch(1)
-            button_layout.addWidget(notes_options_button)
+            _build_notes_options_button(self, button_layout)
         
         # --- Keyboard shortcuts ---
         layout.addWidget(QLabel(' ', self))
@@ -379,9 +388,9 @@ except:
         pass
 
 class ConfigNotesDialog(Dialog):
-    
     def __init__(self):
         Dialog.__init__(self,
+            parent=GUI,
             title=_('Customize') + ' ' + _('Notes Cleaner'),
             name = 'plugin config dialog:User Action Interface:Notes Cleaner',
         )
@@ -436,4 +445,126 @@ class ConfigNotesDialog(Dialog):
             PREFS[KEY.NOTES_SETTINGS] = prefs
         
         debug_print('Notes settings: {0}\n'.format(prefs))
+        Dialog.accept(self)
+
+
+class SelectNotesDialog(Dialog):
+    def __init__(self):
+        self.dbAPI = GUI.current_db.new_api
+        
+        Dialog.__init__(self,
+            parent=GUI,
+            title= _('Select Notes to clean'),
+            name = 'plugin config dialog:User Action Interface:Select Notes to clean',
+        )
+        
+        self.select_notes = {}
+        self.all_possible_notes = None
+    
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        
+        self.tree_view = QTreeWidget(self)
+        layout.addWidget(self.tree_view)
+        
+        self.tree_view.setIconSize(QSize(20, 20))
+        self.tree_view.header().hide()
+        self.tree_view.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.tree_view.itemChanged.connect(self.tree_item_changed)
+        self._is_internal_item_changed = False
+        
+        button_layout = QHBoxLayout()
+        layout.addLayout(button_layout)
+        
+        _build_notes_options_button(self, button_layout)
+        button_layout.addStretch(1)
+        
+        layout.addWidget(self.bb)
+        
+        
+        self.all_possible_notes = {f:{} for f in self.dbAPI.pref('tag_browser_category_order', list(sorted(self.dbAPI.backend.notes.allowed_fields)))
+                                                    if self.dbAPI.field_supports_notes(f)}
+        
+        for field in list(self.all_possible_notes.keys()):
+            for id,value in self.dbAPI.get_id_map(field).items():
+                notes = self.dbAPI.notes_for(field, id)
+                if bool(notes):
+                    self.all_possible_notes[field][id] = value
+            
+            if not self.all_possible_notes[field]:
+                self.all_possible_notes.pop(field, None)
+        
+        self._populate_tree(self.all_possible_notes)
+    
+    def edit_notes_options(self):
+        d = ConfigNotesDialog()
+        d.exec_()
+    
+    def _populate_tree(self, map_fields_notes):
+        
+        category_icons = {}
+        category_icons.update({k:get_icon(v) for k,v in category_icon_map.items()})
+        category_icons.update(GUI.tags_view.model().category_custom_icons)
+        
+        def great_tree_item(parent, text, data, icon):
+            rslt = QTreeWidgetItem(parent)
+            rslt.setText(0, text)
+            rslt.setData(0, Qt.UserRole, data)
+            rslt.setFlags(Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
+            rslt.setCheckState(0, Qt.Unchecked)
+            rslt.setIcon(0, icon)
+            return rslt
+        
+        for field,item in map_fields_notes.items():
+            if item:
+                icon = category_icons.get(field, category_icons['custom:'])
+                name = field
+                tl = great_tree_item(self.tree_view, '{name} ({field})'.format(name=name, field=field), field, icon)
+                self.tree_view.addTopLevelItem(tl)
+                
+                for id,value in item.items():
+                    ch  = great_tree_item(tl, value, id, icon)
+                    tl.addChild(ch)
+    
+    def tree_item_changed(self, item, column):
+        if not self._is_internal_item_changed:
+            self._is_internal_item_changed = True
+            
+            parent = item.parent()
+            if isinstance(parent, QTreeWidgetItem):
+                state = False
+                for idx in range(parent.childCount()):
+                    if parent.child(idx).checkState(column) == Qt.CheckState.Checked:
+                        state = True
+                        break
+                parent.setCheckState(column, Qt.CheckState.PartiallyChecked if state else Qt.CheckState.Unchecked)
+            else:
+                if item.checkState(column) == Qt.CheckState.Checked:
+                    state = Qt.ItemIsUserCheckable
+                else:
+                    state = Qt.ItemIsEnabled|Qt.ItemIsUserCheckable
+                for idx in range(item.childCount()):
+                    item.child(idx).setFlags(state)
+            
+            self._is_internal_item_changed = False
+    
+    def accept(self):
+        self.select_notes = {}
+        
+        for idx in range(self.tree_view.topLevelItemCount()):
+            item = self.tree_view.topLevelItem(idx)
+            item_text, field = item.text(0), item.data(0, Qt.UserRole)
+            all_field = False
+            if item.checkState(0) == Qt.CheckState.Checked:
+                all_field = True
+            
+            for idx in range(item.childCount()):
+                child = item.child(idx)
+                if all_field or child.checkState(0) == Qt.CheckState.Checked:
+                    if field not in self.select_notes:
+                        self.select_notes[field] = {}
+                    self.select_notes[field][child.data(0, Qt.UserRole)] = child.text(0)
+        
+        debug_print('Selected Notes:', self.select_notes)
+        
         Dialog.accept(self)

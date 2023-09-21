@@ -272,26 +272,27 @@ def XMLformat(text):
 
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
+__qwc = QWidget()
 def calibre_format(text):
     try:
         ce = calibre_format.CommentsEditor
     except AttributeError:
         from calibre.gui2.metadata.basic_widgets import CommentsEdit
-        ce = calibre_format.CommentsEditor = CommentsEdit(QWidget())
+        ce = calibre_format.CommentsEditor = CommentsEdit(__qwc)
     
     ce.current_val = text
     text = ce.current_val
     
     return text
 
+__qwn = QWidget()
 def note_format(text):
-    
     if CALIBRE_HAS_NOTES:
         try:
             ne = note_format.NoteEditor
         except AttributeError:
             from calibre.gui2.dialogs.edit_category_notes import NoteEditor
-            ne = note_format.NoteEditor = NoteEditor(QWidget())
+            ne = note_format.NoteEditor = NoteEditor(__qwn)
         
         ne.html = text
         ne.wyswyg_dirtied()

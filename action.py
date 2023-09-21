@@ -109,7 +109,13 @@ class CommentsCleanerAction(InterfaceAction):
         CleanerProgressDialog(book_ids)
     
     def _clean_note(self):
-        notes_lst = []
+        from .config import SelectNotesDialog
+        d = SelectNotesDialog()
+        if d.exec_():
+            notes_lst = d.select_notes
+        else:
+            debug_print('Cleaning notes aborted. Selection dialog closed.')
+            return
         
         CleanerNoteProgressDialog(notes_lst)
 
