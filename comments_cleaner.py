@@ -85,9 +85,12 @@ TAGS = [
 ATTRIBUTES = [
     'id',
     'class',
-    'style',
     'align',
+    'style',
     'href',
+    'src',
+    'width',
+    'height',
 ]
 
 
@@ -304,8 +307,6 @@ def note_format(text):
 # main function
 def clean_comment(text, is_note=False):
     _set_PREFS(is_note)
-    
-    debug_print('comments_cleaner.is_note', is_note)
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test

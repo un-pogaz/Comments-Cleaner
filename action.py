@@ -287,7 +287,8 @@ class CleanerNoteProgressDialog(ProgressDialog):
                     
                     # get the note
                     item_name = self.dbAPI.get_item_name(field, item_id)
-                    note = None #self.dbAPI.notes_data_for(field, item_id)
+                    note_data = self.dbAPI.notes_data_for(field, item_id)
+                    note = note_data.get('doc', None)
                     
                     note_info = field+':'+item_name+' [note: '+str(num)+'/'+str(self.note_count)+']'
                     
@@ -301,7 +302,8 @@ class CleanerNoteProgressDialog(ProgressDialog):
                             debug_text('Note out', note_out)
                             if field not in self.note_dic:
                                 self.note_dic[field] = {}
-                            self.note_dic[field][item_id] = note_out
+                            note_data['doc'] = note_out
+                            self.note_dic[field][item_id] = note_data
                     
                     else:
                         debug_print('Empty note '+note_info+':::\n')
@@ -317,7 +319,10 @@ class CleanerNoteProgressDialog(ProgressDialog):
                 debug_print('Update the database for {0} notes...\n'.format(note_edit_count))
                 self.set_value(-1, text=_('Update the library for {:d} notes...').format(note_edit_count))
                 
-                #self.dbAPI.set_note()
+                with self.dbAPI.backend.conn:
+                    for field,values in self.note_dic.items():
+                        for item_id,note_data in values.items():
+                            self.dbAPI.set_notes_for(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
                 
                 self.note_clean = note_edit_count
             

@@ -517,6 +517,7 @@ class SelectNotesDialog(Dialog):
                 ch = create_tree_item(rslt, self.dbAPI.get_item_name(field, id), id, icon)
                 rslt.addChild(ch)
             
+            rslt.sortChildren(0, Qt.AscendingOrder)
             return rslt
         
         book_fields_ids = {}
@@ -615,8 +616,5 @@ class SelectNotesDialog(Dialog):
                 for idx in range(item.childCount()):
                     ch = item.child(idx)
                     parse_tree_item(ch)
-        
-        
-        debug_print('Selected Notes:', self.select_notes)
         
         Dialog.accept(self)
