@@ -41,7 +41,7 @@ from calibre.gui2.actions import InterfaceAction
 from calibre.gui2.ui import get_gui
 from calibre.library import current_library_name
 
-from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES
+from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
 from .comments_cleaner import clean_comment
 from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
 from .common_utils.dialogs import ProgressDialog
@@ -109,8 +109,9 @@ class CommentsCleanerAction(InterfaceAction):
         CleanerProgressDialog(book_ids)
     
     def _clean_note(self):
-        from .config import SelectNotesDialog
-        d = SelectNotesDialog()
+        book_ids = get_BookIds_selected(show_error=False)
+        
+        d = SelectNotesDialog(book_ids)
         if d.exec_():
             notes_lst = d.select_notes
         else:
@@ -165,15 +166,15 @@ class CleanerProgressDialog(ProgressDialog):
             
             for book_id in self.book_ids:
                 
+                if self.wasCanceled():
+                    return
+                
                 # update Progress
                 num = self.increment()
                 
                 # get the comment
                 miA = self.dbAPI.get_proxy_metadata(book_id)
                 comment = miA.get('comments')
-                
-                if self.wasCanceled():
-                    return
                 
                 # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
                 book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
@@ -237,22 +238,12 @@ class CleanerNoteProgressDialog(ProgressDialog):
         
         self.used_prefs = PREFS[KEY.NOTES_SETTINGS].copy()
         
-        self.note_count = set()
-        self.note_src = {}
-        for field_value in self.book_ids:
-            if ':' in field_value:
-                # one value
-                self.note_count.add(field_value)
-                field, value = tuple(field_value.split(':', 1))
-                if field not in self.note_src:
-                    self.note_src[field] = []
-                self.note_src[field].append(value)
-            else:
-                # complet field
-                pass
+        self.note_src = self.book_ids
+        self.note_count = []
+        for v in self.note_src.values():
+            self.note_count.extend(v)
         
         self.note_count = len(self.note_count)
-        
         
         self.note_clean = 0
         self.note_dic = {}
@@ -285,19 +276,20 @@ class CleanerNoteProgressDialog(ProgressDialog):
         
         try:
             
-            for field,values in iteritems(self.note_src):
-                for value in values:
+            for field,item_ids in iteritems(self.note_src):
+                for item_id in item_ids:
+                    
+                    if self.wasCanceled():
+                        return
                     
                     # update Progress
                     num = self.increment()
                     
                     # get the note
-                    note = self.dbAPI.get_note(field, value)
+                    item_name = self.dbAPI.get_item_name(field, item_id)
+                    note = None #self.dbAPI.notes_data_for(field, item_id)
                     
-                    note_info = field+':'+value+' [note: '+str(num)+'/'+str(self.note_count)+']'
-                    
-                    if self.wasCanceled():
-                        return
+                    note_info = field+':'+item_name+' [note: '+str(num)+'/'+str(self.note_count)+']'
                     
                     # process the note
                     if note is not None:
@@ -309,28 +301,25 @@ class CleanerNoteProgressDialog(ProgressDialog):
                             debug_text('Note out', note_out)
                             if field not in self.note_dic:
                                 self.note_dic[field] = {}
-                            self.note_dic[field][value] = note_out
+                            self.note_dic[field][item_id] = note_out
                     
                     else:
                         debug_print('Empty note '+note_info+':::\n')
                 
             
             
-            ids = set(self.note_dic.keys())
-            for ccbv in self.custom_columns_dic.values():
-                ids.update(ccbv.keys())
-            books_edit_count = len(ids)
-            if books_edit_count > 0:
+            ids = []
+            for v in self.note_dic.values():
+                ids.extend(v)
+            note_edit_count = len(ids)
+            if note_edit_count > 0:
                 
-                debug_print('Update the database for {0} notes...\n'.format(books_edit_count))
-                self.set_value(-1, text=_('Update the library for {:d} notes...').format(books_edit_count))
+                debug_print('Update the database for {0} notes...\n'.format(note_edit_count))
+                self.set_value(-1, text=_('Update the library for {:d} notes...').format(note_edit_count))
                 
-                self.books_clean = books_edit_count
-                self.dbAPI.set_note()
-                for cck,ccbv in self.custom_columns_dic.items():
-                    if ccbv:
-                        self.dbAPI.set_field(cck, ccbv)
-                GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
+                #self.dbAPI.set_note()
+                
+                self.note_clean = note_edit_count
             
         except Exception as e:
             self.exception = e
