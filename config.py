@@ -37,7 +37,7 @@ from calibre.gui2.ui import get_gui
 from calibre.library.field_metadata import category_icon_map
 
 from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
-from .common_utils.dialogs import edit_keyboard_shortcuts
+from .common_utils.dialogs import KeyboardConfigDialogButton
 from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox
 
 
@@ -184,120 +184,121 @@ def _build_optionsHTML_GroupBox(parent, layout, prefs):
     rslt = QGroupBox(' ', parent)
     layout.addWidget(rslt)
     
-    optionsHTML_GridLayout = QGridLayout()
-    rslt.setLayout(optionsHTML_GridLayout)
+    grid_layout = QGridLayout()
+    rslt.setLayout(grid_layout)
     
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0, 1, 2)
+    grid_layout.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0, 1, 2)
     parent.comboBoxKEEP_URL = KeyValueComboBox(parent, KEEP_URL, prefs[KEY.KEEP_URL])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxKEEP_URL, 1, 0, 1, 2)
+    grid_layout.addWidget(parent.comboBoxKEEP_URL, 1, 0, 1, 2)
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('Headings:'), parent), 0, 2, 1, 2)
+    grid_layout.addWidget(QLabel(_('Headings:'), parent), 0, 2, 1, 2)
     parent.comboBoxHEADINGS = KeyValueComboBox(parent, HEADINGS, prefs[KEY.HEADINGS])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxHEADINGS, 1, 2, 1, 2)
+    grid_layout.addWidget(parent.comboBoxHEADINGS, 1, 2, 1, 2)
     
     
-    optionsHTML_GridLayout.addWidget(QLabel(' ', parent), 4, 0)
+    grid_layout.addWidget(QLabel(' ', parent), 4, 0)
     
     parent.comboBoxFONT_WEIGHT = KeyValueComboBox(parent, FONT_WEIGHT, prefs[KEY.FONT_WEIGHT])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxFONT_WEIGHT, 5, 0, 1, 2)
+    grid_layout.addWidget(parent.comboBoxFONT_WEIGHT, 5, 0, 1, 2)
     
     parent.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), parent)
     parent.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
-    optionsHTML_GridLayout.addWidget(parent.checkBoxDEL_ITALIC, 5, 2, 1, 2)
+    grid_layout.addWidget(parent.checkBoxDEL_ITALIC, 5, 2, 1, 2)
     
     parent.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), parent)
     parent.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
-    optionsHTML_GridLayout.addWidget(parent.checkBoxDEL_UNDER, 6, 0, 1, 2)
+    grid_layout.addWidget(parent.checkBoxDEL_UNDER, 6, 0, 1, 2)
     
     parent.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), parent)
     parent.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
-    optionsHTML_GridLayout.addWidget(parent.checkBoxDEL_STRIKE, 6, 2, 1, 2)
+    grid_layout.addWidget(parent.checkBoxDEL_STRIKE, 6, 2, 1, 2)
     
-    optionsHTML_GridLayout.addWidget(QLabel(' ', parent), 9, 0)
+    grid_layout.addWidget(QLabel(' ', parent), 9, 0)
     
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('Justification:'), parent), 10, 0, 1, 1)
+    grid_layout.addWidget(QLabel(_('Justification:'), parent), 10, 0, 1, 1)
     parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(parent, FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxFORCE_JUSTIFY, 10, 1, 1, 3)
+    grid_layout.addWidget(parent.comboBoxFORCE_JUSTIFY, 10, 1, 1, 3)
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('List alignment:'), parent), 11, 0, 1, 1)
+    grid_layout.addWidget(QLabel(_('List alignment:'), parent), 11, 0, 1, 1)
     parent.comboBoxLIST_ALIGN = KeyValueComboBox(parent, LIST_ALIGN, prefs[KEY.LIST_ALIGN])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxLIST_ALIGN, 11, 1, 1, 3)
+    grid_layout.addWidget(parent.comboBoxLIST_ALIGN, 11, 1, 1, 3)
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('ID & CLASS attributs:'), parent), 12, 0, 1, 1)
+    grid_layout.addWidget(QLabel(_('ID & CLASS attributs:'), parent), 12, 0, 1, 1)
     parent.comboBoxID_CLASS = KeyValueComboBox(parent, ID_CLASS, prefs[KEY.ID_CLASS])
-    optionsHTML_GridLayout.addWidget(parent.comboBoxID_CLASS, 12, 1, 1, 3)
+    grid_layout.addWidget(parent.comboBoxID_CLASS, 12, 1, 1, 3)
     
     
-    optionsHTML_GridLayout.addWidget(QLabel(' ', parent))
+    grid_layout.addWidget(QLabel(' ', parent))
     
-    optionsHTML_GridLayout.addWidget(QLabel(_('CSS rule to keep:'), parent), 20, 0, 1, 1)
+    grid_layout.addWidget(QLabel(_('CSS rule to keep:'), parent), 20, 0, 1, 1)
     parent.lineEditCSS_KEEP = QLineEdit(parent)
     parent.lineEditCSS_KEEP.setText(prefs[KEY.CSS_KEEP])
     parent.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
-    optionsHTML_GridLayout.addWidget(parent.lineEditCSS_KEEP, 20, 1, 1, 3)
+    grid_layout.addWidget(parent.lineEditCSS_KEEP, 20, 1, 1, 3)
     
-    return rslt
-
-def _build_optionsDEL_FORMATTING(parent, layout, prefs):
+    def action_checkBoxDEL_FORMATTING(num):
+        b = not parent.checkBoxDEL_FORMATTING.isChecked()
+        
+        parent.comboBoxKEEP_URL.setEnabled(b)
+        parent.comboBoxHEADINGS.setEnabled(b)
+        parent.comboBoxFONT_WEIGHT.setEnabled(b)
+        parent.checkBoxDEL_ITALIC.setEnabled(b)
+        parent.checkBoxDEL_UNDER.setEnabled(b)
+        parent.checkBoxDEL_STRIKE.setEnabled(b)
+        parent.comboBoxFORCE_JUSTIFY.setEnabled(b)
+        parent.comboBoxLIST_ALIGN.setEnabled(b)
+        parent.comboBoxID_CLASS.setEnabled(b)
+        parent.lineEditCSS_KEEP.setEnabled(b)
+    
     parent.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), parent)
-    parent.checkBoxDEL_FORMATTING.stateChanged.connect(partial(_action_checkBoxDEL_FORMATTING, parent))
+    parent.checkBoxDEL_FORMATTING.stateChanged.connect(action_checkBoxDEL_FORMATTING)
     parent.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
     layout.addWidget(parent.checkBoxDEL_FORMATTING)
 
 def _build_optionsTEXT_GroupBox(parent, layout, prefs):
-        optionsTEXT_GroupBox = QGroupBox(' ', parent)
-        layout.addWidget(optionsTEXT_GroupBox)
-        
-        optionsTEXT_GridLayout = QGridLayout()
-        optionsTEXT_GroupBox.setLayout(optionsTEXT_GridLayout)
-        
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Markdown:'), parent), 1, 0, 1, 1)
-        parent.comboBoxMARKDOWN = KeyValueComboBox(parent, MARKDOWN, prefs[KEY.MARKDOWN])
-        optionsTEXT_GridLayout.addWidget(parent.comboBoxMARKDOWN, 1, 1, 1, 2)
-        parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
-        
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), parent), 2, 0, 1, 1)
-        parent.comboBoxDOUBLE_BR = KeyValueComboBox(parent, DOUBLE_BR, prefs[KEY.DOUBLE_BR])
-        optionsTEXT_GridLayout.addWidget(parent.comboBoxDOUBLE_BR, 2, 1, 1, 2)
-        
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Single \'Line Return\' in a paragraph:'), parent), 3, 0, 1, 1)
-        parent.comboBoxSINGLE_BR = KeyValueComboBox(parent, SINGLE_BR, prefs[KEY.SINGLE_BR])
-        parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
-                                             'and before "Multiple empty paragraph"'))
-        optionsTEXT_GridLayout.addWidget(parent.comboBoxSINGLE_BR, 3, 1, 1, 2)
-        
-        optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
-        parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
-        optionsTEXT_GridLayout.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
-
-def _action_checkBoxDEL_FORMATTING(parent, num):
+    optionsTEXT_GroupBox = QGroupBox(' ', parent)
+    layout.addWidget(optionsTEXT_GroupBox)
     
-    b = not parent.checkBoxDEL_FORMATTING.isChecked()
+    optionsTEXT_GridLayout = QGridLayout()
+    optionsTEXT_GroupBox.setLayout(optionsTEXT_GridLayout)
     
-    parent.comboBoxKEEP_URL.setEnabled(b)
-    parent.comboBoxHEADINGS.setEnabled(b)
-    parent.comboBoxFONT_WEIGHT.setEnabled(b)
-    parent.checkBoxDEL_ITALIC.setEnabled(b)
-    parent.checkBoxDEL_UNDER.setEnabled(b)
-    parent.checkBoxDEL_STRIKE.setEnabled(b)
-    parent.comboBoxFORCE_JUSTIFY.setEnabled(b)
-    parent.comboBoxLIST_ALIGN.setEnabled(b)
-    parent.comboBoxID_CLASS.setEnabled(b)
-    parent.lineEditCSS_KEEP.setEnabled(b)
+    optionsTEXT_GridLayout.addWidget(QLabel(_('Markdown:'), parent), 1, 0, 1, 1)
+    parent.comboBoxMARKDOWN = KeyValueComboBox(parent, MARKDOWN, prefs[KEY.MARKDOWN])
+    optionsTEXT_GridLayout.addWidget(parent.comboBoxMARKDOWN, 1, 1, 1, 2)
+    parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
+    
+    optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), parent), 2, 0, 1, 1)
+    parent.comboBoxDOUBLE_BR = KeyValueComboBox(parent, DOUBLE_BR, prefs[KEY.DOUBLE_BR])
+    optionsTEXT_GridLayout.addWidget(parent.comboBoxDOUBLE_BR, 2, 1, 1, 2)
+    
+    optionsTEXT_GridLayout.addWidget(QLabel(_('Single \'Line Return\' in a paragraph:'), parent), 3, 0, 1, 1)
+    parent.comboBoxSINGLE_BR = KeyValueComboBox(parent, SINGLE_BR, prefs[KEY.SINGLE_BR])
+    parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
+                                         'and before "Multiple empty paragraph"'))
+    optionsTEXT_GridLayout.addWidget(parent.comboBoxSINGLE_BR, 3, 1, 1, 2)
+    
+    optionsTEXT_GridLayout.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
+    parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
+    optionsTEXT_GridLayout.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
 
-def _build_notes_options_button(parent, layout):
+def _build_optionsNOTES_Button(parent, layout):
+    
+    def edit_notes_options():
+        d = ConfigNotesDialog()
+        d.exec_()
+    
     rslt = QPushButton(get_icon(NOTES_ICON), _('Notes Cleaner Options'), parent)
     rslt.setToolTip(_('Edit the options for the notes cleaner action'))
-    rslt.clicked.connect(parent.edit_notes_options)
+    
+    rslt.clicked.connect(edit_notes_options)
     layout.addWidget(rslt)
 
 class ConfigWidget(QWidget):
     def __init__(self, plugin_action):
         QWidget.__init__(self)
         
-        self.plugin_action = plugin_action
         layout = QVBoxLayout()
         self.setLayout(layout)
         
@@ -317,7 +318,6 @@ class ConfigWidget(QWidget):
         
         # --- options ---
         _build_optionsHTML_GroupBox(self, layout, PREFS)
-        _build_optionsDEL_FORMATTING(self, layout, PREFS)
         _build_optionsTEXT_GroupBox(self, layout, PREFS)
         
         # --- Custom columns ---
@@ -332,14 +332,11 @@ class ConfigWidget(QWidget):
             layout.addLayout(button_layout)
             
             button_layout.addStretch(1)
-            _build_notes_options_button(self, button_layout)
+            _build_optionsNOTES_Button(self, button_layout)
         
         # --- Keyboard shortcuts ---
         layout.addWidget(QLabel(' ', self))
-        keyboard_shortcuts_button = QPushButton(_('Keyboard shortcuts')+'...', self)
-        keyboard_shortcuts_button.setToolTip(_('Edit the keyboard shortcuts associated with this plugin'))
-        keyboard_shortcuts_button.clicked.connect(self.edit_shortcuts)
-        layout.addWidget(keyboard_shortcuts_button)
+        layout.addWidget(KeyboardConfigDialogButton(self))
         layout.addStretch(1)
     
     def save_settings(self):
@@ -372,12 +369,6 @@ class ConfigWidget(QWidget):
         debug_print('Save settings: {0}\n'.format(prefs))
         
     
-    def edit_shortcuts(self):
-        edit_keyboard_shortcuts(self.plugin_action)
-    
-    def edit_notes_options(self):
-        d = ConfigNotesDialog()
-        d.exec_()
 
 
 # workaround to run one Calibre 2
@@ -410,12 +401,18 @@ class ConfigNotesDialog(Dialog):
         scrollcontent.setLayout(layout)
         
         
+        title_layout = ImageTitleLayout(self, NOTES_ICON, _('Notes Cleaner Options'))
+        layout.addLayout(title_layout)
+        
         prefs = PREFS[KEY.NOTES_SETTINGS]
         
         # --- options ---
         _build_optionsHTML_GroupBox(self, layout, prefs)
-        _build_optionsDEL_FORMATTING(self, layout, prefs)
         _build_optionsTEXT_GroupBox(self, layout, prefs)
+        
+        # --- Keyboard shortcuts ---
+        layout.addWidget(QLabel(' ', self))
+        layout.addWidget(KeyboardConfigDialogButton(self))
         layout.addStretch(1)
     
     def accept(self):
@@ -479,16 +476,12 @@ class SelectNotesDialog(Dialog):
         button_layout = QHBoxLayout()
         layout.addLayout(button_layout)
         
-        _build_notes_options_button(self, button_layout)
+        _build_optionsNOTES_Button(self, button_layout)
         button_layout.addStretch(1)
         
         layout.addWidget(self.bb)
         
         self._populate_tree(self.all_possible_notes, self.book_ids)
-    
-    def edit_notes_options(self):
-        d = ConfigNotesDialog()
-        d.exec_()
     
     def _populate_tree(self, map_fields_notes, book_ids=[]):
         self.select_book_item = None
