@@ -133,7 +133,7 @@ def clean_caps_tags(text):
     return text
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
-def clean_basic(text, is_note=False):
+def clean_basic(text):
     
     text = XMLformat(text)
     
@@ -166,10 +166,11 @@ def clean_basic(text, is_note=False):
     text = regex.loop(r'</?(font|html|body|section|form|dl)(| [^>]*)>', r'', text)
     text = regex.loop(r'</?(address|big|code|kbd|meta|nobr|qt|samp|small|tt)(| [^>]*)>', r'', text)
     
-    if not is_note:
-        text = regex.loop(r'</?(img)(| [^>]*)>', r'', text)
+    # clean img
+    text = regex.loop(r'<img([^>]*)/>', r'<img\1>', text)
+    text = regex.loop(r'</img[^>]*>', r'', text)
     
-    # invalid attribut tag 
+    # invalid attribut tag
     text = regex.loop(r'<((?!a)\w+)(| [^>]*) href="[^"]*"(| [^>]*)>', r'<\1\2\3>', text)
     text = regex.loop(r'<((?!p|div|h\d|li|ol|ul)\w+)(| [^>]*) align="[^"]*"(| [^>]*)>', r'<\1\2\3>', text)
     
@@ -179,6 +180,7 @@ def clean_basic(text, is_note=False):
     
     # management of <br>
     text = regex.loop(r'<(b|h)r[^>]+>', r'<\1r>', text)
+    text = regex.loop(r'</(b|h)r[^>]+>', r'', text)
     text = regex.loop(r'(\s|'+NBSP+r')+<(b|h)r>', r'<\2r>', text)
     text = regex.loop(r'<(b|h)r>(\s|'+NBSP+r')+', r'<\1r>', text)
     text = regex.loop(r'<((?:em|strong|sup|sub|u|s|span|a)(?:| [^>]*))><(b|h)r>', r'<\2r><\1>', text)
@@ -401,6 +403,11 @@ def clean_comment(text, is_note=False):
             text = regex.loop(r'(?:<p(| [^>]*)>'+NBSP+r'</p>\s*){2,}', r'<p\1>'+NBSP+r'</p>', text)
         elif PREFS[KEY.EMPTY_PARA] == 'del':
             text = regex.loop(r'<p(| [^>]*)>'+NBSP+r'</p>', r'', text)
+        
+        # Delete <img>
+        if PREFS[KEY.IMG_TAG] == 'del':
+            text = regex.loop(r'\s*<img(| [^>]*)>\s*', r' ', text)
+            text = regex.loop(r'\s*<(p|li|div)(| [^>]*)> </\1>\s*', r'', text)
         
         
         if PREFS[KEY.DEL_FORMATTING]:

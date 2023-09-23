@@ -4,6 +4,7 @@
 
 ### Added
 - Support for Category Notes
+- Option for the images
 
 ### Bug fixes
 - Tags with CAPS name don't propely parsed

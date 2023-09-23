@@ -62,6 +62,7 @@ class KEY:
     DOUBLE_BR = 'DoubleBR'
     SINGLE_BR = 'SingleBR'
     EMPTY_PARA = 'EmptyParagraph'
+    IMG_TAG = 'ImgTag'
     
     CUSTOM_COLUMN = 'CustomColumn'
     
@@ -120,6 +121,10 @@ EMPTY_PARA = OrderedDict([
                         ('none', _('No change')),
                         ('del', _('Delete empty paragraph'))])
 
+IMG_TAG = OrderedDict([
+                    ('keep', _('Keep images')),
+                    ('del', _('Delete images'))])
+
 
 # Set defaults
 _defaults = {}
@@ -140,12 +145,14 @@ _defaults[KEY.MARKDOWN] = 'try'
 _defaults[KEY.DOUBLE_BR] = 'new'
 _defaults[KEY.SINGLE_BR] = 'none'
 _defaults[KEY.EMPTY_PARA] = 'merge'
+_defaults[KEY.IMG_TAG] = 'del'
 
 # This is where all preferences for this plugin are stored
 PREFS = PREFS_json()
 PREFS.defaults = _defaults
 PREFS.defaults[KEY.CUSTOM_COLUMN] = False
 PREFS.defaults[KEY.NOTES_SETTINGS] = _defaults.copy()
+PREFS.defaults[KEY.NOTES_SETTINGS][KEY.IMG_TAG] = 'keep'
 
 
 #fix a imcompatibility betwen multiple Calibre version
@@ -284,6 +291,10 @@ def _build_options_GroupBox(parent, layout, prefs):
     grid_layoutTEXT.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
     parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
     grid_layoutTEXT.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
+    
+    grid_layoutTEXT.addWidget(QLabel(_('Images:'), parent), 5, 0, 1, 1)
+    parent.comboBoxIMG_TAG = KeyValueComboBox(parent, IMG_TAG, prefs[KEY.IMG_TAG])
+    grid_layoutTEXT.addWidget(parent.comboBoxIMG_TAG, 5, 1, 1, 2)
 
 def _retrive_option(parent, prefs):
     
@@ -305,6 +316,7 @@ def _retrive_option(parent, prefs):
     prefs[KEY.DOUBLE_BR] = parent.comboBoxDOUBLE_BR.selected_key()
     prefs[KEY.SINGLE_BR] = parent.comboBoxSINGLE_BR.selected_key()
     prefs[KEY.EMPTY_PARA] = parent.comboBoxEMPTY_PARA.selected_key()
+    prefs[KEY.IMG_TAG] = parent.comboBoxIMG_TAG.selected_key()
     
     return prefs
 
