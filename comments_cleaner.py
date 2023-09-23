@@ -105,13 +105,6 @@ def _fix_weight(text):
         text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
 
-def _set_PREFS(is_note):
-    global PREFS
-    from .config import PREFS
-    if is_note:
-        PREFS = PREFS[KEY.NOTES_SETTINGS]
-    
-    return PREFS
 
 def clean_caps_tags(text):
     
@@ -325,8 +318,9 @@ def note_format(text):
 
 
 # main function
-def clean_comment(text, is_note=False):
-    _set_PREFS(is_note)
+def clean_comment(text, PREFS=None):
+    if not PREFS:
+        from .config import PREFS
     
     text = clean_caps_tags(text)
     
@@ -347,7 +341,7 @@ def clean_comment(text, is_note=False):
     # Empirical tests have shown that it was necessary for some very rare and specific cases.
     for passe in range(2):
         
-        text = clean_basic(text, is_note=is_note)
+        text = clean_basic(text)
         
         # If <div> is not the racine tag
         if not regex.search(r'<div(| [^>]*)>\s*<(p|div|h\d)(| [^>]*)>', text):
@@ -435,16 +429,16 @@ def clean_comment(text, is_note=False):
             if PREFS[KEY.KEEP_URL] == 'del':
                 text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
             
-            text = clean_basic(text, is_note=is_note)
+            text = clean_basic(text)
             # style standardization:  insert ; at the end
             text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
             # style standardization: insert space at the start
             text = text.replace(' style="', ' style=" ')
             
             
-            text = clean_align(text, is_note=is_note)
+            text = clean_align(text, PREFS)
             
-            text = clean_style(text, is_note=is_note)
+            text = clean_style(text, PREFS)
             
             
             # Del <sup>/<sub> paragraphe
@@ -472,7 +466,7 @@ def clean_comment(text, is_note=False):
                 r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
         
         
-        text = clean_basic(text, is_note=is_note)
+        text = clean_basic(text, PREFS)
         #
     
     text = _fix_weight(text)
@@ -488,8 +482,9 @@ def clean_comment(text, is_note=False):
     return text
 
 
-def clean_align(text, is_note=False):
-    _set_PREFS(is_note)
+def clean_align(text, PREFS=None):
+    if not PREFS:
+        from .config import PREFS
     
     text = ordered_attributs(text)
     
@@ -522,7 +517,7 @@ def clean_align(text, is_note=False):
         text = regex.loop(r'<(ol|ul) align="([^"]*)"([^>]*)>((?:(?!</\1>).)*)<li align="left"', r'<\1 align="\2"\3>\4<li align="\2"', text)
         text = regex.loop(r'<(ol|ul) align="([^"]*)"', r'<\1', text)
         
-        # set align prefs
+        # set align
         if PREFS[KEY.FORCE_JUSTIFY] == 'empty':
             text = regex.loop(r' align="left"', r' align="justify"', text)
         elif PREFS[KEY.FORCE_JUSTIFY] == 'all':
@@ -543,8 +538,9 @@ def clean_align(text, is_note=False):
     return text
 
 
-def clean_style(text, is_note=False):
-    _set_PREFS(is_note)
+def clean_style(text, PREFS=None):
+    if not PREFS:
+        from .config import PREFS
     
     text = ordered_attributs(text)
     

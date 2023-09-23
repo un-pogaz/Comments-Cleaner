@@ -182,7 +182,7 @@ class CleanerProgressDialog(ProgressDialog):
                 # process the comment
                 if comment is not None:
                     debug_text('Comment for '+book_info, comment)
-                    comment_out = clean_comment(comment, is_note=False)
+                    comment_out = clean_comment(comment, self.used_prefs)
                     if comment == comment_out:
                         debug_print('Unchanged comment :::\n')
                     else:
@@ -295,7 +295,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
                     # process the note
                     if note is not None:
                         debug_text('Note for '+note_info, note)
-                        note_out = clean_comment(note, is_note=True)
+                        note_out = clean_comment(note, self.used_prefs)
                         if note == note_out:
                             debug_print('Unchanged note :::\n')
                         else:
