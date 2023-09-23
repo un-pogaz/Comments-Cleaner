@@ -424,7 +424,8 @@ class ConfigNotesDialog(Dialog):
         title_layout = ImageTitleLayout(self, NOTES_ICON, _('Notes Cleaner Options'))
         layout.addLayout(title_layout)
         
-        prefs = PREFS[KEY.NOTES_SETTINGS]
+        prefs = PREFS.defaults[KEY.NOTES_SETTINGS]
+        prefs.update(PREFS[KEY.NOTES_SETTINGS])
         
         # --- options ---
         _build_options_GroupBox(self, layout, prefs)

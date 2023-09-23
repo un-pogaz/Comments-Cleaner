@@ -466,8 +466,7 @@ def clean_comment(text, PREFS=None):
                 r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
         
         
-        text = clean_basic(text, PREFS)
-        #
+        text = clean_basic(text)
     
     text = _fix_weight(text)
     

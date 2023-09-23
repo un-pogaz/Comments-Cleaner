@@ -80,12 +80,12 @@ class CommentsCleanerAction(InterfaceAction):
         m = self.menu
         m.clear()
         
-        create_menu_action_unique(self, m, _('&Clean the selected comments'), PLUGIN_ICON,
+        create_menu_action_unique(self, m, _('Clean the selected &comments'), PLUGIN_ICON,
                                              triggered=self._clean_comment,
                                              shortcut_name=PLUGIN_NAME)
         
         if CALIBRE_HAS_NOTES:
-            create_menu_action_unique(self, m, _('&Clean category notes'), NOTES_ICON,
+            create_menu_action_unique(self, m, _('Clean category &notes'), NOTES_ICON,
                                                  triggered=self._clean_note,
                                                  shortcut_name='Notes Cleaner')
         
