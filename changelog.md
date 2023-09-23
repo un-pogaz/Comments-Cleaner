@@ -5,6 +5,9 @@
 ### Added
 - Support for Category Notes
 
+### Bug fixes
+- Tags with CAPS name don't propely parsed
+
 ## [0.11.1] - 2023/09/31
 
 ### Bug fixes

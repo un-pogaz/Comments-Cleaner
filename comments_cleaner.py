@@ -113,6 +113,24 @@ def _set_PREFS(is_note):
     
     return PREFS
 
+def clean_caps_tags(text):
+    
+    for find in regex.searchall(r'<(?P<start>/?)(?P<name>\w+)(?P<attributes>| [^>]*)(?P<end>/?)>', text):
+        start = find.start()
+        end = find.end()
+        find = find.groupdict()
+        if find['name'] != find['name'].lower():
+            
+            find['name'] = find['name'].lower()
+            attributes = find['attributes']
+            for atr in ATTRIBUTES:
+                find['attributes'] = find['attributes'].replace(atr.upper()+'=', atr+'=')
+            find['attributes'] = attributes
+            
+            new_tag = '<'+find['start']+find['name']+find['attributes']+find['end']+'>'
+            text = text[:start] + new_tag + text[end:]
+    
+    return text
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
 def clean_basic(text, is_note=False):
@@ -136,7 +154,7 @@ def clean_basic(text, is_note=False):
     text = regex.loop(r'<(script|style|head|title)(| [^>]*)>((?!</p>|</div>).)*?</\1>', r'', text)
     
     # remove invalid tag
-    text = regex.loop(r'</?(?!'+ '|'.join(TAGS) +r')\w+(| [^>]*)>', r'', text)
+    text = regex.loop(r'</?(?!'+ '|'.join(TAGS) +r')\w+(| [^>]*)/?>', r'', text)
     
     # remove namespaced attribut
     text = regex.loop(r' [\w\-]+:[\w\-]+="[^"]*"', r'', text)
@@ -307,6 +325,8 @@ def note_format(text):
 # main function
 def clean_comment(text, is_note=False):
     _set_PREFS(is_note)
+    
+    text = clean_caps_tags(text)
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
