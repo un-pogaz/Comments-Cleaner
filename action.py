@@ -128,7 +128,8 @@ class CleanerProgressDialog(ProgressDialog):
     
     def setup_progress(self, **kvargs):
         
-        self.used_prefs = PREFS.copy()
+        self.used_prefs = PREFS.defaults.copy()
+        self.used_prefs.update(PREFS.copy())
         self.used_prefs.pop(KEY.NOTES_SETTINGS, None)
         
         # book comment dic
@@ -236,7 +237,8 @@ class CleanerNoteProgressDialog(ProgressDialog):
     
     def setup_progress(self, **kvargs):
         
-        self.used_prefs = PREFS[KEY.NOTES_SETTINGS].copy()
+        self.used_prefs = PREFS.defaults[KEY.NOTES_SETTINGS].copy()
+        self.used_prefs.update(PREFS[KEY.NOTES_SETTINGS].copy())
         
         self.note_src = self.book_ids
         self.note_count = []

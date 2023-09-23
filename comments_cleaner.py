@@ -272,9 +272,7 @@ def ordered_attributs(text):
     return text
 
 def XMLformat(text):
-    # to linux line
-    text = regex.loop(r'(\r\n|\r)', r'\n', text)
-    text = regex.loop(r'( |\t|\n)+\n', r'\n', text)
+    text = '\n'.join([l.rstrip() for l in text.splitlines()])
     
     # XML format
     text = regex.loop(r'<([^<>]+)(?:\s{2,}|\n|\t)([^<>]+)>', r'<\1 \2>', text)
@@ -293,28 +291,12 @@ def calibre_format(text):
     try:
         ce = calibre_format.CommentsEditor
     except AttributeError:
-        from calibre.gui2.metadata.basic_widgets import CommentsEdit
-        ce = calibre_format.CommentsEditor = CommentsEdit(__qwc)
+        from calibre.gui2.comments_editor import Editor
+        ce = calibre_format.CommentsEditor = Editor(__qwc)
     
-    ce.current_val = text
-    text = ce.current_val
+    ce.html = text
     
-    return text
-
-__qwn = QWidget()
-def note_format(text):
-    if CALIBRE_HAS_NOTES:
-        try:
-            ne = note_format.NoteEditor
-        except AttributeError:
-            from calibre.gui2.dialogs.edit_category_notes import NoteEditor
-            ne = note_format.NoteEditor = NoteEditor(__qwn)
-        
-        ne.html = text
-        ne.wyswyg_dirtied()
-        text = ne.html
-    
-    return text
+    return ce.html.strip()
 
 
 # main function
@@ -322,7 +304,10 @@ def clean_comment(text, PREFS=None):
     if not PREFS:
         from .config import PREFS
     
+    text = text.replace('\r\n', '\n').replace('\r', '\n')
+    
     text = clean_caps_tags(text)
+    
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
@@ -335,7 +320,7 @@ def clean_comment(text, PREFS=None):
         # Markdown
         if PREFS[KEY.MARKDOWN] == 'try':
             text = clean_markdown(text)
-        
+        text = calibre_format(text)
     
     # double passe
     # Empirical tests have shown that it was necessary for some very rare and specific cases.
@@ -622,19 +607,18 @@ def clean_markdown(text): # key word: TRY!
     
     # heading 1, 2
     for h, n in [('=', '1'),('-', '2')]:
-        text = regex.loop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)', r'</p><h'+n+r'>\2</h'+n+r'><p>', text)
-        text = regex.loop(r'(<br>|</p><p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        , r'</p><h'+n+r'>\2</h'+n+r'>'   , text)
-        text = regex.loop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(<br>|</p><p>)',     r'<h'+n+r'>\2</h'+n+r'><p>', text)
-        text = regex.loop(         r'(<p>)(.*?)(<br>|</p><p>)'+h+r'{2,}(</p>)'        ,     r'<h'+n+r'>\2</h'+n+r'>'   , text)
+        text = regex.loop(r'(<br>|</p><p>)(.*?)(<br>)'+h+r'{2,}(<br>|</p><p>)', r'</p><h'+n+r'>\2</h'+n+r'><p>', text)
+        text = regex.loop(r'(<br>|</p><p>)(.*?)(<br>)'+h+r'{2,}(</p>)'        , r'</p><h'+n+r'>\2</h'+n+r'>'   , text)
+        text = regex.loop(         r'(<p>)(.*?)(<br>)'+h+r'{2,}(<br>|</p><p>)',     r'<h'+n+r'>\2</h'+n+r'><p>', text)
+        text = regex.loop(         r'(<p>)(.*?)(<br>)'+h+r'{2,}(</p>)'        ,     r'<h'+n+r'>\2</h'+n+r'>'   , text)
     
     # heading
-    for h in range(1, 6):
+    for h in range(1, 7):
         h = str(h)
         text = regex.loop(r'(<br>|</p><p>)#{'+h+r'}\s+(.*?)(<br>|</p><p>)', r'</p><h'+h+r'>\2</h'+h+r'><p>', text)
         text = regex.loop(r'(<br>|</p><p>)#{'+h+r'}\s+(.*?)(</p>)'        , r'</p><h'+h+r'>\2</h'+h+r'>'   , text)
         text = regex.loop(         r'(<p>)#{'+h+r'}\s+(.*?)(<br>|</p><p>)',     r'<h'+h+r'>\2</h'+h+r'><p>', text)
         text = regex.loop(         r'(<p>)#{'+h+r'}\s+(.*?)(</p>)'        ,     r'<h'+h+r'>\2</h'+h+r'>',    text)
-    
     
     # u liste
     text = regex.loop(r'(<br>|</p><p>)(?:\*|-)\s+((?:(?!<br>|</p>|</li>).)*?)(<br>|</p><p>)', r'</p><ul><li>\2</li></ul><p>', text)
@@ -651,9 +635,9 @@ def clean_markdown(text): # key word: TRY!
     text = regex.loop(r'</li></ol><ol><li>', r'</li><li>', text)
     
     # <hr>
-    text = regex.loop(r'(<br>|</p><p>)(?:-|\*|_){3,}(<br>|</p><p>)', r'</p><hr><p>', text)
-    text = regex.loop(r'(<br>|</p><p>)(?:-|\*|_){3,}(</p>)'        , r'</p><hr>'   , text)
-    text = regex.loop(         r'(<p>)(?:-|\*|_){3,}(<br>|</p><p>)', r'<hr><p>'    , text)
+    text = regex.loop(r'(<br>|</p><p>)(?:(-|\*|_)\s*){3,}(<br>|</p><p>)', r'</p><hr><p>', text)
+    text = regex.loop(r'(<br>|</p><p>)(?:(-|\*|_)\s*){3,}(</p>)'        , r'</p><hr>'   , text)
+    text = regex.loop(         r'(<p>)(?:(-|\*|_)\s*){3,}(<br>|</p><p>)',     r'<hr><p>', text)
     
     # bold
     text = regex.loop(r'([^\\])((?:_|\*){2})((?:(?!<br>|</p>).)*?[^\\])\2', r'\1<strong>\3</strong>', text)
