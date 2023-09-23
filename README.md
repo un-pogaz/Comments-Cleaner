@@ -30,8 +30,10 @@ The plugin has the following options:
 * Remove Multiple Line Return <br> and create a new paragraph instead
 * Convert 'Line Return' into Paragraph or Space
 * Management of empty paragraphs
+* Removing images
 * Ability to specify others CSS rules to keep in addition to the basic CSS rule
 * Possibility to apply the cleaning to others custom HTML columns
+* Support of Category Notes
 
 
 Basic CSS rules keep by default:
@@ -48,8 +50,7 @@ text-decoration
 Open *Preferences -> Plugins -> Get new plugins* and install the "Comments Cleaner" plugin.
 You may also download the attached zip file and install the plugin manually, then restart calibre as described in the [Introduction to plugins thread](https://www.mobileread.com/forums/showthread.php?t=118680")
 
-The plugin works for Calibre 2 and later.<br>
-It is therefore compatible for *QtWebKit* (Calibre <4) and *QtWebEngine* (Calibre >=4).
+The plugin works for Calibre 4 and later.
 
 Page: [GitHub](https://github.com/un-pogaz/Comments-Cleaner) | [MobileRead](https://www.mobileread.com/forums/showthread.php?t=333861)
 
@@ -62,6 +63,7 @@ I am *French*! Although for obvious reasons, the default language of the plugin 
 ![configuration panel](https://raw.githubusercontent.com/un-pogaz/Comments-Cleaner/main/static/Comments_Cleaner.png)
 ![button menu](https://raw.githubusercontent.com/un-pogaz/Comments-Cleaner/main/static/Comments_Cleaner-menu.png)
 ![example of cleaned comment](https://raw.githubusercontent.com/un-pogaz/Comments-Cleaner/main/static/Comments_Cleaner-exemple.gif)
+![selection of notes to clean](https://raw.githubusercontent.com/un-pogaz/Comments-Cleaner/main/static/Comments_Cleaner-notes.png)
 
 
 [mobileread-url]: https://www.mobileread.com/forums/showthread.php?t=333861
