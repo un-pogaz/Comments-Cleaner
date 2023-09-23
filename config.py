@@ -534,12 +534,12 @@ class SelectNotesDialog(Dialog):
             self.select_book_item = QTreeWidgetItem(self.tree_view)
             self.select_book_item.setFlags(Qt.ItemIsEnabled)
             self.select_book_item.setIcon(0, get_icon('book.png'))
-            self.select_book_item.setToolTip(0, _('Subset of notes for the current selected books'))
+            self.select_book_item.setToolTip(0, _('Subset of Notes for the current selected books'))
             
             if not book_ids:
                 msg = _('No books selected')
             elif not book_fields_ids:
-                msg = _('{:d} books selected (no note)').format(len(book_ids))
+                msg = _('0 books selected (no notes)')
             else:
                 msg = _('{:d} books selected').format(len(book_ids))
             self.select_book_item.setText(0, msg)
@@ -558,7 +558,10 @@ class SelectNotesDialog(Dialog):
             separator.setText(0, _('No notes'))
         self.tree_view.addTopLevelItem(separator)
         
-        for field in (self.dbAPI.pref('tag_browser_category_order') or sorted(self.dbAPI.backend.notes.allowed_fields)):
+        fields = set(self.dbAPI.pref('tag_browser_category_order'))
+        fields.update(sorted(self.dbAPI.backend.notes.allowed_fields))
+        
+        for field in fields:
             items_ids = map_fields_notes.get(field, None)
             if items_ids:
                 self.tree_view.addTopLevelItem(create_root_item(self.tree_view, field, items_ids))
