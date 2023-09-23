@@ -33,7 +33,7 @@ class ActionCommentsCleaner(InterfaceActionBase):
     supported_platforms     = ['windows', 'osx', 'linux']
     author                  = 'un_pogaz'
     version                 = (1, 12, 0)
-    minimum_calibre_version = (2, 0, 0)
+    minimum_calibre_version = (4, 0, 0)
     
     #: This field defines the GUI plugin class that contains all the code
     #: that actually does something. Its format is module_path:class_name

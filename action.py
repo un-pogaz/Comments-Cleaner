@@ -7,18 +7,11 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy
+
 # python3 compatibility
 from six.moves import range
 from six import text_type as unicode
-
-try: #polyglot added in calibre 4.0
-    from polyglot.builtins import iteritems, itervalues
-except ImportError:
-    def iteritems(d):
-        return d.iteritems()
-    def itervalues(d):
-        return d.itervalues()
+from polyglot.builtins import iteritems, itervalues
 
 try:
     load_translations()
@@ -43,7 +36,7 @@ from calibre.library import current_library_name
 
 from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
 from .comments_cleaner import clean_comment
-from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, current_db, load_plugin_resources
+from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, load_plugin_resources
 from .common_utils.dialogs import ProgressDialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
@@ -174,6 +167,7 @@ class CleanerProgressDialog(ProgressDialog):
                 num = self.increment()
                 
                 # get the comment
+                
                 miA = self.dbAPI.get_proxy_metadata(book_id)
                 comment = miA.get('comments')
                 
@@ -209,10 +203,13 @@ class CleanerProgressDialog(ProgressDialog):
                     else:
                         debug_print('Empty '+cc_html+' '+book_info+':::\n')
             
+            comments_map = {'comments':self.books_dic}
             
             ids = set(self.books_dic.keys())
-            for ccbv in self.custom_columns_dic.values():
+            for ccbk,ccbv in iteritems(self.custom_columns_dic):
                 ids.update(ccbv.keys())
+                comments_map[ccbk] = ccbv
+            
             books_edit_count = len(ids)
             if books_edit_count > 0:
                 
@@ -220,10 +217,11 @@ class CleanerProgressDialog(ProgressDialog):
                 self.set_value(-1, text=_('Update the library for {:d} books...').format(books_edit_count))
                 
                 self.books_clean = books_edit_count
-                self.dbAPI.set_field('comments', self.books_dic)
-                for cck,ccbv in self.custom_columns_dic.items():
-                    if ccbv:
-                        self.dbAPI.set_field(cck, ccbv)
+                
+                with self.dbAPI.backend.conn:
+                    for field,id_val in iteritems(comments_map):
+                        self.dbAPI.set_field(field,id_val)
+                
                 GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
             
         except Exception as e:
@@ -242,13 +240,13 @@ class CleanerNoteProgressDialog(ProgressDialog):
         
         self.note_src = self.book_ids
         self.note_count = []
-        for v in self.note_src.values():
+        for v in itervalues(self.note_src):
             self.note_count.extend(v)
         
         self.note_count = len(self.note_count)
         
         self.note_clean = 0
-        self.note_dic = {}
+        self.field_id_notes = {}
         
         # Exception
         self.exception = None
@@ -302,10 +300,10 @@ class CleanerNoteProgressDialog(ProgressDialog):
                             debug_print('Unchanged note :::\n')
                         else:
                             debug_text('Note out', note_out)
-                            if field not in self.note_dic:
-                                self.note_dic[field] = {}
+                            if field not in self.field_id_notes:
+                                self.field_id_notes[field] = {}
                             note_data['doc'] = note_out
-                            self.note_dic[field][item_id] = note_data
+                            self.field_id_notes[field][item_id] = note_data
                     
                     else:
                         debug_print('Empty note '+note_info+':::\n')
@@ -313,7 +311,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
             
             
             ids = []
-            for v in self.note_dic.values():
+            for v in itervalues(self.field_id_notes):
                 ids.extend(v)
             note_edit_count = len(ids)
             if note_edit_count > 0:
@@ -322,9 +320,9 @@ class CleanerNoteProgressDialog(ProgressDialog):
                 self.set_value(-1, text=_('Update the library for {:d} notes...').format(note_edit_count))
                 
                 with self.dbAPI.backend.conn:
-                    for field,values in self.note_dic.items():
-                        for item_id,note_data in values.items():
-                            self.dbAPI.set_notes_for(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
+                    for field,values in iteritems(self.field_id_notes):
+                        for item_id,note_data in iteritems(values):
+                            self.set_notes(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
                 
                 self.note_clean = note_edit_count
             

@@ -7,10 +7,11 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-import copy
+
 # python3 compatibility
 from six.moves import range
 from six import text_type as unicode
+from polyglot.builtins import iteritems, itervalues
 
 try:
     load_translations()
@@ -488,7 +489,7 @@ class SelectNotesDialog(Dialog):
         self.tree_view.takeTopLevelItem(-1)
         
         category_icons = {}
-        category_icons.update({k:get_icon(v) for k,v in category_icon_map.items()})
+        category_icons.update({k:get_icon(v) for k,v in iteritems(category_icon_map)})
         category_icons.update(GUI.tags_view.model().category_custom_icons)
         
         
@@ -517,7 +518,7 @@ class SelectNotesDialog(Dialog):
         for book_id in book_ids:
             mi = self.dbAPI.get_metadata(book_id, get_user_categories=False)
             
-            for field,items_ids in self.all_possible_notes.items():
+            for field,items_ids in iteritems(self.all_possible_notes):
                 values = mi.get(field)
                 if not isinstance(values, list):
                     values = [values]
@@ -544,7 +545,7 @@ class SelectNotesDialog(Dialog):
             self.select_book_item.setText(0, msg)
             self.tree_view.addTopLevelItem(self.select_book_item)
         
-        for field,items_ids in book_fields_ids.items():
+        for field,items_ids in iteritems(book_fields_ids):
             if items_ids:
                 self.select_book_item.addChild(create_root_item(self.select_book_item, field, items_ids))
         
