@@ -519,7 +519,10 @@ class SelectNotesDialog(Dialog):
             mi = self.dbAPI.get_metadata(book_id, get_user_categories=False)
             
             for field,items_ids in iteritems(self.all_possible_notes):
-                values = mi.get(field)
+                values = mi.get(field, None)
+                if not values:
+                    continue
+                
                 if not isinstance(values, list):
                     values = [values]
                 
