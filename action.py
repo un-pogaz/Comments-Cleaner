@@ -38,10 +38,8 @@ from .common_utils.dialogs import ProgressDialog, CustomExceptionErrorDialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
 from .common_utils.columns import get_html
-
-from .comments_cleaner import clean_comment
 from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
-
+from .comments_cleaner import clean_comment
 
 class CommentsCleanerAction(InterfaceAction):
     
@@ -129,12 +127,11 @@ class CleanerProgressDialog(ProgressDialog):
         self.used_prefs.pop(KEY.NOTES_SETTINGS, None)
         
         # book comment dic
-        self.books_dic = {}
+        self.books_comments_map = {'comments':{}}
         # book custom columns dic
-        self.custom_columns_dic = {}
         if self.used_prefs[KEY.CUSTOM_COLUMN]:
             for cc in get_html(True):
-                self.custom_columns_dic[cc] = {}
+                self.books_comments_map[cc] = {}
         # Count of cleaned comments
         self.books_clean = 0
         # Exception
@@ -173,46 +170,28 @@ class CleanerProgressDialog(ProgressDialog):
                 # get the comment
                 
                 miA = self.dbAPI.get_proxy_metadata(book_id)
-                comment = miA.get('comments')
                 
                 # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
                 book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
                 
-                # process the comment
-                if comment is not None:
-                    debug_text('Comment for '+book_info, comment)
-                    comment_out = clean_comment(comment, self.used_prefs)
-                    if comment == comment_out:
-                        debug_text('Unchanged comment')
-                    else:
-                        debug_text('Comment out', comment_out)
-                        self.books_dic[book_id] = comment_out
-                
-                else:
-                    debug_text('Empty comment '+ book_info)
-                
-                for cc_html in self.custom_columns_dic:
-                    comment = miA.get(cc_html)
+                # process the comments
+                for field in self.books_comments_map.keys():
+                    comment = miA.get(field)
                     if comment is not None:
-                        debug_text(cc_html+' for '+book_info, comment)
+                        debug_text(field+' for '+book_info, comment)
                         comment_out = clean_comment(comment)
                         if comment == comment_out:
-                            debug_text('Unchanged '+cc_html)
+                            debug_text('Unchanged '+field)
                         else:
-                            debug_text(cc_html+' out', comment_out)
-                            
-                            if book_id not in self.custom_columns_dic[cc_html]:
-                                self.custom_columns_dic[cc_html][book_id] = comment_out
+                            debug_text(field+' out', comment_out)
+                            self.books_comments_map[field][book_id] = comment_out
                     
                     else:
-                        debug_text('Empty '+cc_html+' '+book_info)
+                        debug_text('Empty '+field+' '+book_info)
             
-            comments_map = {'comments':self.books_dic}
-            
-            ids = set(self.books_dic.keys())
-            for ccbk,ccbv in iteritems(self.custom_columns_dic):
+            ids = set()
+            for ccbv in itervalues(self.books_comments_map):
                 ids.update(ccbv.keys())
-                comments_map[ccbk] = ccbv
             
             books_edit_count = len(ids)
             if books_edit_count > 0:
@@ -223,7 +202,7 @@ class CleanerProgressDialog(ProgressDialog):
                 self.books_clean = books_edit_count
                 
                 with self.dbAPI.backend.conn:
-                    for field,id_val in iteritems(comments_map):
+                    for field,id_val in iteritems(self.books_comments_map):
                         self.dbAPI.set_field(field,id_val)
                 
                 GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
