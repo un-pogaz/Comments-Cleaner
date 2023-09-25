@@ -7,6 +7,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
+
 # python3 compatibility
 from six.moves import range
 from six import text_type as unicode
@@ -16,10 +17,11 @@ try:
 except ImportError:
     from PyQt5.Qt import QWidget
 
-
-from .config import KEY, CALIBRE_VERSIONS_BOLD, CALIBRE_HAS_NOTES, css_clean_rules
-from .XMLentity import parse_XMLentity, Entitys
 from .common_utils import debug_print, regex
+
+from .config import KEY, CALIBRE_VERSIONS_BOLD, css_clean_rules
+from .XMLentity import parse_XMLentity, Entitys
+
 
 NBSP = Entitys.nbsp.char
 
@@ -648,11 +650,3 @@ def clean_markdown(text): # key word: TRY!
     text = regex.loop(r'\\(_|\*)', r'\1', text)
     
     return text
-
-
-def main():
-    print("I reached main when I should not have\n")
-    return -1
-
-if __name__ == "__main__":
-    sys.exit(main())

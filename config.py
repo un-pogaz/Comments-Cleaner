@@ -18,23 +18,22 @@ try:
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from datetime import datetime
 from collections import defaultdict, OrderedDict
 from functools import partial
 
 try:
-    from qt.core import (Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox,
-                         QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea,
-                         QSize, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget,
-                        )
+    from qt.core import (
+        Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+        QLineEdit, QPushButton, QScrollArea, QSize, QTreeWidget, QTreeWidgetItem,
+        QVBoxLayout, QWidget,
+    )
 except ImportError:
-    from PyQt5.Qt import (Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox,
-                          QHBoxLayout, QLabel, QLineEdit, QPushButton, QScrollArea,
-                          QSize, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget,
-                        )
+    from PyQt5.Qt import (
+        Qt, QAbstractItemView, QCheckBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
+        QLineEdit, QPushButton, QScrollArea, QSize, QTreeWidget, QTreeWidgetItem,
+        QVBoxLayout, QWidget,
+    )
 
-from calibre import prints
-from calibre.gui2.ui import get_gui
 from calibre.library.field_metadata import category_icon_map
 
 from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
@@ -80,7 +79,7 @@ HEADINGS = OrderedDict([
 
 FONT_WEIGHT = OrderedDict([
                         ('trunc', _('Round the Weights value to the hundred')),
-                        ('bold', _('Round to Bold (value \'bold\')')),
+                        ('bold', _("Round to Bold (value 'bold')")),
                         ('none', _('Do not change the Weights')),
                         ('del', _('Delete Weights'))])
 FONT_WEIGHT_ALT = _('Round to Bold (value 600)')
@@ -92,7 +91,7 @@ FORCE_JUSTIFY = OrderedDict([
                         ('del', _('Delete all alignment'))])
 
 LIST_ALIGN = OrderedDict([
-                    ('keep', _('Use the \'Justification\' setting')),
+                    ('keep', _("Use the 'Justification' setting")),
                     ('del', _('Delete the alignment in lists'))])
 
 ID_CLASS = OrderedDict([
@@ -279,14 +278,14 @@ def _build_options_GroupBox(parent, layout, prefs):
     grid_layoutTEXT.addWidget(parent.comboBoxMARKDOWN, 1, 1, 1, 2)
     parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
     
-    grid_layoutTEXT.addWidget(QLabel(_('Multiple \'Line Return\' in a paragraph:'), parent), 2, 0, 1, 1)
+    grid_layoutTEXT.addWidget(QLabel(_("Multiple 'Line Return' in a paragraph:"), parent), 2, 0, 1, 1)
     parent.comboBoxDOUBLE_BR = KeyValueComboBox(parent, DOUBLE_BR, prefs[KEY.DOUBLE_BR])
     grid_layoutTEXT.addWidget(parent.comboBoxDOUBLE_BR, 2, 1, 1, 2)
     
-    grid_layoutTEXT.addWidget(QLabel(_('Single \'Line Return\' in a paragraph:'), parent), 3, 0, 1, 1)
+    grid_layoutTEXT.addWidget(QLabel(_("Single 'Line Return' in a paragraph:"), parent), 3, 0, 1, 1)
     parent.comboBoxSINGLE_BR = KeyValueComboBox(parent, SINGLE_BR, prefs[KEY.SINGLE_BR])
     parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
-                                         'and before "Multiple empty paragraph"'))
+                                          'and before "Multiple empty paragraph"'))
     grid_layoutTEXT.addWidget(parent.comboBoxSINGLE_BR, 3, 1, 1, 2)
     
     grid_layoutTEXT.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
@@ -376,9 +375,7 @@ class ConfigWidget(QWidget):
         prefs = PREFS.copy()
         prefs.pop(KEY.NOTES_SETTINGS, None)
         
-        debug_print('Save settings: {0}\n'.format(prefs))
-        
-    
+        debug_print('Save settings:', prefs, '\n')
 
 
 # workaround to run one Calibre 2
@@ -442,7 +439,7 @@ class ConfigNotesDialog(Dialog):
             prefs = _retrive_option(self, PREFS[KEY.NOTES_SETTINGS])
             PREFS[KEY.NOTES_SETTINGS] = prefs
         
-        debug_print('Notes settings: {0}\n'.format(prefs))
+        debug_print('Notes settings:', prefs, '\n')
         Dialog.accept(self)
 
 

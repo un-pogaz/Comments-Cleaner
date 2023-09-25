@@ -7,6 +7,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
+
 import sys
 from .common_utils import debug_print, regex, calibre_version
 

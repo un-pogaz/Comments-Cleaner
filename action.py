@@ -18,29 +18,29 @@ try:
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from datetime import datetime
 from collections import defaultdict, OrderedDict
 from functools import partial
 
 try:
-    from qt.core import QToolButton, QMenu, QProgressDialog, QTimer
+    from qt.core import (
+        QMenu, QToolButton,
+    )
 except ImportError:
-    from PyQt5.Qt import QToolButton, QMenu, QProgressDialog, QTimer
+    from PyQt5.Qt import (
+        QMenu, QToolButton,
+    )
 
-from calibre.db.legacy import LibraryDatabase
-from calibre.ebooks.metadata.book.base import Metadata
 from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
-from calibre.gui2.ui import get_gui
-from calibre.library import current_library_name
 
-from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
-from .comments_cleaner import clean_comment
-from .common_utils import debug_print, get_icon, PLUGIN_NAME, GUI, load_plugin_resources
-from .common_utils.dialogs import ProgressDialog
+from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME, load_plugin_resources
+from .common_utils.dialogs import ProgressDialog, CustomExceptionErrorDialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
 from .common_utils.columns import get_html
+
+from .comments_cleaner import clean_comment
+from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
 
 
 class CommentsCleanerAction(InterfaceAction):
@@ -114,8 +114,11 @@ class CommentsCleanerAction(InterfaceAction):
         CleanerNoteProgressDialog(notes_lst)
 
 
-def debug_text(pre, text):
-    debug_print(pre+':::\n'+text+'\n')
+def debug_text(pre, text=None):
+    debug_print(pre+':::')
+    if text:
+        debug_print(text, pre=None)
+    print()
 
 class CleanerProgressDialog(ProgressDialog):
     
@@ -144,17 +147,18 @@ class CleanerProgressDialog(ProgressDialog):
         elif self.exception:
             debug_print('Cleaning comments as cancelled. An exception has occurred:')
             debug_print(self.exception)
+            CustomExceptionErrorDialog(self.exception)
         else:
-            debug_print('Settings: {0}\n'.format(self.used_prefs))
-            debug_print('Cleaning launched for {0} books.'.format(self.book_count))
-            debug_print('Cleaning performed for {0} comments.'.format(self.books_clean))
+            debug_print('Settings:', self.used_prefs, '\n')
+            debug_print('Cleaning launched for {:d} books.'.format(self.book_count))
+            debug_print('Cleaning performed for {:d} comments.'.format(self.books_clean))
             debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
     
     def job_progress(self):
         
         debug_print('Launch Comments Cleaner for {:d} books.'.format(self.book_count))
-        
         debug_print(self.used_prefs)
+        print()
         
         try:
             
@@ -179,13 +183,13 @@ class CleanerProgressDialog(ProgressDialog):
                     debug_text('Comment for '+book_info, comment)
                     comment_out = clean_comment(comment, self.used_prefs)
                     if comment == comment_out:
-                        debug_print('Unchanged comment :::\n')
+                        debug_text('Unchanged comment')
                     else:
                         debug_text('Comment out', comment_out)
                         self.books_dic[book_id] = comment_out
                 
                 else:
-                    debug_print('Empty comment '+book_info+':::\n')
+                    debug_text('Empty comment '+ book_info)
                 
                 for cc_html in self.custom_columns_dic:
                     comment = miA.get(cc_html)
@@ -193,7 +197,7 @@ class CleanerProgressDialog(ProgressDialog):
                         debug_text(cc_html+' for '+book_info, comment)
                         comment_out = clean_comment(comment)
                         if comment == comment_out:
-                            debug_print('Unchanged '+cc_html+' :::\n')
+                            debug_text('Unchanged '+cc_html)
                         else:
                             debug_text(cc_html+' out', comment_out)
                             
@@ -201,7 +205,7 @@ class CleanerProgressDialog(ProgressDialog):
                                 self.custom_columns_dic[cc_html][book_id] = comment_out
                     
                     else:
-                        debug_print('Empty '+cc_html+' '+book_info+':::\n')
+                        debug_text('Empty '+cc_html+' '+book_info)
             
             comments_map = {'comments':self.books_dic}
             
@@ -213,7 +217,7 @@ class CleanerProgressDialog(ProgressDialog):
             books_edit_count = len(ids)
             if books_edit_count > 0:
                 
-                debug_print('Update the database for {0} books...\n'.format(books_edit_count))
+                debug_print('Update the database for {:d} books...\n'.format(books_edit_count))
                 self.set_value(-1, text=_('Update the library for {:d} books...').format(books_edit_count))
                 
                 self.books_clean = books_edit_count
@@ -223,6 +227,8 @@ class CleanerProgressDialog(ProgressDialog):
                         self.dbAPI.set_field(field,id_val)
                 
                 GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
+            else:
+                debug_print('No book to update inside the database.\n')
             
         except Exception as e:
             self.exception = e
@@ -263,16 +269,18 @@ class CleanerNoteProgressDialog(ProgressDialog):
         elif self.exception:
             debug_print('Cleaning notes as cancelled. An exception has occurred:')
             debug_print(self.exception)
+            CustomExceptionErrorDialog(self.exception)
         else:
-            debug_print('Settings: {0}\n'.format(self.used_prefs))
-            debug_print('Cleaning launched for {0} notes.'.format(self.note_count))
-            debug_print('Cleaning performed for {0} notes.'.format(self.note_clean))
+            debug_print('Settings:', self.used_prefs,'\n')
+            debug_print('Cleaning launched for {:d} notes.'.format(self.note_count))
+            debug_print('Cleaning performed for {:d} notes.'.format(self.note_clean))
             debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
     
     def job_progress(self):
         
         debug_print('Launch Notes Cleaner for {:d} notes.'.format(self.note_count))
         debug_print(self.used_prefs)
+        print()
         
         try:
             
@@ -297,7 +305,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
                         debug_text('Note for '+note_info, note)
                         note_out = clean_comment(note, self.used_prefs)
                         if note == note_out:
-                            debug_print('Unchanged note :::\n')
+                            debug_text('Unchanged note')
                         else:
                             debug_text('Note out', note_out)
                             if field not in self.field_id_notes:
@@ -306,7 +314,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
                             self.field_id_notes[field][item_id] = note_data
                     
                     else:
-                        debug_print('Empty note '+note_info+':::\n')
+                        debug_text('Empty note '+note_info)
                 
             
             
@@ -316,7 +324,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
             note_edit_count = len(ids)
             if note_edit_count > 0:
                 
-                debug_print('Update the database for {0} notes...\n'.format(note_edit_count))
+                debug_print('Update the database for {:d} notes...\n'.format(note_edit_count))
                 self.set_value(-1, text=_('Update the library for {:d} notes...').format(note_edit_count))
                 
                 with self.dbAPI.backend.conn:
@@ -328,4 +336,3 @@ class CleanerNoteProgressDialog(ProgressDialog):
             
         except Exception as e:
             self.exception = e
-        
