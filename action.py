@@ -34,7 +34,7 @@ from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 
 from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME, load_plugin_resources
-from .common_utils.dialogs import ProgressDialog, CustomExceptionErrorDialog
+from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
 from .common_utils.columns import get_html
@@ -126,12 +126,9 @@ class CleanerProgressDialog(ProgressDialog):
         self.used_prefs.update(PREFS.copy())
         self.used_prefs.pop(KEY.NOTES_SETTINGS, None)
         
-        # book comment dic
-        self.books_comments_map = {'comments':{}}
-        # book custom columns dic
-        if self.used_prefs[KEY.CUSTOM_COLUMN]:
-            for cc in get_html(True):
-                self.books_comments_map[cc] = {}
+        
+        # book comment map
+        self.books_comments_map = defaultdict(dict)
         # Count of cleaned comments
         self.books_clean = 0
         # Exception
@@ -144,7 +141,7 @@ class CleanerProgressDialog(ProgressDialog):
         elif self.exception:
             debug_print('Cleaning comments as cancelled. An exception has occurred:')
             debug_print(self.exception)
-            CustomExceptionErrorDialog(self.exception)
+            custom_exception_dialog(self.exception)
         else:
             debug_print('Settings:', self.used_prefs, '\n')
             debug_print('Cleaning launched for {:d} books.'.format(self.book_count))
@@ -231,7 +228,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
         self.note_count = len(self.note_count)
         
         self.note_clean = 0
-        self.field_id_notes = {}
+        self.field_id_notes = defaultdict(dict)
         
         # Exception
         self.exception = None
@@ -248,7 +245,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
         elif self.exception:
             debug_print('Cleaning notes as cancelled. An exception has occurred:')
             debug_print(self.exception)
-            CustomExceptionErrorDialog(self.exception)
+            custom_exception_dialog(self.exception)
         else:
             debug_print('Settings:', self.used_prefs,'\n')
             debug_print('Cleaning launched for {:d} notes.'.format(self.note_count))
@@ -287,8 +284,6 @@ class CleanerNoteProgressDialog(ProgressDialog):
                             debug_text('Unchanged note')
                         else:
                             debug_text('Note out', note_out)
-                            if field not in self.field_id_notes:
-                                self.field_id_notes[field] = {}
                             note_data['doc'] = note_out
                             self.field_id_notes[field][item_id] = note_data
                     
