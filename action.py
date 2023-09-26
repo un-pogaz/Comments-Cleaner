@@ -309,7 +309,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
                 with self.dbAPI.backend.conn:
                     for field,values in iteritems(self.field_id_notes):
                         for item_id,note_data in iteritems(values):
-                            self.set_notes(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
+                            self.dbAPI.set_notes_for(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
                 
                 self.note_clean = note_edit_count
             

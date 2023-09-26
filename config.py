@@ -446,10 +446,8 @@ class ConfigNotesDialog(Dialog):
 class SelectNotesDialog(Dialog):
     def __init__(self, book_ids=[]):
         
-        self.dbAPI = GUI.current_db.new_api
         self.book_ids = book_ids
         self.select_notes = {}
-        self.all_possible_notes = self.dbAPI.get_all_items_that_have_notes()
         
         Dialog.__init__(self,
             parent=GUI,
@@ -460,16 +458,8 @@ class SelectNotesDialog(Dialog):
     def setup_ui(self):
         layout = QVBoxLayout(self)
         
-        self.tree_view = QTreeWidget(self)
+        self.tree_view = SelectNotesWidget(self, book_ids=self.book_ids)
         layout.addWidget(self.tree_view)
-        
-        self.tree_view.setIconSize(QSize(20, 20))
-        self.tree_view.header().hide()
-        self.tree_view.setSelectionMode(QAbstractItemView.MultiSelection)
-        self.tree_view.itemChanged.connect(self.tree_item_changed)
-        self._is_internal_item_changed = False
-        
-        self.select_book_item = None
         
         button_layout = QHBoxLayout()
         layout.addLayout(button_layout)
@@ -478,17 +468,77 @@ class SelectNotesDialog(Dialog):
         button_layout.addStretch(1)
         
         layout.addWidget(self.bb)
-        
-        self._populate_tree(self.all_possible_notes, self.book_ids)
     
-    def _populate_tree(self, map_fields_notes, book_ids=[]):
-        self.select_book_item = None
-        self.tree_view.takeTopLevelItem(-1)
+    def accept(self):
+        self.select_notes = self.tree_view.get_selected_notes()
+        Dialog.accept(self)
+
+
+def get_category_notes_items(book_ids=None):
+    '''
+    Return item_ids for items that have notes in the specified field or all fields if field_name is None.
+    If book_ids if passed, return for entry only relative to this book list.
+    '''
+    dbAPI = GUI.current_db.new_api
+    items_map = dbAPI.get_all_items_that_have_notes()
+    
+    if not book_ids:
+        return items_map
+    else:
+        rslt = {}
+        
+        for book_id in book_ids:
+            mi = dbAPI.get_proxy_metadata(book_id)
+            
+            for field in items_map.keys():
+                values = mi.get(field, None)
+                if not values:
+                    continue
+                
+                if not isinstance(values, (list, tuple)):
+                    values = [values]
+                
+                value_id_map = dbAPI.get_item_ids(field, values)
+                new_ids = items_map[field].intersection(value_id_map.values())
+                if field not in rslt:
+                    rslt[field] = set()
+                rslt[field].update(new_ids)
+        return rslt
+
+class SelectNotesWidget(QTreeWidget):
+    def __init__(self, parent=None, book_ids=[]):
+        '''
+        If book_ids is not None, display a entry that contain a subset of Notes for listed books
+        '''
+        QTreeWidget.__init__(self, parent)
+        
+        self.setIconSize(QSize(20, 20))
+        self.header().hide()
+        self.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.itemChanged.connect(self.item_changed)
+        
+        self.book_ids = book_ids
+        self.all_possible_notes = get_category_notes_items()
+        
+        self._dbAPI = GUI.current_db.new_api
+        self._is_internal_item_changed = False
+        self._book_item = None
+        
+        self.populate_tree(self.all_possible_notes, book_ids=self.book_ids)
+    
+    def populate_tree(self, map_fields_notes, book_ids=[]):
+        
+        self._book_item = None
+        self.takeTopLevelItem(-1)
+        
+        fields_order = self._dbAPI.pref('tag_browser_category_order')
+        for k in sorted(map_fields_notes.keys()):
+            if k not in fields_order:
+                fields_order.append(k)
         
         category_icons = {}
         category_icons.update({k:get_icon(v) for k,v in iteritems(category_icon_map)})
         category_icons.update(GUI.tags_view.model().category_custom_icons)
-        
         
         def create_tree_item(parent, text, data, icon):
             rslt = QTreeWidgetItem(parent)
@@ -501,40 +551,34 @@ class SelectNotesDialog(Dialog):
         
         def create_root_item(parent, field, items):
             icon = category_icons.get(field, category_icons['custom:'])
-            name = self.dbAPI.field_metadata[field]['name']
+            name = self._dbAPI.field_metadata[field]['name']
             rslt = create_tree_item(parent, '{name} ({field})'.format(name=name, field=field), field, icon)
             
             for id in items:
-                ch = create_tree_item(rslt, self.dbAPI.get_item_name(field, id), id, icon)
+                ch = create_tree_item(rslt, self._dbAPI.get_item_name(field, id), id, icon)
                 rslt.addChild(ch)
             
             rslt.sortChildren(0, Qt.AscendingOrder)
             return rslt
         
-        book_fields_ids = {}
-        for book_id in book_ids:
-            mi = self.dbAPI.get_metadata(book_id, get_user_categories=False)
-            
-            for field,items_ids in iteritems(self.all_possible_notes):
-                values = mi.get(field, None)
-                if not values:
-                    continue
-                
-                if not isinstance(values, list):
-                    values = [values]
-                
-                for v in values:
-                    id = self.dbAPI.get_item_id(field, v)
-                    if id in items_ids:
-                        if field not in book_fields_ids:
-                            book_fields_ids[field] = set()
-                        book_fields_ids[field].add(id)
+        if not map_fields_notes:
+            separator = QTreeWidgetItem(self)
+            separator.setFlags(Qt.NoItemFlags)
+            separator.setText(0, _('No notes'))
+            self.addTopLevelItem(separator)
         
-        if map_fields_notes:
-            self.select_book_item = QTreeWidgetItem(self.tree_view)
-            self.select_book_item.setFlags(Qt.ItemIsEnabled)
-            self.select_book_item.setIcon(0, get_icon('book.png'))
-            self.select_book_item.setToolTip(0, _('Subset of Notes for the current selected books'))
+        elif book_ids is not None:
+            self._book_item = QTreeWidgetItem(self)
+            self._book_item.setFlags(Qt.ItemIsEnabled)
+            self._book_item.setIcon(0, get_icon('book.png'))
+            self._book_item.setToolTip(0, _('Subset of Notes for the current selected books'))
+            
+            book_fields_ids = get_category_notes_items(book_ids=book_ids)
+            
+            for field in fields_order:
+                items_ids = book_fields_ids.get(field, None)
+                if items_ids:
+                    self._book_item.addChild(create_root_item(self._book_item, field, items_ids))
             
             if not book_ids:
                 msg = _('No books selected')
@@ -542,31 +586,48 @@ class SelectNotesDialog(Dialog):
                 msg = _('0 books selected (no notes)')
             else:
                 msg = _('{:d} books selected').format(len(book_ids))
-            self.select_book_item.setText(0, msg)
-            self.tree_view.addTopLevelItem(self.select_book_item)
-        
-        for field,items_ids in iteritems(book_fields_ids):
-            if items_ids:
-                self.select_book_item.addChild(create_root_item(self.select_book_item, field, items_ids))
-        
-        separator = QTreeWidgetItem(self.tree_view)
-        separator.setFlags(Qt.NoItemFlags)
-        if map_fields_notes:
-            self.tree_view.addTopLevelItem(self.select_book_item)
+            self._book_item.setText(0, msg)
+            self.addTopLevelItem(self._book_item)
+            
+            separator = QTreeWidgetItem(self)
+            separator.setFlags(Qt.NoItemFlags)
             separator.setText(0, '--------------')
-        else:
-            separator.setText(0, _('No notes'))
-        self.tree_view.addTopLevelItem(separator)
+            self.addTopLevelItem(separator)
         
-        fields = set(self.dbAPI.pref('tag_browser_category_order'))
-        fields.update(sorted(self.dbAPI.backend.notes.allowed_fields))
-        
-        for field in fields:
+        for field in fields_order:
             items_ids = map_fields_notes.get(field, None)
             if items_ids:
-                self.tree_view.addTopLevelItem(create_root_item(self.tree_view, field, items_ids))
+                self.addTopLevelItem(create_root_item(self, field, items_ids))
     
-    def tree_item_changed(self, item, column):
+    def get_selected_notes(self):
+        rslt = {}
+        
+        def parse_tree_item(item):
+            item_text, field = item.text(0), item.data(0, Qt.UserRole)
+            all_field = False
+            if item.checkState(0) == Qt.CheckState.Checked:
+                all_field = True
+            
+            for idx in range(item.childCount()):
+                child = item.child(idx)
+                if all_field or child.checkState(0) == Qt.CheckState.Checked:
+                    if field not in rslt:
+                        rslt[field] = set()
+                    rslt[field].add(child.data(0, Qt.UserRole))
+        
+        for idx in range(self.topLevelItemCount()):
+            item = self.topLevelItem(idx)
+            
+            if item.data(0, Qt.UserRole):
+                parse_tree_item(item)
+            else:
+                for idx in range(item.childCount()):
+                    ch = item.child(idx)
+                    parse_tree_item(ch)
+        
+        return rslt
+    
+    def item_changed(self, item, column):
         if not self._is_internal_item_changed:
             self._is_internal_item_changed = True
             
@@ -587,31 +648,3 @@ class SelectNotesDialog(Dialog):
                     item.child(idx).setFlags(state)
             
             self._is_internal_item_changed = False
-    
-    def accept(self):
-        self.select_notes = {}
-        
-        def parse_tree_item(item):
-            item_text, field = item.text(0), item.data(0, Qt.UserRole)
-            all_field = False
-            if item.checkState(0) == Qt.CheckState.Checked:
-                all_field = True
-            
-            for idx in range(item.childCount()):
-                child = item.child(idx)
-                if all_field or child.checkState(0) == Qt.CheckState.Checked:
-                    if field not in self.select_notes:
-                        self.select_notes[field] = set()
-                    self.select_notes[field].add(child.data(0, Qt.UserRole))
-        
-        for idx in range(self.tree_view.topLevelItemCount()):
-            item = self.tree_view.topLevelItem(idx)
-            
-            if item.data(0, Qt.UserRole):
-                parse_tree_item(item)
-            else:
-                for idx in range(item.childCount()):
-                    ch = item.child(idx)
-                    parse_tree_item(ch)
-        
-        Dialog.accept(self)
