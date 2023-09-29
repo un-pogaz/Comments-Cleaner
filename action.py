@@ -99,7 +99,7 @@ class CommentsCleanerAction(InterfaceAction):
         
         d = SelectNotesDialog(book_ids)
         if d.exec():
-            notes_lst = d.select_notes
+            notes_lst = d.selected_notes
         else:
             debug_print('Cleaning notes aborted. Selection dialog closed.')
             return
@@ -259,8 +259,8 @@ class CleanerNoteProgressDialog(ProgressDialog):
         
         try:
             
-            for field,item_ids in iteritems(self.note_src):
-                for item_id in item_ids:
+            for field,items in iteritems(self.note_src):
+                for (value, item_id) in items:
                     
                     if self.wasCanceled():
                         return
