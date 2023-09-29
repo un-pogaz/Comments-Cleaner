@@ -322,7 +322,7 @@ def _retrive_option(parent, prefs):
 
 
 class ConfigWidget(QWidget):
-    def __init__(self, plugin_action):
+    def __init__(self):
         QWidget.__init__(self)
         
         layout = QVBoxLayout()
@@ -394,7 +394,7 @@ class NoteConfigDialogButton(QPushButton):
 
     def edit_notes_options(self):
         d = ConfigNotesDialog()
-        d.exec_()
+        d.exec()
 
 class ConfigNotesDialog(Dialog):
     def __init__(self):
@@ -519,7 +519,6 @@ class SelectNotesWidget(QTreeWidget):
         self.fields_notes_map = get_category_notes_items()
         
         self._dbAPI = GUI.current_db.new_api
-        self._is_internal_item_changed = False
         self._book_item = None
         
         self.populate_tree(self.fields_notes_map, book_ids=self.book_ids)
@@ -628,23 +627,22 @@ class SelectNotesWidget(QTreeWidget):
         return rslt
     
     def item_changed(self, item, column):
-        if not self._is_internal_item_changed:
-            self._is_internal_item_changed = True
-            
-            parent = item.parent()
-            if isinstance(parent, QTreeWidgetItem) and parent.data(0, Qt.UserRole):
-                state = False
-                for idx in range(parent.childCount()):
-                    if parent.child(idx).checkState(column) == Qt.CheckState.Checked:
-                        state = True
-                        break
-                parent.setCheckState(column, Qt.CheckState.PartiallyChecked if state else Qt.CheckState.Unchecked)
+        self.blockSignals(True)
+        
+        parent = item.parent()
+        if isinstance(parent, QTreeWidgetItem) and parent.data(0, Qt.UserRole):
+            state = False
+            for idx in range(parent.childCount()):
+                if parent.child(idx).checkState(column) == Qt.CheckState.Checked:
+                    state = True
+                    break
+            parent.setCheckState(column, Qt.CheckState.PartiallyChecked if state else Qt.CheckState.Unchecked)
+        else:
+            if item.checkState(column) == Qt.CheckState.Checked:
+                state = Qt.ItemIsUserCheckable
             else:
-                if item.checkState(column) == Qt.CheckState.Checked:
-                    state = Qt.ItemIsUserCheckable
-                else:
-                    state = Qt.ItemIsEnabled|Qt.ItemIsUserCheckable
-                for idx in range(item.childCount()):
-                    item.child(idx).setFlags(state)
-            
-            self._is_internal_item_changed = False
+                state = Qt.ItemIsEnabled|Qt.ItemIsUserCheckable
+            for idx in range(item.childCount()):
+                item.child(idx).setFlags(state)
+        
+        self.blockSignals(False)

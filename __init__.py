@@ -39,8 +39,6 @@ class ActionCommentsCleaner(InterfaceActionBase):
     #: The specified class must be defined in the specified module.
     actual_plugin           = __name__+'.action:CommentsCleanerAction'
     
-    DEBUG_PRE = 'CommentsCleaner'
-    
     def is_customizable(self):
         '''
         This method must return True to enable customization via
@@ -73,7 +71,7 @@ class ActionCommentsCleaner(InterfaceActionBase):
         # from the command line
         if self.actual_plugin_:
             from .config import ConfigWidget
-            return ConfigWidget(self.actual_plugin_)
+            return ConfigWidget()
     
     def save_settings(self, config_widget):
         '''

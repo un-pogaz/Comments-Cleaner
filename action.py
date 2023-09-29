@@ -33,7 +33,7 @@ except ImportError:
 from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 
-from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME, load_plugin_resources
+from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME
 from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
@@ -53,10 +53,6 @@ class CommentsCleanerAction(InterfaceAction):
     def genesis(self):
         self.is_library_selected = True
         self.menu = QMenu(GUI)
-        
-        # Read the plugin icons and store for potential sharing with the config widget
-        load_plugin_resources(self.plugin_path)
-        
         self.rebuild_menus()
         
         # Assign our menu to this action and an icon
@@ -90,7 +86,6 @@ class CommentsCleanerAction(InterfaceAction):
     def toolbar_triggered(self):
         self._clean_comment()
     
-    
     def show_configuration(self):
         self.interface_action_base_plugin.do_user_config(GUI)
     
@@ -103,7 +98,7 @@ class CommentsCleanerAction(InterfaceAction):
         book_ids = get_BookIds_selected(show_error=False)
         
         d = SelectNotesDialog(book_ids)
-        if d.exec_():
+        if d.exec():
             notes_lst = d.select_notes
         else:
             debug_print('Cleaning notes aborted. Selection dialog closed.')
@@ -128,7 +123,11 @@ class CleanerProgressDialog(ProgressDialog):
         
         
         # book comment map
-        self.books_comments_map = defaultdict(dict)
+        self.books_comments_map = {'comments':{}}
+        # book custom columns dic
+        if self.used_prefs[KEY.CUSTOM_COLUMN]:
+            self.books_comments_map.update({cc:{} for cc in get_html(True)})
+        
         # Count of cleaned comments
         self.books_clean = 0
         # Exception
