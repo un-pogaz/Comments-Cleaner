@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
 
 __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
@@ -10,12 +8,6 @@ __docformat__ = 'restructuredtext en'
 
 import sys
 from .common_utils import debug_print, regex, calibre_version
-
-if sys.version_info < (3,):
-    unichr = unichr
-else:
-    unichr = chr
-
 
 from collections import namedtuple
 XmlHtmlEntity = namedtuple('XmlHtmlEntity', ['char','name','html','xml','codepoint'])
@@ -40,12 +32,12 @@ def parse_XMLentity(text):
     regx = r'&#(\d+);'
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
-        text = text.replace('&#'+m+';', unichr(int(m)))
+        text = text.replace('&#'+m+';', chr(int(m)))
     
     regx = r'&#x([0-9a-fA-F]+);'
     while regex.search(regx, text):
         m = regex.search(regx, text).group(1)
-        text = text.replace('&#x'+m+';', unichr(int(m, base=16)))
+        text = text.replace('&#x'+m+';', chr(int(m, base=16)))
     
     text = regex.loop(r'(>[^<>]*)&quot;([^<>]*<)', r'\1"\2',text)
     text = regex.loop(r'(>[^<>]*)&apos;([^<>]*<)', r"\1'\2",text)
@@ -58,7 +50,7 @@ class Entitys:
     
     def build(name, codepoint):
         if isinstance(codepoint, int):
-             return XmlHtmlEntity(unichr(codepoint), name, '&'+name+';', '&#'+str(codepoint)+';', codepoint)
+             return XmlHtmlEntity(chr(codepoint), name, '&'+name+';', '&#'+str(codepoint)+';', codepoint)
         else:
             return XmlHtmlEntity(codepoint, name, '&'+name+';', None, None)
     

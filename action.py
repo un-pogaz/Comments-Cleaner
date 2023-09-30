@@ -1,17 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
 
 __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-
-# python3 compatibility
-from six.moves import range
-from six import text_type as unicode
-from polyglot.builtins import iteritems, itervalues
 
 try:
     load_translations()
@@ -77,7 +70,7 @@ class CommentsCleanerAction(InterfaceAction):
                                                  shortcut_name='Notes Cleaner')
         
         self.menu.addSeparator()
-        create_menu_action_unique(self, m, _('&Customize plugin...'), 'config.png',
+        create_menu_action_unique(self, m, _('&Customize plugin…'), 'config.png',
                                              triggered=self.show_configuration,
                                              shortcut=False)
         
@@ -143,13 +136,13 @@ class CleanerProgressDialog(ProgressDialog):
             custom_exception_dialog(self.exception)
         else:
             debug_print('Settings:', self.used_prefs, '\n')
-            debug_print('Cleaning launched for {:d} books.'.format(self.book_count))
-            debug_print('Cleaning performed for {:d} comments.'.format(self.books_clean))
-            debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
+            debug_print(f'Cleaning launched for {self.book_count} books.')
+            debug_print(f'Cleaning performed for {self.books_clean} comments.')
+            debug_print(f'Cleaning execute in {self.time_execut:0.3f} seconds.\n')
     
     def job_progress(self):
         
-        debug_print('Launch Comments Cleaner for {:d} books.'.format(self.book_count))
+        debug_print(f'Launch Comments Cleaner for {self.book_count} books.')
         debug_print(self.used_prefs)
         print()
         
@@ -186,19 +179,19 @@ class CleanerProgressDialog(ProgressDialog):
                         debug_text('Empty '+field+' '+book_info)
             
             ids = set()
-            for ccbv in itervalues(self.books_comments_map):
+            for ccbv in self.books_comments_map.values():
                 ids.update(ccbv.keys())
             
             books_edit_count = len(ids)
             if books_edit_count > 0:
                 
-                debug_print('Update the database for {:d} books...\n'.format(books_edit_count))
-                self.set_value(-1, text=_('Update the library for {:d} books...').format(books_edit_count))
+                debug_print(f'Update the database for {books_edit_count} books…\n')
+                self.set_value(-1, text=_('Update the library for {:d} books…').format(books_edit_count))
                 
                 self.books_clean = books_edit_count
                 
                 with self.dbAPI.backend.conn:
-                    for field,id_val in iteritems(self.books_comments_map):
+                    for field,id_val in self.books_comments_map.items():
                         self.dbAPI.set_field(field,id_val)
                 
                 GUI.iactions['Edit Metadata'].refresh_gui(ids, covers_changed=False)
@@ -212,7 +205,7 @@ class CleanerProgressDialog(ProgressDialog):
 class CleanerNoteProgressDialog(ProgressDialog):
     
     icon = NOTES_ICON
-    title = _('Notes Cleaner progress')
+    title = _('{PLUGIN_NAME} progress').format(PLUGIN_NAME='Notes Cleaner')
     
     def setup_progress(self, **kvargs):
         
@@ -221,7 +214,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
         
         self.note_src = self.book_ids
         self.note_count = []
-        for v in itervalues(self.note_src):
+        for v in self.note_src.values():
             self.note_count.extend(v)
         
         self.note_count = len(self.note_count)
@@ -247,19 +240,18 @@ class CleanerNoteProgressDialog(ProgressDialog):
             custom_exception_dialog(self.exception)
         else:
             debug_print('Settings:', self.used_prefs,'\n')
-            debug_print('Cleaning launched for {:d} notes.'.format(self.note_count))
-            debug_print('Cleaning performed for {:d} notes.'.format(self.note_clean))
-            debug_print('Cleaning execute in {:0.3f} seconds.\n'.format(self.time_execut))
+            debug_print(f'Cleaning launched for {self.note_count} notes.')
+            debug_print(f'Cleaning performed for {self.note_clean} notes.')
+            debug_print(f'Cleaning execute in {self.time_execut:0.3f} seconds.\n')
     
     def job_progress(self):
-        
-        debug_print('Launch Notes Cleaner for {:d} notes.'.format(self.note_count))
+        debug_print(f'Launch Notes Cleaner for {self.note_count} notes.')
         debug_print(self.used_prefs)
         print()
         
         try:
             
-            for field,items in iteritems(self.note_src):
+            for field,items in self.note_src.items():
                 for (value, item_id) in items:
                     
                     if self.wasCanceled():
@@ -292,17 +284,17 @@ class CleanerNoteProgressDialog(ProgressDialog):
             
             
             ids = []
-            for v in itervalues(self.field_id_notes):
+            for v in self.field_id_notes.values():
                 ids.extend(v)
             note_edit_count = len(ids)
             if note_edit_count > 0:
                 
-                debug_print('Update the database for {:d} notes...\n'.format(note_edit_count))
-                self.set_value(-1, text=_('Update the library for {:d} notes...').format(note_edit_count))
+                debug_print(f'Update the database for {note_edit_count} notes…\n')
+                self.set_value(-1, text=_('Update the library for {:d} notes…').format(note_edit_count))
                 
                 with self.dbAPI.backend.conn:
-                    for field,values in iteritems(self.field_id_notes):
-                        for item_id,note_data in iteritems(values):
+                    for field,values in self.field_id_notes.items():
+                        for item_id,note_data in values.items():
                             self.dbAPI.set_notes_for(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
                 
                 self.note_clean = note_edit_count

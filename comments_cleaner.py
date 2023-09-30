@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import (unicode_literals, division, absolute_import,
-                        print_function)
 
 __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
-
-# python3 compatibility
-from six.moves import range
-from six import text_type as unicode
 
 try:
     from qt.core import QWidget
@@ -255,8 +249,8 @@ def clean_basic(text):
     
     ## replaces the invalid triple point
     #text = regex.simple(r'\.\s*\.\s*\.', r'…', text)
-    text = regex.loop(r'\.\s+\.\s*\.', r'...', text)
-    text = regex.loop(r'\.\s*\.\s+\.', r'...', text)
+    text = regex.loop(r'\.\s+\.\s*\.', r'…', text)
+    text = regex.loop(r'\.\s*\.\s+\.', r'…', text)
     
     
     text = XMLformat(text)

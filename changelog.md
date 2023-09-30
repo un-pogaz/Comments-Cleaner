@@ -6,6 +6,9 @@
 - Support for Category Notes
 - Option for the images
 
+### Changed
+- Drop Python 2 / Calibre 4 comatibility, only 5 and above
+
 ### Bug fixes
 - Tags with CAPS name don't propely parsed
 
