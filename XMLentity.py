@@ -7,12 +7,13 @@ __docformat__ = 'restructuredtext en'
 
 
 import sys
-from .common_utils import debug_print, regex, calibre_version
+from typing import Optional, Union
+from .common_utils import debug_print, regex, CALIBRE_VERSION
 
 from collections import namedtuple
 XmlHtmlEntity = namedtuple('XmlHtmlEntity', ['char','name','html','xml','codepoint'])
 
-def parse_XMLentity(text):
+def parse_XMLentity(text: str) -> str:
     # " & ' < >
     regx = r'&#x0*(22|26|27|3C|3E);'
     while regex.search(regx, text):
@@ -48,7 +49,7 @@ def parse_XMLentity(text):
 
 class Entitys:
     
-    def build(name, codepoint):
+    def build(name: str, codepoint: Union[int, str]) -> XmlHtmlEntity:
         if isinstance(codepoint, int):
              return XmlHtmlEntity(chr(codepoint), name, '&'+name+';', '&#'+str(codepoint)+';', codepoint)
         else:
@@ -306,8 +307,7 @@ class Entitys:
         build('rang', 10217),      # ⟩
     ]
     
-    if sys.version_info >= (3,):
-        Html5 = [
+    Html5 = [
         build('Abreve', 258),                          # Ă
         build('abreve', 259),                          # ă
         build('ac', 8766),                             # ∾
@@ -2230,8 +2230,6 @@ class Entitys:
         build('Zscr', 119989),                         # 𝒵
         build('zscr', 120015),                         # 𝓏
     ]
-    else:
-        Html5 = []
     
     Html = Html2 + Html3 + Html4 + Html5
 

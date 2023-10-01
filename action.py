@@ -13,6 +13,7 @@ except NameError:
 
 from collections import defaultdict, OrderedDict
 from functools import partial
+from typing import Any
 
 try:
     from qt.core import (
@@ -26,7 +27,7 @@ except ImportError:
 from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 
-from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME
+from .common_utils import debug_print, get_icon, GUI, current_db, PLUGIN_NAME
 from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
@@ -61,18 +62,19 @@ class CommentsCleanerAction(InterfaceAction):
         m.clear()
         
         create_menu_action_unique(self, m, _('Clean the selected &comments'), PLUGIN_ICON,
-                                             triggered=self._clean_comment,
-                                             shortcut_name=PLUGIN_NAME)
+                                        triggered=self._clean_comment,
+                                        unique_name='Clean the selected &comments')
         
         if CALIBRE_HAS_NOTES:
             create_menu_action_unique(self, m, _('Clean category &notes'), NOTES_ICON,
-                                                 triggered=self._clean_note,
-                                                 shortcut_name='Notes Cleaner')
+                                        triggered=self._clean_note,
+                                        unique_name='Clean category &notes')
         
         self.menu.addSeparator()
         create_menu_action_unique(self, m, _('&Customize plugin…'), 'config.png',
-                                             triggered=self.show_configuration,
-                                             shortcut=False)
+                                        triggered=self.show_configuration,
+                                        unique_name='&Customize plugin',
+                                        shortcut=False)
         
         GUI.keyboard.finalize()
     
@@ -200,7 +202,6 @@ class CleanerProgressDialog(ProgressDialog):
             
         except Exception as e:
             self.exception = e
-        
 
 class CleanerNoteProgressDialog(ProgressDialog):
     

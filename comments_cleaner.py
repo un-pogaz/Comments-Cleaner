@@ -6,6 +6,8 @@ __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 __docformat__ = 'restructuredtext en'
 
 
+from typing import Optional
+
 try:
     from qt.core import QWidget
 except ImportError:
@@ -102,7 +104,7 @@ def _fix_weight(text):
     return text
 
 
-def clean_caps_tags(text):
+def clean_caps_tags(text: str) -> str:
     
     for find in regex.searchall(r'<(?P<start>/?)(?P<name>\w+)(?P<attributes>| [^>]*)(?P<end>/?)>', text):
         start = find.start()
@@ -122,7 +124,7 @@ def clean_caps_tags(text):
     return text
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
-def clean_basic(text):
+def clean_basic(text: str) -> str:
     
     text = XMLformat(text)
     
@@ -260,14 +262,14 @@ def clean_basic(text):
     return text
 
 # Ordered the attributs
-def ordered_attributs(text):
+def ordered_attributs(text: str) -> str:
     
     for atr in reversed(sorted(ATTRIBUTES)):
         text = regex.loop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+atr+r'="([^"]*)"', r'<\1 '+atr+r'="\3" \2', text)
     
     return text
 
-def XMLformat(text):
+def XMLformat(text: str) -> str:
     text = '\n'.join([l.rstrip() for l in text.splitlines()])
     
     # XML format
@@ -283,7 +285,7 @@ def XMLformat(text):
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
 __qwc = QWidget()
-def calibre_format(text):
+def calibre_format(text: str) -> str:
     try:
         ce = calibre_format.CommentsEditor
     except AttributeError:
@@ -296,7 +298,7 @@ def calibre_format(text):
 
 
 # main function
-def clean_comment(text, PREFS=None):
+def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
     if not PREFS:
         from .config import PREFS
     
@@ -462,7 +464,7 @@ def clean_comment(text, PREFS=None):
     return text
 
 
-def clean_align(text, PREFS=None):
+def clean_align(text: str, PREFS: Optional[dict]=None) -> str:
     if not PREFS:
         from .config import PREFS
     
@@ -518,7 +520,7 @@ def clean_align(text, PREFS=None):
     return text
 
 
-def clean_style(text, PREFS=None):
+def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
     if not PREFS:
         from .config import PREFS
     
@@ -595,7 +597,7 @@ def clean_style(text, PREFS=None):
 
 
 # Try to convert Markdown to HTML
-def clean_markdown(text): # key word: TRY!
+def clean_markdown(text: str) -> str: # key word: TRY!
     # image
     text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink

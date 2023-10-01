@@ -13,6 +13,7 @@ except NameError:
 
 from collections import defaultdict, OrderedDict
 from functools import partial
+from typing import Any
 
 try:
     from qt.core import (
@@ -27,9 +28,11 @@ except ImportError:
         QVBoxLayout, QWidget,
     )
 
-from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, calibre_version
+from calibre.gui2.widgets2 import Dialog
+
+from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, CALIBRE_VERSION
 from .common_utils.dialogs import KeyboardConfigDialogButton
-from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox, SelectNotesWidget, SelectFieldValuesWidget
+from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox, SelectNotesWidget
 
 
 PLUGIN_ICON = 'images/plugin.png'
@@ -147,12 +150,12 @@ PREFS.defaults[KEY.NOTES_SETTINGS][KEY.IMG_TAG] = 'keep'
 
 
 #fix a imcompatibility betwen multiple Calibre version
-CALIBRE_VERSIONS_BOLD = calibre_version < (4,0,0) or calibre_version >= (6,0,0)
+CALIBRE_VERSIONS_BOLD = CALIBRE_VERSION < (4,0,0) or CALIBRE_VERSION >= (6,0,0)
 
 if not CALIBRE_VERSIONS_BOLD:
     FONT_WEIGHT['bold'] = FONT_WEIGHT_ALT
 
-if calibre_version >= (6,0,0):
+if CALIBRE_VERSION >= (6,0,0):
     del FONT_WEIGHT['trunc']
     if PREFS[KEY.FONT_WEIGHT] == 'trunc':
         PREFS[KEY.FONT_WEIGHT] = 'bold'
@@ -164,10 +167,10 @@ except:
     CALIBRE_HAS_NOTES = False
 
 
-def css_clean_rules(css):
+def css_clean_rules(css: str) -> str:
     #remove space and invalid character
     css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower())
-    css = regex.loop(r'(,|;|:|\n|\r|\s{2,})', r' ', css)
+    css = regex.loop(r'([,;:\n\r]|\s{2,})', r' ', css)
     css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css)
     # split to table and remove duplicate
     css = list(set(css.split(' ')))
@@ -189,17 +192,17 @@ def _build_options_GroupBox(parent, layout, prefs):
     
     
     grid_layoutHTML.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0, 1, 2)
-    parent.comboBoxKEEP_URL = KeyValueComboBox(parent, KEEP_URL, prefs[KEY.KEEP_URL])
+    parent.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxKEEP_URL, 1, 0, 1, 2)
     
     grid_layoutHTML.addWidget(QLabel(_('Headings:'), parent), 0, 2, 1, 2)
-    parent.comboBoxHEADINGS = KeyValueComboBox(parent, HEADINGS, prefs[KEY.HEADINGS])
+    parent.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxHEADINGS, 1, 2, 1, 2)
     
     
     grid_layoutHTML.addWidget(QLabel(' ', parent), 4, 0)
     
-    parent.comboBoxFONT_WEIGHT = KeyValueComboBox(parent, FONT_WEIGHT, prefs[KEY.FONT_WEIGHT])
+    parent.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxFONT_WEIGHT, 5, 0, 1, 2)
     
     parent.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), parent)
@@ -218,15 +221,15 @@ def _build_options_GroupBox(parent, layout, prefs):
     
     
     grid_layoutHTML.addWidget(QLabel(_('Justification:'), parent), 10, 0, 1, 1)
-    parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(parent, FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY])
+    parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxFORCE_JUSTIFY, 10, 1, 1, 3)
     
     grid_layoutHTML.addWidget(QLabel(_('List alignment:'), parent), 11, 0, 1, 1)
-    parent.comboBoxLIST_ALIGN = KeyValueComboBox(parent, LIST_ALIGN, prefs[KEY.LIST_ALIGN])
+    parent.comboBoxLIST_ALIGN = KeyValueComboBox(LIST_ALIGN, prefs[KEY.LIST_ALIGN], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxLIST_ALIGN, 11, 1, 1, 3)
     
     grid_layoutHTML.addWidget(QLabel(_('ID & CLASS attributs:'), parent), 12, 0, 1, 1)
-    parent.comboBoxID_CLASS = KeyValueComboBox(parent, ID_CLASS, prefs[KEY.ID_CLASS])
+    parent.comboBoxID_CLASS = KeyValueComboBox(ID_CLASS, prefs[KEY.ID_CLASS], parent=parent)
     grid_layoutHTML.addWidget(parent.comboBoxID_CLASS, 12, 1, 1, 3)
     
     
@@ -265,26 +268,26 @@ def _build_options_GroupBox(parent, layout, prefs):
     groupboxTEXT.setLayout(grid_layoutTEXT)
     
     grid_layoutTEXT.addWidget(QLabel(_('Markdown:'), parent), 1, 0, 1, 1)
-    parent.comboBoxMARKDOWN = KeyValueComboBox(parent, MARKDOWN, prefs[KEY.MARKDOWN])
+    parent.comboBoxMARKDOWN = KeyValueComboBox(MARKDOWN, prefs[KEY.MARKDOWN], parent=parent)
     grid_layoutTEXT.addWidget(parent.comboBoxMARKDOWN, 1, 1, 1, 2)
     parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
     
     grid_layoutTEXT.addWidget(QLabel(_("Multiple 'Line Return' in a paragraph:"), parent), 2, 0, 1, 1)
-    parent.comboBoxDOUBLE_BR = KeyValueComboBox(parent, DOUBLE_BR, prefs[KEY.DOUBLE_BR])
+    parent.comboBoxDOUBLE_BR = KeyValueComboBox(DOUBLE_BR, prefs[KEY.DOUBLE_BR], parent=parent)
     grid_layoutTEXT.addWidget(parent.comboBoxDOUBLE_BR, 2, 1, 1, 2)
     
     grid_layoutTEXT.addWidget(QLabel(_("Single 'Line Return' in a paragraph:"), parent), 3, 0, 1, 1)
-    parent.comboBoxSINGLE_BR = KeyValueComboBox(parent, SINGLE_BR, prefs[KEY.SINGLE_BR])
+    parent.comboBoxSINGLE_BR = KeyValueComboBox(SINGLE_BR, prefs[KEY.SINGLE_BR])
     parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
                                           'and before "Multiple empty paragraph"'))
     grid_layoutTEXT.addWidget(parent.comboBoxSINGLE_BR, 3, 1, 1, 2)
     
     grid_layoutTEXT.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
-    parent.comboBoxEMPTY_PARA = KeyValueComboBox(parent, EMPTY_PARA, prefs[KEY.EMPTY_PARA])
+    parent.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=parent)
     grid_layoutTEXT.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
     
     grid_layoutTEXT.addWidget(QLabel(_('Images:'), parent), 5, 0, 1, 1)
-    parent.comboBoxIMG_TAG = KeyValueComboBox(parent, IMG_TAG, prefs[KEY.IMG_TAG])
+    parent.comboBoxIMG_TAG = KeyValueComboBox(IMG_TAG, prefs[KEY.IMG_TAG], parent=parent)
     grid_layoutTEXT.addWidget(parent.comboBoxIMG_TAG, 5, 1, 1, 2)
 
 def _retrive_option(parent, prefs):
@@ -319,7 +322,7 @@ class ConfigWidget(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
         
-        if calibre_version < (6,26,0):
+        if CALIBRE_VERSION < (6,26,0):
             # Make dialog box scrollable (for smaller screens)
             scrollable = QScrollArea()
             scrollcontent = QWidget()
@@ -330,7 +333,7 @@ class ConfigWidget(QWidget):
             layout = QVBoxLayout()
             scrollcontent.setLayout(layout)
         
-        title_layout = ImageTitleLayout(self, PLUGIN_ICON, _('Comments Cleaner Options'))
+        title_layout = ImageTitleLayout(PLUGIN_ICON, _('Comments Cleaner Options'))
         layout.addLayout(title_layout)
         
         # --- options ---
@@ -356,7 +359,6 @@ class ConfigWidget(QWidget):
         layout.addStretch(1)
     
     def save_settings(self):
-        
         with PREFS:
             
             _retrive_option(self, PREFS)
@@ -368,13 +370,6 @@ class ConfigWidget(QWidget):
         
         debug_print('Save settings:', prefs, '\n')
 
-
-# workaround to run one Calibre 2
-try:
-    from calibre.gui2.widgets2 import Dialog
-except:
-    class Dialog():
-        pass
 
 class NoteConfigDialogButton(QPushButton):
     
@@ -390,9 +385,9 @@ class NoteConfigDialogButton(QPushButton):
 class ConfigNotesDialog(Dialog):
     def __init__(self):
         Dialog.__init__(self,
-            parent=GUI,
             title=_('Customize') + ' ' + _('Notes Cleaner'),
-            name = 'plugin config dialog:User Action Interface:Notes Cleaner',
+            name='plugin config dialog:User Action Interface:Notes Cleaner',
+            parent=GUI,
         )
     
     def setup_ui(self):
@@ -410,7 +405,7 @@ class ConfigNotesDialog(Dialog):
         scrollcontent.setLayout(layout)
         
         
-        title_layout = ImageTitleLayout(self, NOTES_ICON, _('Notes Cleaner Options'))
+        title_layout = ImageTitleLayout(NOTES_ICON, _('Notes Cleaner Options'))
         layout.addLayout(title_layout)
         
         prefs = PREFS.defaults[KEY.NOTES_SETTINGS].copy()
@@ -425,7 +420,6 @@ class ConfigNotesDialog(Dialog):
         layout.addStretch(1)
     
     def accept(self):
-        
         with PREFS:
             prefs = _retrive_option(self, PREFS[KEY.NOTES_SETTINGS])
             PREFS[KEY.NOTES_SETTINGS] = prefs
@@ -436,14 +430,13 @@ class ConfigNotesDialog(Dialog):
 
 class SelectNotesDialog(Dialog):
     def __init__(self, book_ids=[]):
-        
         self.book_ids = book_ids
         self.selected_notes = {}
         
         Dialog.__init__(self,
+            title=_('Select Notes to clean'),
+            name='plugin config dialog:User Action Interface:Select Notes to clean',
             parent=GUI,
-            title= _('Select Notes to clean'),
-            name = 'plugin config dialog:User Action Interface:Select Notes to clean',
         )
     
     def setup_ui(self):
