@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2023-09-30 08:06+0200\n"
-"PO-Revision-Date: 2023-09-30 08:06+0200\n"
+"POT-Creation-Date: 2023-10-02 17:19+0200\n"
+"PO-Revision-Date: 2023-10-02 17:19+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -14,397 +14,417 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: __init__.py:29 action.py:41
+#: __init__.py:29 action.py:42
 msgid "Remove the scraps CSS in HTML comments"
 msgstr "Supprime les régles CSS indésirables dans les commentaires HTML"
 
-#: action.py:63
+#: action.py:64
 msgid "Clean the selected &comments"
 msgstr "Nettoyer les &commentaires sélectionnés"
 
-#: action.py:68
+#: action.py:69
 msgid "Clean category &notes"
 msgstr "Nettoyer les &notes des catégories"
 
-#: action.py:73
+#: action.py:74
 msgid "&Customize plugin…"
 msgstr "&Personnaliser l'extension…"
 
-#: action.py:189
+#: action.py:190
 msgid "Update the library for {:d} books…"
 msgstr "Mise a jour de la bibliothèque pour {:d} livres…"
 
-#: action.py:208 common_utils/dialogs.py:274
+#: action.py:208 common_utils/dialogs.py:242
 #, python-brace-format
 msgid "{PLUGIN_NAME} progress"
 msgstr "Progression de {PLUGIN_NAME}"
 
-#: action.py:231
+#: action.py:230
 msgid "Note {:d} of {:d}"
 msgstr "Note {:d} sur {:d}"
 
-#: action.py:293
+#: action.py:292
 msgid "Update the library for {:d} notes…"
 msgstr "Mise a jour de la bibliothèque pour {:d} notes…"
 
-#: common_utils/__init__.py:289
+#: common_utils/__init__.py:368
 msgid "You cannot configure this plugin before calibre is restarted."
 msgstr "Vous ne pouvez pas configurer ce plugin avant le redémarrage de Calibre."
 
-#: common_utils/dialogs.py:45 common_utils/dialogs.py:71
+#: common_utils/dialogs.py:52 common_utils/dialogs.py:82
 msgid "Keyboard shortcuts"
 msgstr "Raccourcis clavier"
 
-#: common_utils/dialogs.py:72
+#: common_utils/dialogs.py:83
 msgid "Edit the keyboard shortcuts associated with this plugin"
 msgstr "Modifier les raccourcis clavier associés à cette extension"
 
-#: common_utils/dialogs.py:87
+#: common_utils/dialogs.py:99
 msgid "Preferences for:"
 msgstr "Préférences pour :"
 
-#: common_utils/dialogs.py:105
-msgid "Clear"
-msgstr "Effacer"
-
-#: common_utils/dialogs.py:107
+#: common_utils/dialogs.py:122
 msgid "Clear all settings for this plugin"
 msgstr "Effacer tous les paramètres de ce plugin"
 
-#: common_utils/dialogs.py:149
+#: common_utils/dialogs.py:164
 msgid "The changes cannot be applied."
 msgstr "Les modifications ne peuvent pas être appliquées."
 
-#: common_utils/dialogs.py:153
+#: common_utils/dialogs.py:168
 msgid "Are you sure you want to change your settings in this library for this plugin?"
 msgstr "Êtes-vous sûr de vouloir modifier vos paramètres dans cette bibliothèque pour ce plugin ?"
 
-#: common_utils/dialogs.py:154 common_utils/dialogs.py:166
+#: common_utils/dialogs.py:169 common_utils/dialogs.py:181
 msgid "Any settings in other libraries or stored in a JSON file in your calibre plugins folder will not be touched."
 msgstr "Les paramètres présents dans d'autres bibliothèques ou stockés dans un fichier JSON dans le dossier des plugins de Calibre ne seront pas modifiés."
 
-#: common_utils/dialogs.py:165
+#: common_utils/dialogs.py:180
 msgid "Are you sure you want to clear your settings in this library for this plugin?"
 msgstr "Êtes-vous sûr de vouloir effacer vos paramètres dans cette bibliothèque pour ce plugin ?"
 
-#: common_utils/dialogs.py:186
+#: common_utils/dialogs.py:201
 msgid "View library preferences"
 msgstr "Afficher les préférences de la bibliothèque"
 
-#: common_utils/dialogs.py:187
+#: common_utils/dialogs.py:202
 msgid "View data stored in the library database for this plugin"
 msgstr "Afficher les données stockées dans la base de données de la bibliothèque pour ce plugin"
 
-#: common_utils/dialogs.py:264
+#: common_utils/dialogs.py:232
 msgid "Cancel"
 msgstr "Annuler"
 
-#: common_utils/dialogs.py:330
+#: common_utils/dialogs.py:298
 msgid "Book {:d} of {:d}"
 msgstr "Livre {:d} sur {:d}"
 
-#: common_utils/dialogs.py:361
+#: common_utils/dialogs.py:333
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
 
-#: common_utils/dialogs.py:381
+#: common_utils/dialogs.py:352
 msgid "Add New Image"
 msgstr "Ajouter une nouvelle image"
 
-#: common_utils/dialogs.py:384
+#: common_utils/dialogs.py:360
 msgid "&Select image source"
 msgstr "&Sélectionner la source de l'image"
 
-#: common_utils/dialogs.py:387
+#: common_utils/dialogs.py:363
 msgid "From &web domain favicon"
 msgstr "Depuis favicon de site &web"
 
-#: common_utils/dialogs.py:394
+#: common_utils/dialogs.py:370
 msgid "From .png &file"
 msgstr "Depuis un &fichier .png"
 
-#: common_utils/dialogs.py:407
+#: common_utils/dialogs.py:383
 msgid "&Save as filename:"
 msgstr "&Enregitrement comme nom de fichier :"
 
-#: common_utils/dialogs.py:431
+#: common_utils/dialogs.py:404
 msgid "Select a .png file for the menu icon"
 msgstr "Sélectionner un fichier .png pour l'icône du menu"
 
-#: common_utils/dialogs.py:437 common_utils/dialogs.py:446
-#: common_utils/dialogs.py:449 common_utils/dialogs.py:464
-#: common_utils/dialogs.py:471 common_utils/dialogs.py:473
-#: common_utils/dialogs.py:475
+#: common_utils/dialogs.py:410 common_utils/dialogs.py:419
+#: common_utils/dialogs.py:422 common_utils/dialogs.py:437
+#: common_utils/dialogs.py:443 common_utils/dialogs.py:445
+#: common_utils/dialogs.py:447
 msgid "Cannot import image"
 msgstr "Impossible d'importer l'image"
 
-#: common_utils/dialogs.py:437 common_utils/dialogs.py:473
+#: common_utils/dialogs.py:410 common_utils/dialogs.py:445
 msgid "Source image must be a .png file."
 msgstr "L'image source doit être un fichier .png."
 
-#: common_utils/dialogs.py:446
+#: common_utils/dialogs.py:419
 msgid "You must specify a filename to save as."
 msgstr "Vous devez spécifier un nom de fichier pour l'enregistrer."
 
-#: common_utils/dialogs.py:449
+#: common_utils/dialogs.py:422
 msgid "The save as filename should consist of a filename only."
 msgstr "L'enregitrement en tant que nom de fichier doit consister uniquement en un nom de fichier."
 
-#: common_utils/dialogs.py:454
+#: common_utils/dialogs.py:427
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
-#: common_utils/dialogs.py:454
+#: common_utils/dialogs.py:427
 msgid "An image with this name already exists - overwrite it?"
 msgstr "Une image portant ce nom existe déjà, l'écraser ?"
 
-#: common_utils/dialogs.py:464
+#: common_utils/dialogs.py:437
 msgid "You must specify a web domain url"
 msgstr "Vous devez spécifier une url de site web"
 
-#: common_utils/dialogs.py:471
+#: common_utils/dialogs.py:443
 msgid "You must specify a source file."
 msgstr "Vous devez spécifier un fichier source."
 
-#: common_utils/dialogs.py:475
+#: common_utils/dialogs.py:447
 msgid "Source image does not exist!"
 msgstr "L'image source n'existe pas !"
 
-#: common_utils/dialogs.py:505
+#: common_utils/dialogs.py:477
 #, python-brace-format
 msgid "The {PLUGIN_NAME} plugin has encounter a unhandled exception."
 msgstr "Le plugin {PLUGIN_NAME} a rencontré une exception non gérée."
 
-#: common_utils/dialogs.py:514
+#: common_utils/dialogs.py:486
 msgid "Unhandled exception"
 msgstr "Exception non gérée"
 
-#: common_utils/librarys.py:51
+#: common_utils/librarys.py:48
 msgid "Could not to launch {:s}"
 msgstr "Impossible de lancer {:s}"
 
-#: common_utils/librarys.py:65
+#: common_utils/librarys.py:62
 msgid "No book selected"
 msgstr "Aucun livre sélectionné"
 
-#: common_utils/librarys.py:70
+#: common_utils/librarys.py:67
 msgid "No book in the library"
 msgstr "Pas de livres dans bibliothèque"
 
-#: common_utils/librarys.py:75 common_utils/librarys.py:81
+#: common_utils/librarys.py:72 common_utils/librarys.py:78
 msgid "No book in the virtual library"
 msgstr "Pas de livres dans la bibliothèque virtuel"
 
-#: common_utils/librarys.py:86
+#: common_utils/librarys.py:83
 msgid "No book in the current search"
 msgstr "Pas de livres dans la recherche actuelle"
 
-#: common_utils/widgets.py:62
+#: common_utils/templates.py:57
+msgid "Unknown"
+msgstr "Inconue"
+
+#: common_utils/templates.py:64
+msgid "Template Error"
+msgstr "Erreur de modèle"
+
+#: common_utils/templates.py:65
+msgid "Running the template returned an error:"
+msgstr "L'exécution du modèle a renvoyé une erreur :"
+
+#: common_utils/templates.py:77
+msgid "Enter a template to test using data from the selected book"
+msgstr "Saisissez un modèle à tester en utilisant les données du livre sélectionné"
+
+#: common_utils/templates.py:84
+msgid "Template editor"
+msgstr "Éditeur de modèle"
+
+#: common_utils/templates.py:105 common_utils/templates.py:106
+msgid "Open the template editor"
+msgstr "Ouvrir l'éditeur de modèle"
+
+#: common_utils/widgets.py:66
 msgid "Restart required"
 msgstr "Redémarrage nécessaire"
 
-#: common_utils/widgets.py:63
+#: common_utils/widgets.py:67
 msgid "Title image not found - you must restart Calibre before using this plugin!"
 msgstr "L'image d'icone n'a pas était trouvée - vous devriez mieux redémarrer Calibre avant d'utiliser ce plugin !"
 
-#: common_utils/widgets.py:112
+#: common_utils/widgets.py:122
 msgid "Undefined"
 msgstr "Non défini"
 
-#: common_utils/widgets.py:300
+#: common_utils/widgets.py:270
 msgid "Subset of values associate to the books"
 msgstr "Sous-ensemble de valeurs associées aux livres"
 
-#: common_utils/widgets.py:301
+#: common_utils/widgets.py:271
 msgid "No books"
 msgstr "Aucun livre"
 
-#: common_utils/widgets.py:302
+#: common_utils/widgets.py:272
 msgid "{:d} books (no values)"
 msgstr "{:d} livres (pas de valeurs)"
 
-#: common_utils/widgets.py:303
+#: common_utils/widgets.py:273
 msgid "{:d} books"
 msgstr "{:d} livres"
 
-#: common_utils/widgets.py:417
+#: common_utils/widgets.py:396
 msgid "No notes"
 msgstr "Aucune notes"
 
-#: common_utils/widgets.py:462
+#: common_utils/widgets.py:441
 msgid "Add New Image…"
 msgstr "Ajouter une nouvelle image…"
 
-#: config.py:63
+#: config.py:66
 msgid "Keep URL"
 msgstr "Conserver les URL"
 
-#: config.py:64
+#: config.py:67
 msgid "Delete URL"
 msgstr "Supprimer les URL"
 
-#: config.py:67
+#: config.py:70
 msgid "Converte to a paragraph"
 msgstr "Convertir en paragraphe"
 
-#: config.py:68
+#: config.py:71
 msgid "Converte to a paragraph but keep the bold"
 msgstr "Convertir en paragraphe mais conserver le gras"
 
-#: config.py:69 config.py:81 config.py:92 config.py:98 config.py:103
-#: config.py:108 config.py:112
+#: config.py:72 config.py:84 config.py:95 config.py:101 config.py:106
+#: config.py:111 config.py:115
 msgid "No change"
 msgstr "Aucune modification"
 
-#: config.py:72
+#: config.py:75
 msgid "Round the Weights value to the hundred"
 msgstr "Arrondir la valeur de la Graisse a la centaine"
 
-#: config.py:73
+#: config.py:76
 msgid "Round to Bold (value 'bold')"
 msgstr "Arrondir au Gras (valeur \"bold\")"
 
-#: config.py:74
+#: config.py:77
 msgid "Do not change the Weights"
 msgstr "Ne pas changer la Graisse"
 
-#: config.py:75
+#: config.py:78
 msgid "Delete Weights"
 msgstr "Supprimer la Graisse"
 
-#: config.py:76
+#: config.py:79
 msgid "Round to Bold (value 600)"
 msgstr "Arrondir au Gras (valeur 600)"
 
-#: config.py:79
+#: config.py:82
 msgid "Force the justification (replace \"center\" and \"right\")"
 msgstr "Forcer la justification (remplacer \"center\" et \"right\")"
 
-#: config.py:80
+#: config.py:83
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justification pour le texte indéterminé (conserver \"center\" et \"right\")"
 
-#: config.py:82
+#: config.py:85
 msgid "Delete all alignment"
 msgstr "Supprimer tous les alignement"
 
-#: config.py:85
+#: config.py:88
 msgid "Use the 'Justification' setting"
 msgstr "Utilisez le paramètre \"Justification\""
 
-#: config.py:86
+#: config.py:89
 msgid "Delete the alignment in lists"
 msgstr "Supprimer l'alignement dans les listes"
 
-#: config.py:89
+#: config.py:92
 msgid "Delete \"id\" attribut"
 msgstr "Supprimer les attributs \"id\""
 
-#: config.py:90
+#: config.py:93
 msgid "Delete \"class\" attribut"
 msgstr "Supprimer les attributs \"class\""
 
-#: config.py:91
+#: config.py:94
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Supprimer les attributs \"class\" et \"id\""
 
-#: config.py:96
+#: config.py:99
 msgid "Convert in all comments (not recomanded)"
 msgstr "Convertir dans tous les commentaires (non recommandé)"
 
-#: config.py:97
+#: config.py:100
 msgid "Convert only from a plain text comment"
 msgstr "Convertir uniqument les commentaires en texte brut"
 
-#: config.py:101
+#: config.py:104
 msgid "Create a empty paragraph"
 msgstr "Crée un paragraphe vide"
 
-#: config.py:102 config.py:106
+#: config.py:105 config.py:109
 msgid "Create a new paragraph"
 msgstr "Crée un nouveau paragraphe"
 
-#: config.py:107
+#: config.py:110
 msgid "Replace with space"
 msgstr "Remplacer par un espace"
 
-#: config.py:111
+#: config.py:114
 msgid "Merge in a single empty paragraph"
 msgstr "Fusionner en un seul paragraphe vide"
 
-#: config.py:113
+#: config.py:116
 msgid "Delete empty paragraph"
 msgstr "Supprimer les paragraphes vide"
 
-#: config.py:116
+#: config.py:119
 msgid "Keep images"
 msgstr "Conserver les images"
 
-#: config.py:117
+#: config.py:120
 msgid "Delete images"
 msgstr "Supprimer les images"
 
-#: config.py:191
+#: config.py:194
 msgid "Hyperlink:"
 msgstr "Hyper-liens :"
 
-#: config.py:195
+#: config.py:198
 msgid "Headings:"
 msgstr "Titres :"
 
-#: config.py:205
+#: config.py:208
 msgid "Remove Italic"
 msgstr "Supprimer l'Italique"
 
-#: config.py:209
+#: config.py:212
 msgid "Remove Underline"
 msgstr "Supprimer le soulignement"
 
-#: config.py:213
+#: config.py:216
 msgid "Remove Strikethrough"
 msgstr "Supprimer le texte barré"
 
-#: config.py:220
+#: config.py:223
 msgid "Justification:"
 msgstr "Justification :"
 
-#: config.py:224
+#: config.py:227
 msgid "List alignment:"
 msgstr "Alignement des listes :"
 
-#: config.py:228
+#: config.py:231
 msgid "ID & CLASS attributs:"
 msgstr "Attributs ID & CLASS :"
 
-#: config.py:235
+#: config.py:238
 msgid "CSS rule to keep:"
 msgstr "Règles CSS a conserver :"
 
-#: config.py:238
+#: config.py:241
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Règles CSS personnalisés à conserver en plus de celle de base. Règles séparer par un espace."
 
-#: config.py:255
+#: config.py:258
 msgid "Remove all formatting"
 msgstr "Effacer toute mise en forme"
 
-#: config.py:267
+#: config.py:270
 msgid "Markdown:"
 msgstr "Markdown :"
 
-#: config.py:270
+#: config.py:273
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Essayer de convertir les chaînes de caractères Markdown en HTML"
 
-#: config.py:272
+#: config.py:275
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Multiple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:276
+#: config.py:279
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "Simple \"Retour a la ligne\" dans un paragraphe :"
 
-#: config.py:278
+#: config.py:281
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -412,54 +432,57 @@ msgstr ""
 "Cette opération est appliqué aprés « Multiple \"Retour a la ligne\" dans un paragraphe »\n"
 "et avant « Multiple paragraphes vide »"
 
-#: config.py:282
+#: config.py:285
 msgid "Multiple empty paragraph:"
 msgstr "Multiple paragraphes vide :"
 
-#: config.py:286
+#: config.py:289
 msgid "Images:"
 msgstr "Images :"
 
-#: config.py:333
+#: config.py:336
 msgid "Comments Cleaner Options"
 msgstr "Options Comments Cleaner"
 
-#: config.py:340
+#: config.py:343
 msgid "Apply to others custom HTML columns"
 msgstr "Appliquer à d'autres colonnes HTML personnalisées"
 
-#: config.py:382 config.py:413
+#: config.py:376 config.py:407
 msgid "Notes Cleaner Options"
 msgstr "Options Notes Cleaner"
 
-#: config.py:383
+#: config.py:377
 msgid "Edit the options for the notes cleaner action"
 msgstr "Edit the options for the notes cleaner action"
 
-#: config.py:394
+#: config.py:387
 msgid "Customize"
 msgstr "Personnaliser"
 
-#: config.py:394
+#: config.py:387
 msgid "Notes Cleaner"
 msgstr "Notes Cleaner"
 
-#: config.py:445
+#: config.py:438
 msgid "Select Notes to clean"
 msgstr "Sélectionner les notes à nettoyer"
 
-#: config.py:455
+#: config.py:449
 msgid "Subset of Notes associate to the currently selected books"
 msgstr "Sous-ensemble de notes associées aux livres actuellement sélectionnés"
 
-#: config.py:456
+#: config.py:450
 msgid "No books selected"
 msgstr "Aucun livre sélectionné"
 
-#: config.py:457
+#: config.py:451
 msgid "No notes for {:d} selected books"
 msgstr "Pas de notes pour {:d} livres sélectionnés"
 
-#: config.py:458
+#: config.py:452
 msgid "Notes for {:d} selected books"
 msgstr "Notes pour {:d} livres sélectionnés"
+
+#~ msgid "Clear"
+#~ msgstr "Effacer"

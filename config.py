@@ -344,19 +344,18 @@ class ConfigWidget(QWidget):
         self.checkBoxCUSTOM_COLUMN.setChecked(PREFS[KEY.CUSTOM_COLUMN])
         layout.addWidget(self.checkBoxCUSTOM_COLUMN)
         
-        # --- Keyboard shortcuts ---
+        # --- Buttons ---
+        layout.addWidget(QLabel(' ', self))
+        button_layout = QHBoxLayout()
+        layout.addLayout(button_layout)
+        button_layout.addWidget(KeyboardConfigDialogButton(parent=self))
+        
         if CALIBRE_HAS_NOTES:
-            layout.addWidget(QLabel(' ', self))
-            button_layout = QHBoxLayout()
-            layout.addLayout(button_layout)
-            
-            button_layout.addStretch(1)
             button_layout.addWidget(NoteConfigDialogButton(self)) 
         
-        # --- Keyboard shortcuts ---
-        layout.addWidget(QLabel(' ', self))
-        layout.addWidget(KeyboardConfigDialogButton(self))
-        layout.addStretch(1)
+        button_layout.addStretch(-1)
+        
+        layout.addStretch(-1)
     
     def save_settings(self):
         with PREFS:
@@ -408,16 +407,18 @@ class ConfigNotesDialog(Dialog):
         title_layout = ImageTitleLayout(NOTES_ICON, _('Notes Cleaner Options'))
         layout.addLayout(title_layout)
         
-        prefs = PREFS.defaults[KEY.NOTES_SETTINGS].copy()
-        prefs.update(PREFS[KEY.NOTES_SETTINGS].copy())
+        prefs = PREFS[KEY.NOTES_SETTINGS].copy()
         
         # --- options ---
         _build_options_GroupBox(self, layout, prefs)
         
         # --- Keyboard shortcuts ---
         layout.addWidget(QLabel(' ', self))
-        layout.addWidget(KeyboardConfigDialogButton(self))
-        layout.addStretch(1)
+        button_layout = QHBoxLayout()
+        layout.addLayout(button_layout)
+        button_layout.addWidget(KeyboardConfigDialogButton(parent=self))
+        button_layout.addStretch(-1)
+        layout.addStretch(-1)
     
     def accept(self):
         with PREFS:
@@ -455,7 +456,7 @@ class SelectNotesDialog(Dialog):
         layout.addLayout(button_layout)
         
         button_layout.addWidget(NoteConfigDialogButton(self)) 
-        button_layout.addStretch(1)
+        button_layout.addStretch(-1)
         
         layout.addWidget(self.bb)
     
