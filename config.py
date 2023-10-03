@@ -17,14 +17,14 @@ from typing import Any
 
 try:
     from qt.core import (
-        Qt, QCheckBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-        QLineEdit, QPushButton, QScrollArea,
+        Qt, QCheckBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
+        QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy,
         QVBoxLayout, QWidget,
     )
 except ImportError:
     from PyQt5.Qt import (
-        Qt, QCheckBox, QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-        QLineEdit, QPushButton, QScrollArea,
+        Qt, QCheckBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
+        QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy,
         QVBoxLayout, QWidget,
     )
 
@@ -183,63 +183,71 @@ def css_clean_rules(css: str) -> str:
 
 def _build_options_GroupBox(parent, layout, prefs):
     
+    size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Maximum)
+    
     # -- options HTML --
     groupboxHTML = QGroupBox(' ', parent)
     layout.addWidget(groupboxHTML)
     
-    grid_layoutHTML = QGridLayout()
-    groupboxHTML.setLayout(grid_layoutHTML)
+    layoutHTML = QVBoxLayout(groupboxHTML)
+    groupboxHTML.setLayout(layoutHTML)
     
+    layout_gridHTML = QGridLayout(groupboxHTML)
+    layoutHTML.addLayout(layout_gridHTML)
     
-    grid_layoutHTML.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0, 1, 2)
-    parent.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxKEEP_URL, 1, 0, 1, 2)
+    layout_gridHTML.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0)
+    parent.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=groupboxHTML)
+    layout_gridHTML.addWidget(parent.comboBoxKEEP_URL, 1, 0)
     
-    grid_layoutHTML.addWidget(QLabel(_('Headings:'), parent), 0, 2, 1, 2)
-    parent.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxHEADINGS, 1, 2, 1, 2)
+    layout_gridHTML.addWidget(QLabel(_('Headings:'), parent), 0, 1)
+    parent.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=groupboxHTML)
+    layout_gridHTML.addWidget(parent.comboBoxHEADINGS, 1, 1)
     
+    layout_gridHTML.addWidget(QLabel(' ', parent), 2, 0)
     
-    grid_layoutHTML.addWidget(QLabel(' ', parent), 4, 0)
+    parent.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=groupboxHTML)
+    layout_gridHTML.addWidget(parent.comboBoxFONT_WEIGHT, 3, 0)
     
-    parent.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxFONT_WEIGHT, 5, 0, 1, 2)
-    
-    parent.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), parent)
+    parent.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), groupboxHTML)
     parent.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
-    grid_layoutHTML.addWidget(parent.checkBoxDEL_ITALIC, 5, 2, 1, 2)
+    layout_gridHTML.addWidget(parent.checkBoxDEL_ITALIC, 3, 1)
     
-    parent.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), parent)
+    parent.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), groupboxHTML)
     parent.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
-    grid_layoutHTML.addWidget(parent.checkBoxDEL_UNDER, 6, 0, 1, 2)
+    layout_gridHTML.addWidget(parent.checkBoxDEL_UNDER, 4, 0)
     
-    parent.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), parent)
+    parent.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
     parent.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
-    grid_layoutHTML.addWidget(parent.checkBoxDEL_STRIKE, 6, 2, 1, 2)
-    
-    grid_layoutHTML.addWidget(QLabel(' ', parent), 9, 0)
+    layout_gridHTML.addWidget(parent.checkBoxDEL_STRIKE, 4, 1)
     
     
-    grid_layoutHTML.addWidget(QLabel(_('Justification:'), parent), 10, 0, 1, 1)
-    parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxFORCE_JUSTIFY, 10, 1, 1, 3)
-    
-    grid_layoutHTML.addWidget(QLabel(_('List alignment:'), parent), 11, 0, 1, 1)
-    parent.comboBoxLIST_ALIGN = KeyValueComboBox(LIST_ALIGN, prefs[KEY.LIST_ALIGN], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxLIST_ALIGN, 11, 1, 1, 3)
-    
-    grid_layoutHTML.addWidget(QLabel(_('ID & CLASS attributs:'), parent), 12, 0, 1, 1)
-    parent.comboBoxID_CLASS = KeyValueComboBox(ID_CLASS, prefs[KEY.ID_CLASS], parent=parent)
-    grid_layoutHTML.addWidget(parent.comboBoxID_CLASS, 12, 1, 1, 3)
+    layoutHTML.addWidget(QLabel(' ', groupboxHTML))
     
     
-    grid_layoutHTML.addWidget(QLabel(' ', parent))
+    layout_formHTML = QFormLayout(groupboxHTML)
+    layout_formHTML.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+    layout_formHTML.setFormAlignment(Qt.AlignRight)
+    layoutHTML.addLayout(layout_formHTML)
     
-    grid_layoutHTML.addWidget(QLabel(_('CSS rule to keep:'), parent), 20, 0, 1, 1)
-    parent.lineEditCSS_KEEP = QLineEdit(parent)
+    parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY], parent=groupboxHTML)
+    layout_formHTML.addRow(_('Justification:'), parent.comboBoxFORCE_JUSTIFY)
+    parent.comboBoxFORCE_JUSTIFY.setSizePolicy(size_policy)
+    
+    parent.comboBoxLIST_ALIGN = KeyValueComboBox(LIST_ALIGN, prefs[KEY.LIST_ALIGN], parent=groupboxHTML)
+    layout_formHTML.addRow(_('List alignment:'), parent.comboBoxLIST_ALIGN)
+    parent.comboBoxLIST_ALIGN.setSizePolicy(size_policy)
+    
+    parent.comboBoxID_CLASS = KeyValueComboBox(ID_CLASS, prefs[KEY.ID_CLASS], parent=groupboxHTML)
+    layout_formHTML.addRow(QLabel(_('ID & CLASS attributs:')), parent.comboBoxID_CLASS)
+    parent.comboBoxID_CLASS.setSizePolicy(size_policy)
+    
+    layout_formHTML.addWidget(QLabel(' ', parent))
+    
+    parent.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
+    layout_formHTML.addRow(_('CSS rule to keep:'), parent.lineEditCSS_KEEP)
     parent.lineEditCSS_KEEP.setText(prefs[KEY.CSS_KEEP])
     parent.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
-    grid_layoutHTML.addWidget(parent.lineEditCSS_KEEP, 20, 1, 1, 3)
+    parent.lineEditCSS_KEEP.setSizePolicy(size_policy)
     
     def action_checkBoxDEL_FORMATTING(num):
         b = not parent.checkBoxDEL_FORMATTING.isChecked()
@@ -264,31 +272,33 @@ def _build_options_GroupBox(parent, layout, prefs):
     groupboxTEXT = QGroupBox(' ', parent)
     layout.addWidget(groupboxTEXT)
     
-    grid_layoutTEXT = QGridLayout()
-    groupboxTEXT.setLayout(grid_layoutTEXT)
+    layoutTEXT = QFormLayout(groupboxTEXT)
+    layoutTEXT.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+    layoutTEXT.setFormAlignment(Qt.AlignRight)
+    groupboxTEXT.setLayout(layoutTEXT)
     
-    grid_layoutTEXT.addWidget(QLabel(_('Markdown:'), parent), 1, 0, 1, 1)
-    parent.comboBoxMARKDOWN = KeyValueComboBox(MARKDOWN, prefs[KEY.MARKDOWN], parent=parent)
-    grid_layoutTEXT.addWidget(parent.comboBoxMARKDOWN, 1, 1, 1, 2)
+    parent.comboBoxMARKDOWN = KeyValueComboBox(MARKDOWN, prefs[KEY.MARKDOWN], parent=groupboxTEXT)
+    layoutTEXT.addRow(_('Markdown:'), parent.comboBoxMARKDOWN)
     parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
+    parent.comboBoxMARKDOWN.setSizePolicy(size_policy)
     
-    grid_layoutTEXT.addWidget(QLabel(_("Multiple 'Line Return' in a paragraph:"), parent), 2, 0, 1, 1)
-    parent.comboBoxDOUBLE_BR = KeyValueComboBox(DOUBLE_BR, prefs[KEY.DOUBLE_BR], parent=parent)
-    grid_layoutTEXT.addWidget(parent.comboBoxDOUBLE_BR, 2, 1, 1, 2)
+    parent.comboBoxDOUBLE_BR = KeyValueComboBox(DOUBLE_BR, prefs[KEY.DOUBLE_BR], parent=groupboxTEXT)
+    layoutTEXT.addRow(_("Multiple 'Line Return' in a paragraph:"), parent.comboBoxDOUBLE_BR)
+    parent.comboBoxDOUBLE_BR.setSizePolicy(size_policy)
     
-    grid_layoutTEXT.addWidget(QLabel(_("Single 'Line Return' in a paragraph:"), parent), 3, 0, 1, 1)
     parent.comboBoxSINGLE_BR = KeyValueComboBox(SINGLE_BR, prefs[KEY.SINGLE_BR])
+    layoutTEXT.addRow(_("Single 'Line Return' in a paragraph:"), parent.comboBoxSINGLE_BR)
     parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
                                           'and before "Multiple empty paragraph"'))
-    grid_layoutTEXT.addWidget(parent.comboBoxSINGLE_BR, 3, 1, 1, 2)
+    parent.comboBoxSINGLE_BR.setSizePolicy(size_policy)
     
-    grid_layoutTEXT.addWidget(QLabel(_('Multiple empty paragraph:'), parent), 4, 0, 1, 1)
-    parent.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=parent)
-    grid_layoutTEXT.addWidget(parent.comboBoxEMPTY_PARA, 4, 1, 1, 2)
+    parent.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=groupboxTEXT)
+    layoutTEXT.addRow(_('Multiple empty paragraph:'), parent.comboBoxEMPTY_PARA)
+    parent.comboBoxEMPTY_PARA.setSizePolicy(size_policy)
     
-    grid_layoutTEXT.addWidget(QLabel(_('Images:'), parent), 5, 0, 1, 1)
-    parent.comboBoxIMG_TAG = KeyValueComboBox(IMG_TAG, prefs[KEY.IMG_TAG], parent=parent)
-    grid_layoutTEXT.addWidget(parent.comboBoxIMG_TAG, 5, 1, 1, 2)
+    parent.comboBoxIMG_TAG = KeyValueComboBox(IMG_TAG, prefs[KEY.IMG_TAG], parent=groupboxTEXT)
+    layoutTEXT.addRow(_('Images:'), parent.comboBoxIMG_TAG)
+    parent.comboBoxIMG_TAG.setSizePolicy(size_policy)
 
 def _retrive_option(parent, prefs):
     
