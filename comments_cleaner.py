@@ -13,6 +13,8 @@ try:
 except ImportError:
     from PyQt5.Qt import QWidget
 
+from calibre.library.comments import markdown
+
 from .common_utils import debug_print, regex
 
 from .config import KEY, CALIBRE_VERSIONS_BOLD, css_clean_rules
@@ -309,15 +311,20 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
-        text = regex.loop(r'(\r\n|\r)', r'\n', text)
+        # Convert two hyphens to emdash
+        text = text.replace('--', '—')
+        # Markdown
+        if PREFS[KEY.MARKDOWN] == 'try':
+            text = markdown(text)
+            text = regex.loop(r'>\n+<', '><', text)
+            text = regex.loop(r'<br(| [^>]*)/?>\s+', '<br>', text)
+        
         text = regex.loop(r'<br(| [^>]*)/?>', r'\n', text)
         text = '<div><p>' + regex.loop(r'\n{2,}', r'</p><p>', text) + '</p></div>'
         text = regex.loop(r'\n', r'<br>', text)
         text = regex.loop(r'(<p>|<br>)\s+', r'\1', text)
         text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
-        # Markdown
-        if PREFS[KEY.MARKDOWN] == 'try':
-            text = clean_markdown(text)
+        
         text = calibre_format(text)
     
     # double passe
