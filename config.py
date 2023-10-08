@@ -161,7 +161,7 @@ if CALIBRE_VERSION >= (6,0,0):
         PREFS[KEY.FONT_WEIGHT] = 'bold'
 
 try:
-    import calibre.gui2.dialogs.edit_category_notes
+    import calibre.db.notes.connect
     CALIBRE_HAS_NOTES = True
 except:
     CALIBRE_HAS_NOTES = False
@@ -386,7 +386,7 @@ class NoteConfigDialogButton(QPushButton):
         QPushButton.__init__(self, get_icon(NOTES_ICON), _('Notes Cleaner Options'), parent)
         self.setToolTip(_('Edit the options for the notes cleaner action'))
         self.clicked.connect(self.edit_notes_options)
-
+    
     def edit_notes_options(self):
         d = ConfigNotesDialog()
         d.exec()
