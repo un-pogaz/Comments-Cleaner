@@ -181,148 +181,155 @@ def css_clean_rules(css: str) -> str:
     return css
 
 
-def _build_options_GroupBox(parent, layout, prefs):
-    
-    size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Maximum)
-    
-    # -- options HTML --
-    groupboxHTML = QGroupBox(' ', parent)
-    layout.addWidget(groupboxHTML)
-    
-    layoutHTML = QVBoxLayout(groupboxHTML)
-    groupboxHTML.setLayout(layoutHTML)
-    
-    layout_gridHTML = QGridLayout(groupboxHTML)
-    layoutHTML.addLayout(layout_gridHTML)
-    
-    layout_gridHTML.addWidget(QLabel(_('Hyperlink:'), parent), 0, 0)
-    parent.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=groupboxHTML)
-    layout_gridHTML.addWidget(parent.comboBoxKEEP_URL, 1, 0)
-    
-    layout_gridHTML.addWidget(QLabel(_('Headings:'), parent), 0, 1)
-    parent.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=groupboxHTML)
-    layout_gridHTML.addWidget(parent.comboBoxHEADINGS, 1, 1)
-    
-    layout_gridHTML.addWidget(QLabel(' ', parent), 2, 0)
-    
-    parent.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=groupboxHTML)
-    layout_gridHTML.addWidget(parent.comboBoxFONT_WEIGHT, 3, 0)
-    
-    parent.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), groupboxHTML)
-    parent.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
-    layout_gridHTML.addWidget(parent.checkBoxDEL_ITALIC, 3, 1)
-    
-    parent.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), groupboxHTML)
-    parent.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
-    layout_gridHTML.addWidget(parent.checkBoxDEL_UNDER, 4, 0)
-    
-    parent.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
-    parent.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
-    layout_gridHTML.addWidget(parent.checkBoxDEL_STRIKE, 4, 1)
-    
-    
-    layoutHTML.addWidget(QLabel(' ', groupboxHTML))
-    
-    
-    layout_formHTML = QFormLayout(groupboxHTML)
-    layout_formHTML.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
-    layout_formHTML.setFormAlignment(Qt.AlignRight)
-    layoutHTML.addLayout(layout_formHTML)
-    
-    parent.comboBoxFORCE_JUSTIFY = KeyValueComboBox(FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY], parent=groupboxHTML)
-    layout_formHTML.addRow(_('Justification:'), parent.comboBoxFORCE_JUSTIFY)
-    parent.comboBoxFORCE_JUSTIFY.setSizePolicy(size_policy)
-    
-    parent.comboBoxLIST_ALIGN = KeyValueComboBox(LIST_ALIGN, prefs[KEY.LIST_ALIGN], parent=groupboxHTML)
-    layout_formHTML.addRow(_('List alignment:'), parent.comboBoxLIST_ALIGN)
-    parent.comboBoxLIST_ALIGN.setSizePolicy(size_policy)
-    
-    parent.comboBoxID_CLASS = KeyValueComboBox(ID_CLASS, prefs[KEY.ID_CLASS], parent=groupboxHTML)
-    layout_formHTML.addRow(QLabel(_('ID & CLASS attributs:')), parent.comboBoxID_CLASS)
-    parent.comboBoxID_CLASS.setSizePolicy(size_policy)
-    
-    layout_formHTML.addWidget(QLabel(' ', parent))
-    
-    parent.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
-    layout_formHTML.addRow(_('CSS rule to keep:'), parent.lineEditCSS_KEEP)
-    parent.lineEditCSS_KEEP.setText(prefs[KEY.CSS_KEEP])
-    parent.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
-    parent.lineEditCSS_KEEP.setSizePolicy(size_policy)
-    
-    def action_checkBoxDEL_FORMATTING(num):
-        b = not parent.checkBoxDEL_FORMATTING.isChecked()
+class CommonOptions(QWidget):
+    def __init__(self, prefs: dict, parent: QWidget=None):
+        QWidget.__init__(self, parent=parent)
         
-        parent.comboBoxKEEP_URL.setEnabled(b)
-        parent.comboBoxHEADINGS.setEnabled(b)
-        parent.comboBoxFONT_WEIGHT.setEnabled(b)
-        parent.checkBoxDEL_ITALIC.setEnabled(b)
-        parent.checkBoxDEL_UNDER.setEnabled(b)
-        parent.checkBoxDEL_STRIKE.setEnabled(b)
-        parent.comboBoxFORCE_JUSTIFY.setEnabled(b)
-        parent.comboBoxLIST_ALIGN.setEnabled(b)
-        parent.comboBoxID_CLASS.setEnabled(b)
-        parent.lineEditCSS_KEEP.setEnabled(b)
+        size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Maximum)
+        
+        layout = QVBoxLayout(self)
+        self.setLayout(layout)
+        
+        # -- options HTML --
+        groupboxHTML = QGroupBox(' ', self)
+        layout.addWidget(groupboxHTML)
+        
+        layoutHTML = QVBoxLayout(groupboxHTML)
+        groupboxHTML.setLayout(layoutHTML)
+        
+        layout_gridHTML = QGridLayout()
+        layoutHTML.addLayout(layout_gridHTML)
+        
+        layout_gridHTML.addWidget(QLabel(_('Hyperlink:'), self), 0, 0)
+        self.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=groupboxHTML)
+        layout_gridHTML.addWidget(self.comboBoxKEEP_URL, 1, 0)
+        
+        layout_gridHTML.addWidget(QLabel(_('Headings:'), self), 0, 1)
+        self.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=groupboxHTML)
+        layout_gridHTML.addWidget(self.comboBoxHEADINGS, 1, 1)
+        
+        layout_gridHTML.addWidget(QLabel(' ', self), 2, 0)
+        
+        self.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=groupboxHTML)
+        layout_gridHTML.addWidget(self.comboBoxFONT_WEIGHT, 3, 0)
+        
+        self.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), groupboxHTML)
+        self.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
+        layout_gridHTML.addWidget(self.checkBoxDEL_ITALIC, 3, 1)
+        
+        self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), groupboxHTML)
+        self.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
+        layout_gridHTML.addWidget(self.checkBoxDEL_UNDER, 4, 0)
+        
+        self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
+        self.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
+        layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 4, 1)
+        
+        
+        layoutHTML.addWidget(QLabel(' ', groupboxHTML))
+        
+        
+        layout_formHTML = QFormLayout()
+        layout_formHTML.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        layout_formHTML.setFormAlignment(Qt.AlignRight)
+        layoutHTML.addLayout(layout_formHTML)
+        
+        self.comboBoxFORCE_JUSTIFY = KeyValueComboBox(FORCE_JUSTIFY, prefs[KEY.FORCE_JUSTIFY], parent=groupboxHTML)
+        layout_formHTML.addRow(_('Justification:'), self.comboBoxFORCE_JUSTIFY)
+        self.comboBoxFORCE_JUSTIFY.setSizePolicy(size_policy)
+        
+        self.comboBoxLIST_ALIGN = KeyValueComboBox(LIST_ALIGN, prefs[KEY.LIST_ALIGN], parent=groupboxHTML)
+        layout_formHTML.addRow(_('List alignment:'), self.comboBoxLIST_ALIGN)
+        self.comboBoxLIST_ALIGN.setSizePolicy(size_policy)
+        
+        self.comboBoxID_CLASS = KeyValueComboBox(ID_CLASS, prefs[KEY.ID_CLASS], parent=groupboxHTML)
+        layout_formHTML.addRow(QLabel(_('ID & CLASS attributs:')), self.comboBoxID_CLASS)
+        self.comboBoxID_CLASS.setSizePolicy(size_policy)
+        
+        layout_formHTML.addWidget(QLabel(' ', self))
+        
+        self.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
+        layout_formHTML.addRow(_('CSS rule to keep:'), self.lineEditCSS_KEEP)
+        self.lineEditCSS_KEEP.setText(prefs[KEY.CSS_KEEP])
+        self.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
+        self.lineEditCSS_KEEP.setSizePolicy(size_policy)
+        
+        def action_checkBoxDEL_FORMATTING(num):
+            b = not self.checkBoxDEL_FORMATTING.isChecked()
+            
+            self.comboBoxKEEP_URL.setEnabled(b)
+            self.comboBoxHEADINGS.setEnabled(b)
+            self.comboBoxFONT_WEIGHT.setEnabled(b)
+            self.checkBoxDEL_ITALIC.setEnabled(b)
+            self.checkBoxDEL_UNDER.setEnabled(b)
+            self.checkBoxDEL_STRIKE.setEnabled(b)
+            self.comboBoxFORCE_JUSTIFY.setEnabled(b)
+            self.comboBoxLIST_ALIGN.setEnabled(b)
+            self.comboBoxID_CLASS.setEnabled(b)
+            self.lineEditCSS_KEEP.setEnabled(b)
+        
+        self.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), self)
+        self.checkBoxDEL_FORMATTING.stateChanged.connect(action_checkBoxDEL_FORMATTING)
+        self.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
+        layout.addWidget(self.checkBoxDEL_FORMATTING)
+        
+        # -- options TEXT --
+        groupboxTEXT = QGroupBox(' ', self)
+        layout.addWidget(groupboxTEXT)
+        
+        layoutTEXT = QFormLayout(groupboxTEXT)
+        layoutTEXT.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        layoutTEXT.setFormAlignment(Qt.AlignRight)
+        groupboxTEXT.setLayout(layoutTEXT)
+        
+        self.comboBoxMARKDOWN = KeyValueComboBox(MARKDOWN, prefs[KEY.MARKDOWN], parent=groupboxTEXT)
+        layoutTEXT.addRow(_('Markdown:'), self.comboBoxMARKDOWN)
+        self.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
+        self.comboBoxMARKDOWN.setSizePolicy(size_policy)
+        
+        self.comboBoxDOUBLE_BR = KeyValueComboBox(DOUBLE_BR, prefs[KEY.DOUBLE_BR], parent=groupboxTEXT)
+        layoutTEXT.addRow(_("Multiple 'Line Return' in a paragraph:"), self.comboBoxDOUBLE_BR)
+        self.comboBoxDOUBLE_BR.setSizePolicy(size_policy)
+        
+        self.comboBoxSINGLE_BR = KeyValueComboBox(SINGLE_BR, prefs[KEY.SINGLE_BR])
+        layoutTEXT.addRow(_("Single 'Line Return' in a paragraph:"), self.comboBoxSINGLE_BR)
+        self.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
+                                              'and before "Multiple empty paragraph"'))
+        self.comboBoxSINGLE_BR.setSizePolicy(size_policy)
+        
+        self.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=groupboxTEXT)
+        layoutTEXT.addRow(_('Multiple empty paragraph:'), self.comboBoxEMPTY_PARA)
+        self.comboBoxEMPTY_PARA.setSizePolicy(size_policy)
+        
+        self.comboBoxIMG_TAG = KeyValueComboBox(IMG_TAG, prefs[KEY.IMG_TAG], parent=groupboxTEXT)
+        layoutTEXT.addRow(_('Images:'), self.comboBoxIMG_TAG)
+        self.comboBoxIMG_TAG.setSizePolicy(size_policy)
     
-    parent.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), parent)
-    parent.checkBoxDEL_FORMATTING.stateChanged.connect(action_checkBoxDEL_FORMATTING)
-    parent.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
-    layout.addWidget(parent.checkBoxDEL_FORMATTING)
-    
-    # -- options TEXT --
-    groupboxTEXT = QGroupBox(' ', parent)
-    layout.addWidget(groupboxTEXT)
-    
-    layoutTEXT = QFormLayout(groupboxTEXT)
-    layoutTEXT.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
-    layoutTEXT.setFormAlignment(Qt.AlignRight)
-    groupboxTEXT.setLayout(layoutTEXT)
-    
-    parent.comboBoxMARKDOWN = KeyValueComboBox(MARKDOWN, prefs[KEY.MARKDOWN], parent=groupboxTEXT)
-    layoutTEXT.addRow(_('Markdown:'), parent.comboBoxMARKDOWN)
-    parent.comboBoxMARKDOWN.setToolTip(_('Try to convert the Markdown strings to HTML'))
-    parent.comboBoxMARKDOWN.setSizePolicy(size_policy)
-    
-    parent.comboBoxDOUBLE_BR = KeyValueComboBox(DOUBLE_BR, prefs[KEY.DOUBLE_BR], parent=groupboxTEXT)
-    layoutTEXT.addRow(_("Multiple 'Line Return' in a paragraph:"), parent.comboBoxDOUBLE_BR)
-    parent.comboBoxDOUBLE_BR.setSizePolicy(size_policy)
-    
-    parent.comboBoxSINGLE_BR = KeyValueComboBox(SINGLE_BR, prefs[KEY.SINGLE_BR])
-    layoutTEXT.addRow(_("Single 'Line Return' in a paragraph:"), parent.comboBoxSINGLE_BR)
-    parent.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
-                                          'and before "Multiple empty paragraph"'))
-    parent.comboBoxSINGLE_BR.setSizePolicy(size_policy)
-    
-    parent.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=groupboxTEXT)
-    layoutTEXT.addRow(_('Multiple empty paragraph:'), parent.comboBoxEMPTY_PARA)
-    parent.comboBoxEMPTY_PARA.setSizePolicy(size_policy)
-    
-    parent.comboBoxIMG_TAG = KeyValueComboBox(IMG_TAG, prefs[KEY.IMG_TAG], parent=groupboxTEXT)
-    layoutTEXT.addRow(_('Images:'), parent.comboBoxIMG_TAG)
-    parent.comboBoxIMG_TAG.setSizePolicy(size_policy)
-
-def _retrive_option(parent, prefs):
-    
-    prefs[KEY.KEEP_URL] = parent.comboBoxKEEP_URL.selected_key()
-    prefs[KEY.HEADINGS] = parent.comboBoxHEADINGS.selected_key()
-    prefs[KEY.FONT_WEIGHT] = parent.comboBoxFONT_WEIGHT.selected_key()
-    prefs[KEY.DEL_ITALIC] = parent.checkBoxDEL_ITALIC.isChecked()
-    prefs[KEY.DEL_UNDER] = parent.checkBoxDEL_UNDER.isChecked()
-    prefs[KEY.DEL_STRIKE] = parent.checkBoxDEL_STRIKE.isChecked()
-    prefs[KEY.FORCE_JUSTIFY] = parent.comboBoxFORCE_JUSTIFY.selected_key()
-    prefs[KEY.LIST_ALIGN] = parent.comboBoxLIST_ALIGN.selected_key()
-    prefs[KEY.ID_CLASS] = parent.comboBoxID_CLASS.selected_key()
-    
-    prefs[KEY.CSS_KEEP] = css_clean_rules(parent.lineEditCSS_KEEP.text())
-    
-    prefs[KEY.DEL_FORMATTING] = parent.checkBoxDEL_FORMATTING.isChecked()
-    
-    prefs[KEY.MARKDOWN] = parent.comboBoxMARKDOWN.selected_key()
-    prefs[KEY.DOUBLE_BR] = parent.comboBoxDOUBLE_BR.selected_key()
-    prefs[KEY.SINGLE_BR] = parent.comboBoxSINGLE_BR.selected_key()
-    prefs[KEY.EMPTY_PARA] = parent.comboBoxEMPTY_PARA.selected_key()
-    prefs[KEY.IMG_TAG] = parent.comboBoxIMG_TAG.selected_key()
-    
-    return prefs
+    def get_option(self) -> dict:
+        
+        prefs = {}
+        
+        prefs[KEY.KEEP_URL] = self.comboBoxKEEP_URL.selected_key()
+        prefs[KEY.HEADINGS] = self.comboBoxHEADINGS.selected_key()
+        prefs[KEY.FONT_WEIGHT] = self.comboBoxFONT_WEIGHT.selected_key()
+        prefs[KEY.DEL_ITALIC] = self.checkBoxDEL_ITALIC.isChecked()
+        prefs[KEY.DEL_UNDER] = self.checkBoxDEL_UNDER.isChecked()
+        prefs[KEY.DEL_STRIKE] = self.checkBoxDEL_STRIKE.isChecked()
+        prefs[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key()
+        prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
+        prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
+        
+        prefs[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP.text())
+        
+        prefs[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
+        
+        prefs[KEY.MARKDOWN] = self.comboBoxMARKDOWN.selected_key()
+        prefs[KEY.DOUBLE_BR] = self.comboBoxDOUBLE_BR.selected_key()
+        prefs[KEY.SINGLE_BR] = self.comboBoxSINGLE_BR.selected_key()
+        prefs[KEY.EMPTY_PARA] = self.comboBoxEMPTY_PARA.selected_key()
+        prefs[KEY.IMG_TAG] = self.comboBoxIMG_TAG.selected_key()
+        
+        return prefs
 
 
 class ConfigWidget(QWidget):
@@ -347,7 +354,8 @@ class ConfigWidget(QWidget):
         layout.addLayout(title_layout)
         
         # --- options ---
-        _build_options_GroupBox(self, layout, PREFS)
+        self.options = CommonOptions(PREFS, parent=self)
+        layout.addWidget(self.options)
         
         # --- Custom columns ---
         self.checkBoxCUSTOM_COLUMN = QCheckBox(_('Apply to others custom HTML columns'), self)
@@ -369,13 +377,9 @@ class ConfigWidget(QWidget):
     
     def save_settings(self):
         with PREFS:
-            
-            _retrive_option(self, PREFS)
-            
-            PREFS[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
-        
-        prefs = PREFS.copy()
-        prefs.pop(KEY.NOTES_SETTINGS, None)
+            prefs = self.options.get_option()
+            prefs[KEY.CUSTOM_COLUMN] = self.checkBoxCUSTOM_COLUMN.isChecked()
+            PREFS.update(prefs)
         
         debug_print('Save settings:', prefs, '\n')
 
@@ -420,7 +424,8 @@ class ConfigNotesDialog(Dialog):
         prefs = PREFS[KEY.NOTES_SETTINGS].copy()
         
         # --- options ---
-        _build_options_GroupBox(self, layout, prefs)
+        self.options = CommonOptions(prefs, parent=self)
+        layout.addWidget(self.options)
         
         # --- Keyboard shortcuts ---
         layout.addWidget(QLabel(' ', self))
@@ -432,8 +437,8 @@ class ConfigNotesDialog(Dialog):
     
     def accept(self):
         with PREFS:
-            prefs = _retrive_option(self, PREFS[KEY.NOTES_SETTINGS])
-            PREFS[KEY.NOTES_SETTINGS] = prefs
+            prefs = self.options.get_option()
+            PREFS[KEY.NOTES_SETTINGS].update(prefs)
         
         debug_print('Notes settings:', prefs, '\n')
         Dialog.accept(self)
