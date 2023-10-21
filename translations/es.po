@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2023-10-08 13:50+0200\n"
-"PO-Revision-Date: 2023-10-08 13:50+0200\n"
+"PO-Revision-Date: 2023-10-21 21:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -24,7 +24,7 @@ msgstr "Limpiar los &comentarios seleccionados"
 
 #: action.py:69
 msgid "Clean category &notes"
-msgstr ""
+msgstr "Limpiar categoría &notas"
 
 #: action.py:74
 msgid "&Customize plugin…"
@@ -41,7 +41,7 @@ msgstr "{PLUGIN_NAME} progreso"
 
 #: action.py:230
 msgid "Note {:d} of {:d}"
-msgstr ""
+msgstr "Nota {:d} de {:d}"
 
 #: action.py:292
 msgid "Update the library for {:d} notes…"
@@ -85,11 +85,11 @@ msgstr "¿Está seguro de que desea borrar su configuración en esta biblioteca 
 
 #: common_utils/dialogs.py:201
 msgid "View library preferences"
-msgstr ""
+msgstr "Ver preferencias de biblioteca"
 
 #: common_utils/dialogs.py:202
 msgid "View data stored in the library database for this plugin"
-msgstr ""
+msgstr "Ver datos almacenados en la base de datos de la biblioteca para este complemento"
 
 #: common_utils/dialogs.py:232
 msgid "Cancel"
@@ -217,7 +217,7 @@ msgstr "Editor de plantilla"
 
 #: common_utils/templates.py:105 common_utils/templates.py:106
 msgid "Open the template editor"
-msgstr ""
+msgstr "Abra el editor de plantillas"
 
 #: common_utils/widgets.py:66
 msgid "Restart required"
@@ -233,27 +233,27 @@ msgstr "Indefinido"
 
 #: common_utils/widgets.py:270
 msgid "Subset of values associate to the books"
-msgstr ""
+msgstr "Subconjunto de valores asociados a los libros"
 
 #: common_utils/widgets.py:271
 msgid "No books"
-msgstr ""
+msgstr "Sin libros"
 
 #: common_utils/widgets.py:272
 msgid "{:d} books (no values)"
-msgstr ""
+msgstr "{:d} libros (sin valores)"
 
 #: common_utils/widgets.py:273
 msgid "{:d} books"
-msgstr ""
+msgstr "{:d} libros"
 
 #: common_utils/widgets.py:396
 msgid "No notes"
-msgstr ""
+msgstr "Sin notas"
 
 #: common_utils/widgets.py:442
 msgid "Add New Image…"
-msgstr ""
+msgstr "Agregar nueva imagen…"
 
 #: config.py:66
 msgid "Keep URL"
@@ -358,11 +358,11 @@ msgstr "Eliminar párrafo vacío"
 
 #: config.py:119
 msgid "Keep images"
-msgstr ""
+msgstr "Mantener imágenes"
 
 #: config.py:120
 msgid "Delete images"
-msgstr ""
+msgstr "Eliminar imágenes"
 
 #: config.py:198
 msgid "Hyperlink:"
@@ -438,7 +438,7 @@ msgstr "Múltiples párrafos vacíos:"
 
 #: config.py:300
 msgid "Images:"
-msgstr ""
+msgstr "Imágenes:"
 
 #: config.py:346
 msgid "Comments Cleaner Options"
@@ -454,7 +454,7 @@ msgstr "Notes Cleaner Opciones"
 
 #: config.py:387
 msgid "Edit the options for the notes cleaner action"
-msgstr ""
+msgstr "Edite las opciones para la acción de limpieza de notas"
 
 #: config.py:397
 msgid "Customize"
@@ -462,24 +462,24 @@ msgstr "Personalizar"
 
 #: config.py:397
 msgid "Notes Cleaner"
-msgstr ""
+msgstr "Limpiador de notas"
 
 #: config.py:448
 msgid "Select Notes to clean"
-msgstr ""
+msgstr "Seleccione Notas para limpiar"
 
 #: config.py:459
 msgid "Subset of Notes associate to the currently selected books"
-msgstr ""
+msgstr "Subconjunto de notas asociadas a los libros seleccionados actualmente"
 
 #: config.py:460
 msgid "No books selected"
-msgstr ""
+msgstr "No hay libros seleccionados"
 
 #: config.py:461
 msgid "No notes for {:d} selected books"
-msgstr ""
+msgstr "No hay notas para {:d} libros seleccionados"
 
 #: config.py:462
 msgid "Notes for {:d} selected books"
-msgstr ""
+msgstr "Notas para {:d} libros seleccionados"
