@@ -191,7 +191,7 @@ class CommonOptions(QWidget):
         self.setLayout(layout)
         
         # -- options HTML --
-        groupboxHTML = QGroupBox(' ', self)
+        groupboxHTML = QGroupBox(self)
         layout.addWidget(groupboxHTML)
         
         layoutHTML = QVBoxLayout(groupboxHTML)
@@ -273,8 +273,11 @@ class CommonOptions(QWidget):
         self.checkBoxDEL_FORMATTING.setChecked(prefs[KEY.DEL_FORMATTING])
         layout.addWidget(self.checkBoxDEL_FORMATTING)
         
+        # ------
+        layout.addWidget(QLabel(' ', self))
+        
         # -- options TEXT --
-        groupboxTEXT = QGroupBox(' ', self)
+        groupboxTEXT = QGroupBox(self)
         layout.addWidget(groupboxTEXT)
         
         layoutTEXT = QFormLayout(groupboxTEXT)
