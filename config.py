@@ -143,10 +143,11 @@ _defaults[KEY.IMG_TAG] = 'del'
 
 # This is where all preferences for this plugin are stored
 PREFS = PREFS_json()
-PREFS.defaults = _defaults
+PREFS.defaults = _defaults.copy()
 PREFS.defaults[KEY.CUSTOM_COLUMN] = False
 PREFS.defaults[KEY.NOTES_SETTINGS] = _defaults.copy()
 PREFS.defaults[KEY.NOTES_SETTINGS][KEY.IMG_TAG] = 'keep'
+PREFS.defaults[KEY.NOTES_SETTINGS][KEY.CSS_KEEP] = 'float'
 
 
 #fix a imcompatibility betwen multiple Calibre version
@@ -160,10 +161,9 @@ if CALIBRE_VERSION >= (6,0,0):
     if PREFS[KEY.FONT_WEIGHT] == 'trunc':
         PREFS[KEY.FONT_WEIGHT] = 'bold'
 
-try:
-    import calibre.db.notes.connect
+if CALIBRE_VERSION >= (7,0,0):
     CALIBRE_HAS_NOTES = True
-except:
+else:
     CALIBRE_HAS_NOTES = False
 
 
