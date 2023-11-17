@@ -1,6 +1,6 @@
 # Changelog - Comments Cleaner
 
-## [1.12.0] - date
+## [1.12.0] - 2023/11/17
 
 ### Added
 - Support for Category Notes
