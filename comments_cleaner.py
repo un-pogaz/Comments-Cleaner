@@ -563,9 +563,9 @@ def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
             text = text.replace(m.group(0), rpl)
     
     if PREFS[KEY.FONT_WEIGHT] == 'bold':
-        text = regex.loop(r' style="([^"]*) font-weight: [5-9]\d\d;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: [6-9]\d\d;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
+        text = regex.loop(r' style="([^"]*) font-weight: [1-5]\d\d;([^"]*)"', r' style="\1\2"', text)
         text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 '+FONT_WEIGHT+r';\2"', text)
-        text = regex.loop(r' style="([^"]*) font-weight: [1-4]\d\d;([^"]*)"', r' style="\1\2"', text)
         
     elif PREFS[KEY.FONT_WEIGHT] == 'del':
         text = regex.loop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text)

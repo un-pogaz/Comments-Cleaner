@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.12.2] - 2024/02/10
+
+### Bug fixes
+- Fix some wrong bold cleaning
+
 ## [1.12.1] - 2024/01/27
 
 ### Bug fixes
