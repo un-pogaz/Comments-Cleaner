@@ -1,5 +1,13 @@
 # Changelog - Comments Cleaner
 
+## [1.13.0] - 2024/02/19
+
+### Added
+- Support drag-and-drop books from the library
+
+### Bug fixes
+- Fix some untranslated string
+
 ## [1.12.2] - 2024/02/10
 
 ### Bug fixes
