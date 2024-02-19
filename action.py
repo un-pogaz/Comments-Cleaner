@@ -15,17 +15,16 @@ from typing import Any
 
 try:
     from qt.core import (
-        QMenu, QToolButton,
+        QMenu, QToolButton, QTimer,
     )
 except ImportError:
     from PyQt5.Qt import (
-        QMenu, QToolButton,
+        QMenu, QToolButton, QTimer,
     )
 
-from calibre.gui2 import error_dialog
 from calibre.gui2.actions import InterfaceAction
 
-from .common_utils import debug_print, get_icon, GUI, current_db, PLUGIN_NAME
+from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME
 from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
@@ -41,16 +40,14 @@ class CommentsCleanerAction(InterfaceAction):
     popup_type = QToolButton.MenuButtonPopup
     action_type = 'current'
     dont_add_to = frozenset(['context-menu-device'])
-    
+    accepts_drops = True
+
     def genesis(self):
-        self.is_library_selected = True
         self.menu = QMenu(GUI)
-        self.rebuild_menus()
-        
-        # Assign our menu to this action and an icon
         self.qaction.setMenu(self.menu)
         self.qaction.setIcon(get_icon(PLUGIN_ICON))
         self.qaction.triggered.connect(self.toolbar_triggered)
+        self.rebuild_menus()
     
     def initialization_complete(self):
         return
@@ -60,12 +57,12 @@ class CommentsCleanerAction(InterfaceAction):
         m.clear()
         
         create_menu_action_unique(self, m, _('Clean the selected &comments'), PLUGIN_ICON,
-                                        triggered=self._clean_comment,
+                                        triggered=self.clean_comments,
                                         unique_name='Clean the selected &comments')
         
         if CALIBRE_HAS_NOTES:
             create_menu_action_unique(self, m, _('Clean category &notes'), NOTES_ICON,
-                                        triggered=self._clean_note,
+                                        triggered=self.clean_notes,
                                         unique_name='Clean category &notes')
         
         self.menu.addSeparator()
@@ -77,19 +74,47 @@ class CommentsCleanerAction(InterfaceAction):
         GUI.keyboard.finalize()
     
     def toolbar_triggered(self):
-        self._clean_comment()
+        self.clean_comments()
     
     def show_configuration(self):
         self.interface_action_base_plugin.do_user_config(GUI)
     
-    def _clean_comment(self):
-        book_ids = get_BookIds_selected(show_error=True)
-        
+    mime = 'application/calibre+from_library'
+    
+    def accept_enter_event(self, event, mime_data):
+        if mime_data.hasFormat(self.mime):
+            return True
+        return False
+    
+    def accept_drag_move_event(self, event, mime_data):
+        if mime_data.hasFormat(self.mime):
+            return True
+        return False
+    
+    def drop_event(self, event, mime_data):
+        if mime_data.hasFormat(self.mime):
+            self.dropped_ids = tuple(map(int, mime_data.data(self.mime).data().split()))
+            QTimer.singleShot(1, self.do_drop)
+            return True
+        return False
+    
+    def do_drop(self):
+        book_ids = self.dropped_ids
+        del self.dropped_ids
+        if book_ids:
+            self._clean_comments(book_ids)
+    
+    
+    def clean_comments(self):
+        self._clean_comments(get_BookIds_selected(show_error=True))
+    
+    def clean_notes(self):
+        self._clean_notes(get_BookIds_selected(show_error=False))
+    
+    def _clean_comments(self, book_ids: list[int]):
         CleanerProgressDialog(book_ids)
     
-    def _clean_note(self):
-        book_ids = get_BookIds_selected(show_error=False)
-        
+    def _clean_notes(self, book_ids: list[int]):
         d = SelectNotesDialog(book_ids)
         if d.exec():
             notes_lst = d.selected_notes
