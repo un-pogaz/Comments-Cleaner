@@ -170,13 +170,10 @@ def css_clean_rules(css: str) -> str:
     css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower())
     css = regex.loop(r'([,;:\n\r]|\s{2,})', r' ', css)
     css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css)
-    # split to table and remove duplicate
-    css = list(set(css.split(' ')))
-    # sort
-    css = sorted(css)
-    # join in a string
-    css = ' '.join(css)
-    return css
+    # split to table, remove duplicate and sorted
+    css = sorted(set(css.split(' ')))
+    # return into string
+    return ' '.join(css)
 
 
 class CommonOptions(QWidget):
