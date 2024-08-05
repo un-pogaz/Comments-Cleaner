@@ -103,6 +103,12 @@ def _fix_weight(text):
         text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
 
+def _set_prefs(prefs):
+    if not prefs:
+        from .config import PREFS
+        prefs = PREFS.copy()
+        prefs.pop(KEY.NOTES_SETTINGS, None)
+    return prefs
 
 def clean_caps_tags(text: str) -> str:
     
@@ -298,9 +304,8 @@ def calibre_format(text: str) -> str:
 
 
 # main function
-def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
-    if not PREFS:
-        from .config import PREFS
+def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
+    prefs = _set_prefs(prefs)
     
     text = text.replace('\r\n', '\n').replace('\r', '\n')
     
@@ -312,7 +317,7 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
         # Convert two hyphens to emdash
         text = text.replace('--', '—')
         # Markdown
-        if PREFS[KEY.MARKDOWN] == 'try':
+        if prefs[KEY.MARKDOWN] == 'try':
             text = markdown(text)
             text = regex.loop(r'>\n+<', '><', text)
             text = regex.loop(r'<br(| [^>]*)/?>\s+', '<br>', text)
@@ -364,35 +369,35 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
         text = regex.loop(r' (\w+)="([^"]*)"([^>]*) \1="([^"]*)"', r' \1="\2 \4"\3', text)
         
         # Markdown
-        if PREFS[KEY.MARKDOWN] == 'always' and passe == 0:
+        if prefs[KEY.MARKDOWN] == 'always' and passe == 0:
             text = clean_markdown(text)
         
         # Multiple Line Return <br><br>
-        if PREFS[KEY.DOUBLE_BR] == 'new':
+        if prefs[KEY.DOUBLE_BR] == 'new':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>', text)
-        elif PREFS[KEY.DOUBLE_BR] == 'empty':
+        elif prefs[KEY.DOUBLE_BR] == 'empty':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)(<br>){2,}', r'<p\1>\2</p><p\1>'+NBSP+r'</p><p\1>', text)
         
         # Single Line Return <br>
-        if PREFS[KEY.SINGLE_BR] == 'space':
+        if prefs[KEY.SINGLE_BR] == 'space':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2 \3</p>', text)
-        elif PREFS[KEY.SINGLE_BR] == 'para':
+        elif prefs[KEY.SINGLE_BR] == 'para':
             text = regex.loop(r'<p(| [^>]*)>((?:(?!</p>).)*?)<br>((?:(?!</p>).)*?)</p>', r'<p\1>\2</p><p\1>\3</p>', text)
             text = regex.loop(r'<p(| [^>]*)></p>', r'<p\1>'+NBSP+r'</p>', text)
         
         # Empty paragraph
-        if PREFS[KEY.EMPTY_PARA] == 'merge':
+        if prefs[KEY.EMPTY_PARA] == 'merge':
             text = regex.loop(r'(?:<p(| [^>]*)>'+NBSP+r'</p>\s*){2,}', r'<p\1>'+NBSP+r'</p>', text)
-        elif PREFS[KEY.EMPTY_PARA] == 'del':
+        elif prefs[KEY.EMPTY_PARA] == 'del':
             text = regex.loop(r'<p(| [^>]*)>'+NBSP+r'</p>', r'', text)
         
         # Delete <img>
-        if PREFS[KEY.IMG_TAG] == 'del':
+        if prefs[KEY.IMG_TAG] == 'del':
             text = regex.loop(r'\s*<img(| [^>]*)>\s*', r' ', text)
             text = regex.loop(r'\s*<(p|li|div)(| [^>]*)> </\1>\s*', r'', text)
         
         
-        if PREFS[KEY.DEL_FORMATTING]:
+        if prefs[KEY.DEL_FORMATTING]:
             # Remove Formatting
             text = regex.loop(r'<(/?)(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text)
             text = regex.loop(r'<(/?)(h\d|li|pre|dt|dd)(|\s[^>]*)>', r'<\1p>', text)
@@ -400,21 +405,21 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
             
         else:
             # ID and CLASS attributs
-            if 'id' in PREFS[KEY.ID_CLASS]:
+            if 'id' in prefs[KEY.ID_CLASS]:
                 text = regex.loop(r' id="[^"]*"', r'', text)
-            if 'class' in PREFS[KEY.ID_CLASS]:
+            if 'class' in prefs[KEY.ID_CLASS]:
                 text = regex.loop(r' class="[^"]*"', r'', text)
             
             
             # Headings
-            if PREFS[KEY.HEADINGS] == 'bolder':
+            if prefs[KEY.HEADINGS] == 'bolder':
                 text = regex.loop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text)
                 text = regex.loop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
-            if PREFS[KEY.HEADINGS] == 'conv' or PREFS[KEY.HEADINGS] == 'bolder':
+            if prefs[KEY.HEADINGS] == 'conv' or prefs[KEY.HEADINGS] == 'bolder':
                 text = regex.loop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text)
             
             # Hyperlink
-            if PREFS[KEY.KEEP_URL] == 'del':
+            if prefs[KEY.KEEP_URL] == 'del':
                 text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
             
             text = clean_basic(text)
@@ -424,9 +429,9 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
             text = text.replace(' style="', ' style=" ')
             
             
-            text = clean_align(text, PREFS)
+            text = clean_align(text, prefs)
             
-            text = clean_style(text, PREFS)
+            text = clean_style(text, prefs)
             
             
             # Del <sup>/<sub> paragraphe
@@ -463,20 +468,19 @@ def clean_comment(text: str, PREFS: Optional[dict]=None) -> str:
     text = calibre_format(text)
     
     # del align for list <li>
-    if PREFS[KEY.LIST_ALIGN] == 'del':
+    if prefs[KEY.LIST_ALIGN] == 'del':
         text = regex.loop(r'<(ol|ul|li)([^>]*) align="[^"]*"', r'<\1\2', text)
     
     return text
 
 
-def clean_align(text: str, PREFS: Optional[dict]=None) -> str:
-    if not PREFS:
-        from .config import PREFS
+def clean_align(text: str, prefs: Optional[dict]=None) -> str:
+    prefs = _set_prefs(prefs)
     
     text = ordered_attributs(text)
     
     # set align
-    if PREFS[KEY.FORCE_JUSTIFY] == 'del':
+    if prefs[KEY.FORCE_JUSTIFY] == 'del':
         # del align
         text = regex.loop(r' align="[^"]*"', r'', text)
         
@@ -505,9 +509,9 @@ def clean_align(text: str, PREFS: Optional[dict]=None) -> str:
         text = regex.loop(r'<(ol|ul) align="([^"]*)"', r'<\1', text)
         
         # set align
-        if PREFS[KEY.FORCE_JUSTIFY] == 'empty':
+        if prefs[KEY.FORCE_JUSTIFY] == 'empty':
             text = regex.loop(r' align="left"', r' align="justify"', text)
-        elif PREFS[KEY.FORCE_JUSTIFY] == 'all':
+        elif prefs[KEY.FORCE_JUSTIFY] == 'all':
             text = regex.loop(r' align="(left|center|right)"', r' align="justify"', text)
         #else: 'none'
         
@@ -525,18 +529,17 @@ def clean_align(text: str, PREFS: Optional[dict]=None) -> str:
     return text
 
 
-def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
-    if not PREFS:
-        from .config import PREFS
+def clean_style(text: str, prefs: Optional[dict]=None) -> str:
+    prefs = _set_prefs(prefs)
     
     text = ordered_attributs(text)
     
     text = regex.loop(r' x-style="[^"]*"', r'', text)
     text = text.replace(' style="', ' x-style="" style=" ')
     
-    if PREFS[KEY.CSS_KEEP_ACTIVE]:
+    if prefs[KEY.CSS_KEEP_ACTIVE]:
         rule_default = 'text-align font-weight font-style text-decoration'
-        for rule in css_clean_rules(rule_default +' '+ PREFS[KEY.CSS_KEEP]).split(' '):
+        for rule in css_clean_rules(rule_default +' '+ prefs[KEY.CSS_KEEP]).split(' '):
             text = regex.loop(r' x-style="([^"]*)" style="([^"]*) '+rule+r'\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text)
     else:
         text = regex.loop(r' x-style="([^"]*)" style="([^"]*) ([\w\-]+?)\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 \3: \4;" style="\2 \5"', text)
@@ -552,7 +555,7 @@ def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
     text = regex.loop(r' style="([^"]*) font-weight: (\d{1,2})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: 100;\3"', text)
     text = regex.simple(r' style="([^"]*) font-weight: (\d{3})(?:\.\d+)?;([^"]*)"', r' style="\1 font-weight: \2;\3"', text)
     
-    if PREFS[KEY.FONT_WEIGHT] == 'trunc' or PREFS[KEY.FONT_WEIGHT] == 'bold':
+    if prefs[KEY.FONT_WEIGHT] == 'trunc' or prefs[KEY.FONT_WEIGHT] == 'bold':
         
         text = regex.loop(r' style="([^"]*) font-weight: (?P<name>\d\d)0;([^"]*)"', r' style="\1 font-weight: \g<name>1;\3"', text)
         regx = r' style="([^"]*) font-weight: (?P<name>\d\d[1-9]);([^"]*)"'
@@ -563,19 +566,19 @@ def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
             rpl = regex.loop(regx, r' style="\1 font-weight: '+str(int(round(int(d),-2)))+r';\3"', m.group(0))
             text = text.replace(m.group(0), rpl)
     
-    if PREFS[KEY.FONT_WEIGHT] == 'bold':
+    if prefs[KEY.FONT_WEIGHT] == 'bold':
         text = regex.loop(r' style="([^"]*) font-weight: [6-9]\d\d;([^"]*)"', r' style="\1 font-weight: xxx;\2"', text)
         text = regex.loop(r' style="([^"]*) font-weight: [1-5]\d\d;([^"]*)"', r' style="\1\2"', text)
         text = regex.loop(r' style="([^"]*) font-weight: xxx;([^"]*)"', r' style="\1 '+FONT_WEIGHT+r';\2"', text)
         
-    elif PREFS[KEY.FONT_WEIGHT] == 'del':
+    elif prefs[KEY.FONT_WEIGHT] == 'del':
         text = regex.loop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]*) font-weight:[^;]*;([^"]*)"', r' style="\1\2"', text)
     
     
     # font-style
     text = regex.loop(r' style="([^"]*) font-style: (?!oblique|italic)[^;]*;([^"]*)"', r' style="\1\2"', text)
-    if PREFS[KEY.DEL_ITALIC]:
+    if prefs[KEY.DEL_ITALIC]:
         text = regex.loop(r'<(/?)em(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]*) font-style:[^;]*;([^"]*)"', r' style="\1\2"', text)
     else:
@@ -585,10 +588,10 @@ def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
     # text-decoration
     text = regex.loop(r' style="([^"]* text-decoration:[^;]*) (?:none|blink|overline|inherit|initial|unset)([^;]*;[^"]*)"', r' style="\1\2"', text)
     
-    if PREFS[KEY.DEL_UNDER]:
+    if prefs[KEY.DEL_UNDER]:
         text = regex.loop(r'<(/?)u(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]* text-decoration:[^;]*) underline([^;]*;[^"]*)"', r' style="\1\2"', text)
-    if PREFS[KEY.DEL_STRIKE]:
+    if prefs[KEY.DEL_STRIKE]:
         text = regex.loop(r'<(/?)s(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]* text-decoration:[^;]*) line-through([^;]*;[^"]*)"', r' style="\1\2"', text)
     

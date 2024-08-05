@@ -192,7 +192,7 @@ class CleanerProgressDialog(ProgressDialog):
                     comment = miA.get(field)
                     if comment is not None:
                         debug_text(field+' for '+book_info, comment)
-                        comment_out = clean_comment(comment)
+                        comment_out = clean_comment(comment, self.used_prefs)
                         if comment == comment_out:
                             debug_text('Unchanged '+field)
                         else:
