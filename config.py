@@ -46,6 +46,7 @@ class KEY:
     FORCE_JUSTIFY = 'ForceJustify'
     LIST_ALIGN = 'ListAlign'
     ID_CLASS = 'ID_Class'
+    CSS_KEEP_ACTIVE = 'CSStoKeepActive'
     CSS_KEEP = 'CSStoKeep'
     
     DEL_FORMATTING = 'RemoveFormatting'
@@ -129,6 +130,7 @@ _defaults[KEY.DEL_STRIKE] = False
 _defaults[KEY.FORCE_JUSTIFY] = 'empty'
 _defaults[KEY.LIST_ALIGN] = 'del'
 _defaults[KEY.ID_CLASS] = 'id_class'
+_defaults[KEY.CSS_KEEP_ACTIVE] = True
 _defaults[KEY.CSS_KEEP] = ''
 
 _defaults[KEY.DEL_FORMATTING] = False
@@ -243,11 +245,27 @@ class CommonOptions(QWidget):
         
         layout_formHTML.addWidget(QLabel(' ', self))
         
+        self.checkBoxCSS_KEEP_ACTIVE = QCheckBox(_('CSS rule to keep:'), groupboxHTML)
         self.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
-        layout_formHTML.addRow(_('CSS rule to keep:'), self.lineEditCSS_KEEP)
-        self.lineEditCSS_KEEP.setText(prefs[KEY.CSS_KEEP])
+        layout_formHTML.addRow(self.checkBoxCSS_KEEP_ACTIVE, self.lineEditCSS_KEEP)
+        self.lineEditCSS_KEEP_initial_text = self.lineEditCSS_KEEP_last_text = prefs[KEY.CSS_KEEP]
         self.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
         self.lineEditCSS_KEEP.setSizePolicy(size_policy)
+        
+        def action_checkBoxCSS_KEEP_ACTIVE(num):
+            b = self.checkBoxCSS_KEEP_ACTIVE.isChecked()
+            
+            self.lineEditCSS_KEEP.setEnabled(b)
+            if b:
+                self.lineEditCSS_KEEP.setText(self.lineEditCSS_KEEP_last_text)
+            else:
+                self.lineEditCSS_KEEP_last_text = self.lineEditCSS_KEEP.text()
+                self.lineEditCSS_KEEP.setText(_('All CSS rules are keep.'))
+        
+        self.checkBoxCSS_KEEP_ACTIVE.stateChanged.connect(action_checkBoxCSS_KEEP_ACTIVE)
+        self.checkBoxCSS_KEEP_ACTIVE.setChecked(prefs[KEY.CSS_KEEP_ACTIVE])
+        action_checkBoxCSS_KEEP_ACTIVE(-1)
+        self.lineEditCSS_KEEP_last_text = self.lineEditCSS_KEEP_initial_text
         
         def action_checkBoxDEL_FORMATTING(num):
             b = not self.checkBoxDEL_FORMATTING.isChecked()
@@ -261,7 +279,10 @@ class CommonOptions(QWidget):
             self.comboBoxFORCE_JUSTIFY.setEnabled(b)
             self.comboBoxLIST_ALIGN.setEnabled(b)
             self.comboBoxID_CLASS.setEnabled(b)
-            self.lineEditCSS_KEEP.setEnabled(b)
+            self.checkBoxCSS_KEEP_ACTIVE.setEnabled(b)
+            self.lineEditCSS_KEEP.setEnabled(self.checkBoxCSS_KEEP_ACTIVE.isChecked())
+            if not b:
+                self.lineEditCSS_KEEP.setEnabled(False)
         
         self.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), self)
         self.checkBoxDEL_FORMATTING.stateChanged.connect(action_checkBoxDEL_FORMATTING)
@@ -317,7 +338,11 @@ class CommonOptions(QWidget):
         prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
         prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
         
-        prefs[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP.text())
+        prefs[KEY.CSS_KEEP_ACTIVE] = self.checkBoxCSS_KEEP_ACTIVE.isChecked()
+        if prefs[KEY.CSS_KEEP_ACTIVE]:
+            prefs[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP.text())
+        else:
+            prefs[KEY.CSS_KEEP] = css_clean_rules(self.lineEditCSS_KEEP_initial_text)
         
         prefs[KEY.DEL_FORMATTING] = self.checkBoxDEL_FORMATTING.isChecked()
         

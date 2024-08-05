@@ -534,11 +534,12 @@ def clean_style(text: str, PREFS: Optional[dict]=None) -> str:
     text = regex.loop(r' x-style="[^"]*"', r'', text)
     text = text.replace(' style="', ' x-style="" style=" ')
     
-    rule_all = 'text-align font-weight font-style text-decoration'
-    rule_tbl = css_clean_rules(rule_all +' '+ PREFS[KEY.CSS_KEEP]).split(' ')
-    
-    for rule in rule_tbl:
-        text = regex.loop(r' x-style="([^"]*)" style="([^"]*) '+rule+r':\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text)
+    if PREFS[KEY.CSS_KEEP_ACTIVE]:
+        rule_default = 'text-align font-weight font-style text-decoration'
+        for rule in css_clean_rules(rule_default +' '+ PREFS[KEY.CSS_KEEP]).split(' '):
+            text = regex.loop(r' x-style="([^"]*)" style="([^"]*) '+rule+r'\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text)
+    else:
+        text = regex.loop(r' x-style="([^"]*)" style="([^"]*) ([\w\-]+?)\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 \3: \4;" style="\2 \5"', text)
     
     text = regex.loop(r' x-style="([^"]*)" style="[^"]*"', r' style="\1"', text)
     text = regex.loop(r' x-style="[^"]*"', r'', text)
