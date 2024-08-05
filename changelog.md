@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.14.0] - 2024/08/05
+
+### Added
+- Possibility of keeping all CSS rules
+
 ## [1.13.0] - 2024/02/19
 
 ### Added
