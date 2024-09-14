@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.15.0] - 2024/09/14
+
+### Changed
+- Optimisation parsing
+
 ## [1.14.0] - 2024/08/05
 
 ### Added
