@@ -16,10 +16,9 @@ from calibre.library.comments import markdown
 from .common_utils import debug_print, regex
 
 from .config import KEY, CALIBRE_VERSIONS_BOLD, css_clean_rules
-from .XMLentity import parse_XMLentity, Entitys
 
 
-NBSP = Entitys.nbsp.char
+NBSP = '\xA0'
 
 # Qt Supported HTML Subset https://doc.qt.io/qt-5/richtext-html-subset.html
 TAGS = [
@@ -133,9 +132,6 @@ def clean_caps_tags(text: str) -> str:
 def clean_basic(text: str) -> str:
     
     text = XMLformat(text)
-    
-    text = parse_XMLentity(text)
-    
     
     # convert tag
     text = regex.loop(r'<(/?)(?:i|cite|dfn|var)(| [^>]*)>', r'<\1em\2>', text)
