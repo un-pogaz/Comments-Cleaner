@@ -10,6 +10,7 @@ except NameError:
     pass  # load_translations() added in calibre 1.9
 
 from collections import defaultdict
+from typing import List
 
 try:
     from qt.core import QMenu, QTimer, QToolButton
@@ -106,10 +107,10 @@ class CommentsCleanerAction(InterfaceAction):
     def clean_notes(self):
         self._clean_notes(get_BookIds_selected(show_error=False))
     
-    def _clean_comments(self, book_ids: list[int]):
+    def _clean_comments(self, book_ids: List[int]):
         CleanerProgressDialog(book_ids)
     
-    def _clean_notes(self, book_ids: list[int]):
+    def _clean_notes(self, book_ids: List[int]):
         d = SelectNotesDialog(book_ids)
         if d.exec():
             notes_lst = d.selected_notes
