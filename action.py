@@ -9,28 +9,23 @@ try:
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from collections import defaultdict, OrderedDict
-from functools import partial
-from typing import Any
+from collections import defaultdict
 
 try:
-    from qt.core import (
-        QMenu, QToolButton, QTimer,
-    )
+    from qt.core import QMenu, QTimer, QToolButton
 except ImportError:
-    from PyQt5.Qt import (
-        QMenu, QToolButton, QTimer,
-    )
+    from PyQt5.Qt import QMenu, QTimer, QToolButton
 
 from calibre.gui2.actions import InterfaceAction
 
-from .common_utils import debug_print, get_icon, GUI, PLUGIN_NAME
+from .comments_cleaner import clean_comment
+from .common_utils import GUI, PLUGIN_NAME, debug_print, get_icon
+from .common_utils.columns import get_html
 from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
 from .common_utils.librarys import get_BookIds_selected
 from .common_utils.menus import create_menu_action_unique
-from .common_utils.columns import get_html
-from .config import PLUGIN_ICON, NOTES_ICON, PREFS, KEY, CALIBRE_HAS_NOTES, SelectNotesDialog
-from .comments_cleaner import clean_comment
+from .config import CALIBRE_HAS_NOTES, KEY, NOTES_ICON, PLUGIN_ICON, PREFS, SelectNotesDialog
+
 
 class CommentsCleanerAction(InterfaceAction):
     

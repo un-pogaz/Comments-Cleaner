@@ -9,29 +9,46 @@ try:
 except NameError:
     pass # load_translations() added in calibre 1.9
 
-from collections import defaultdict, OrderedDict
-from functools import partial
-from typing import Any
+from collections import OrderedDict
 
 try:
     from qt.core import (
-        Qt, QCheckBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
-        QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy,
-        QVBoxLayout, QWidget,
+        QCheckBox,
+        QFormLayout,
+        QGridLayout,
+        QGroupBox,
+        QHBoxLayout,
+        QLabel,
+        QLineEdit,
+        QPushButton,
+        QScrollArea,
+        QSizePolicy,
+        Qt,
+        QVBoxLayout,
+        QWidget,
     )
 except ImportError:
     from PyQt5.Qt import (
-        Qt, QCheckBox, QFormLayout, QGridLayout, QGroupBox, QHBoxLayout,
-        QLabel, QLineEdit, QPushButton, QScrollArea, QSizePolicy,
-        QVBoxLayout, QWidget,
+        QCheckBox,
+        QFormLayout,
+        QGridLayout,
+        QGroupBox,
+        QHBoxLayout,
+        QLabel,
+        QLineEdit,
+        QPushButton,
+        QScrollArea,
+        QSizePolicy,
+        Qt,
+        QVBoxLayout,
+        QWidget,
     )
 
 from calibre.gui2.widgets2 import Dialog
 
-from .common_utils import debug_print, get_icon, GUI, PREFS_json, regex, CALIBRE_VERSION
+from .common_utils import CALIBRE_VERSION, GUI, PREFS_json, debug_print, get_icon, regex
 from .common_utils.dialogs import KeyboardConfigDialogButton
 from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox, SelectNotesWidget
-
 
 PLUGIN_ICON = 'images/plugin.png'
 NOTES_ICON = 'images/notes.png'

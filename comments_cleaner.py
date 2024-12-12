@@ -13,10 +13,8 @@ except ImportError:
 
 from calibre.library.comments import markdown
 
-from .common_utils import debug_print, regex
-
-from .config import KEY, CALIBRE_VERSIONS_BOLD, css_clean_rules
-
+from .common_utils import regex
+from .config import CALIBRE_VERSIONS_BOLD, KEY, css_clean_rules
 
 NBSP = '\xA0'
 
