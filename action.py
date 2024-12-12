@@ -7,7 +7,7 @@ __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 try:
     load_translations()
 except NameError:
-    pass # load_translations() added in calibre 1.9
+    pass  # load_translations() added in calibre 1.9
 
 from collections import defaultdict
 
@@ -180,7 +180,13 @@ class CleanerProgressDialog(ProgressDialog):
                 miA = self.dbAPI.get_proxy_metadata(book_id)
                 
                 # book_info = "title" (author & author) [book: num/book_count]{id: book_id}
-                book_info = '"'+miA.get('title')+'" ('+' & '.join(miA.get('authors'))+') [book: '+str(num)+'/'+str(self.book_count)+']{id: '+str(book_id)+'}'
+                book_info = '"{title}" ({authors}) [book: {num}/{book_count}]{{id: {book_id}}}'.format(
+                    title=miA.get('title'),
+                    authors=' & '.join(miA.get('authors')),
+                    num=num,
+                    book_count=self.book_count,
+                    book_id=book_id,
+                )
                 
                 # process the comments
                 for field in self.books_comments_map.keys():
@@ -312,7 +318,12 @@ class CleanerNoteProgressDialog(ProgressDialog):
                 with self.dbAPI.backend.conn:
                     for field,values in self.field_id_notes.items():
                         for item_id,note_data in values.items():
-                            self.dbAPI.set_notes_for(field, item_id, note_data['doc'], searchable_text=note_data['searchable_text'], resource_hashes=note_data['resource_hashes'])
+                            self.dbAPI.set_notes_for(
+                                field, item_id,
+                                note_data['doc'],
+                                searchable_text=note_data['searchable_text'],
+                                resource_hashes=note_data['resource_hashes'],
+                            )
                 
                 self.note_clean = note_edit_count
             

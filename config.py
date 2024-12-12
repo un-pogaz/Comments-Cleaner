@@ -7,7 +7,7 @@ __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 try:
     load_translations()
 except NameError:
-    pass # load_translations() added in calibre 1.9
+    pass  # load_translations() added in calibre 1.9
 
 from collections import OrderedDict
 
@@ -266,7 +266,9 @@ class CommonOptions(QWidget):
         self.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
         layout_formHTML.addRow(self.checkBoxCSS_KEEP_ACTIVE, self.lineEditCSS_KEEP)
         self.lineEditCSS_KEEP_initial_text = self.lineEditCSS_KEEP_last_text = prefs[KEY.CSS_KEEP]
-        self.lineEditCSS_KEEP.setToolTip(_('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.'))
+        self.lineEditCSS_KEEP.setToolTip(
+            _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
+        )
         self.lineEditCSS_KEEP.setSizePolicy(size_policy)
         
         def action_checkBoxCSS_KEEP_ACTIVE(num):
@@ -329,8 +331,10 @@ class CommonOptions(QWidget):
         
         self.comboBoxSINGLE_BR = KeyValueComboBox(SINGLE_BR, prefs[KEY.SINGLE_BR])
         layoutTEXT.addRow(_("Single 'Line Return' in a paragraph:"), self.comboBoxSINGLE_BR)
-        self.comboBoxSINGLE_BR.setToolTip(_('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
-                                              'and before "Multiple empty paragraph"'))
+        self.comboBoxSINGLE_BR.setToolTip(
+            _('This operation is applied after "Multiple \'Line Return\' in a paragraph"\n'+
+              'and before "Multiple empty paragraph"')
+        )
         self.comboBoxSINGLE_BR.setSizePolicy(size_policy)
         
         self.comboBoxEMPTY_PARA = KeyValueComboBox(EMPTY_PARA, prefs[KEY.EMPTY_PARA], parent=groupboxTEXT)
@@ -409,7 +413,7 @@ class ConfigWidget(QWidget):
         button_layout.addWidget(KeyboardConfigDialogButton(parent=self))
         
         if CALIBRE_HAS_NOTES:
-            button_layout.addWidget(NoteConfigDialogButton(self)) 
+            button_layout.addWidget(NoteConfigDialogButton(self))
         
         button_layout.addStretch(-1)
         
@@ -510,7 +514,7 @@ class SelectNotesDialog(Dialog):
         button_layout = QHBoxLayout()
         layout.addLayout(button_layout)
         
-        button_layout.addWidget(NoteConfigDialogButton(self)) 
+        button_layout.addWidget(NoteConfigDialogButton(self))
         button_layout.addStretch(-1)
         
         layout.addWidget(self.bb)

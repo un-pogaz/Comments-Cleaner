@@ -225,16 +225,16 @@ def clean_basic(text: str) -> str:
     text = regex.loop(r'</li>\s+</(ol|ul)>', r'</li></\1>', text)
     
     
-    # style: del double 
+    # style: del double
     text = regex.loop(r' style="([^"]*);\s*;([^"]*)"', r' style="\1;\2"', text)
-    # style: clean space before : 
+    # style: clean space before :
     text = regex.loop(r' style="([^"]*)\s+(;|:)([^"]*)"', r' style="\1\2\3"', text)
-    # style: clean space after : 
+    # style: clean space after :
     text = regex.loop(r' style="([^"]*(?:;|:))\s{2,}([^"]*)"', r' style="\1 \2"', text)
-    # style: insert space after : 
+    # style: insert space after :
     text = regex.loop(r' style="([^"]*(?:;|:))([^ ][^"]*)"', r' style="\1 \2"', text)
     
-    # style: remove last 
+    # style: remove last
     text = regex.loop(r' style="([^"]*);\s*"', r' style="\1"', text)
     
     
@@ -307,7 +307,7 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     
     
     # if no tag = plain text
-    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text): #exclude <br> of the test
+    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text):  #exclude <br> of the test
         # Convert two hyphens to emdash
         text = text.replace('--', '—')
         # Markdown
@@ -478,7 +478,7 @@ def clean_align(text: str, prefs: Optional[dict]=None) -> str:
         # del align
         text = regex.loop(r' align="[^"]*"', r'', text)
         
-    else: # empty / all / none
+    else:  # empty / all / none
         
         # insert align left for all
         text = regex.simple(r'<(p|div|li|h1|h2|h3|h4|h5|h6)', r'<\1 align="left"', text)
@@ -600,7 +600,7 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
 
 
 # Try to convert Markdown to HTML
-def clean_markdown(text: str) -> str: # key word: TRY!
+def clean_markdown(text: str) -> str:  # key word: TRY!
     # image
     text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink
