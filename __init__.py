@@ -30,9 +30,9 @@ class ActionCommentsCleaner(InterfaceActionBase):
     version                 = (1, 15, 0)
     minimum_calibre_version = (5, 0, 0)
     
-    #: This field defines the GUI plugin class that contains all the code
-    #: that actually does something. Its format is module_path:class_name
-    #: The specified class must be defined in the specified module.
+    # This field defines the GUI plugin class that contains all the code
+    # that actually does something. Its format is module_path:class_name
+    # The specified class must be defined in the specified module.
     actual_plugin           = __name__+'.action:CommentsCleanerAction'
     
     def is_customizable(self):

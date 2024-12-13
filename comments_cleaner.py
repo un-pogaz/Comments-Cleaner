@@ -89,7 +89,7 @@ ATTRIBUTES = [
 ]
 
 
-#fix a imcompatibility betwen multiple Calibre version
+# fix a imcompatibility betwen multiple Calibre version
 if CALIBRE_VERSIONS_BOLD:
     FONT_WEIGHT = 'font-weight: 700'
 else:
@@ -200,7 +200,7 @@ def clean_basic(text: str) -> str:
     text = regex.loop(r'\s+((?:<(em|strong|sup|sub|u|s|span|a)(| [^>]*)>)+)\s+', r' \1', text)
     text = regex.loop(r'\s+((?:</(em|strong|sup|sub|u|s|span|a)>)+)\s+', r'\1 ', text)
     
-    #empty block
+    # empty block
     text = regex.loop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)>\s*</\1>', r'', text)
     text = regex.loop(r'\s*<(p|div|h\d|li|ol|ul)(| [^>]*)/>', r'', text)
     
@@ -241,7 +241,7 @@ def clean_basic(text: str) -> str:
     # remove empty attribut
     text = regex.loop(r' ([\w\-]+)="\s*"', r'', text)
     
-    #strip <span>
+    # strip <span>
     text = regex.loop(r'<span\s*>(((?!<span).)*?)</span>', r'\1', text)
     text = regex.loop(r'<span\s*>(((?!<span).)*?(<span[^>]*>((?!</?span).)*?</span>((?!</?span).)*?)+)</span>', r'\1', text)
     
@@ -307,7 +307,7 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     
     
     # if no tag = plain text
-    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text):  #exclude <br> of the test
+    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text):  # exclude <br> of the test
         # Convert two hyphens to emdash
         text = text.replace('--', '—')
         # Markdown
@@ -507,7 +507,7 @@ def clean_align(text: str, prefs: Optional[dict]=None) -> str:
             text = regex.loop(r' align="left"', r' align="justify"', text)
         elif prefs[KEY.FORCE_JUSTIFY] == 'all':
             text = regex.loop(r' align="(left|center|right)"', r' align="justify"', text)
-        #else: 'none'
+        #else: pass
         
     
     # del text-align

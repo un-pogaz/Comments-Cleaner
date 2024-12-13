@@ -167,7 +167,7 @@ PREFS.defaults[KEY.NOTES_SETTINGS][KEY.IMG_TAG] = 'keep'
 PREFS.defaults[KEY.NOTES_SETTINGS][KEY.CSS_KEEP] = 'float'
 
 
-#fix a imcompatibility betwen multiple Calibre version
+# fix a imcompatibility betwen multiple Calibre version
 CALIBRE_VERSIONS_BOLD = CALIBRE_VERSION < (4,0,0) or CALIBRE_VERSION >= (6,0,0)
 
 if not CALIBRE_VERSIONS_BOLD:
@@ -185,7 +185,7 @@ else:
 
 
 def css_clean_rules(css: str) -> str:
-    #remove space and invalid character
+    # remove space and invalid character
     css = regex.loop(r'[.*!()?+<>\\]', r'', css.lower())
     css = regex.loop(r'([,;:\n\r]|\s{2,})', r' ', css)
     css = regex.simple(r'^\s*(.*?)\s*$', r'\1', css)
