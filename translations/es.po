@@ -175,6 +175,22 @@ msgstr "El complemento {PLUGIN_NAME} ha encontrado una excepción no controlada.
 msgid "Unhandled exception"
 msgstr "Excepción no controlada"
 
+#: common_utils/dialogs.py:500
+msgid "Select a ZIP archive file to import…"
+msgstr "Seleccione un archivo ZIP para importar…"
+
+#: common_utils/dialogs.py:511
+msgid "Save ZIP archive file as…"
+msgstr "Guardar archivo ZIP como…"
+
+#: common_utils/dialogs.py:523
+msgid "Select a JSON file to import…"
+msgstr "Seleccione un archivo JSON para importar…"
+
+#: common_utils/dialogs.py:534
+msgid "Save the JSON file as…"
+msgstr "Guardar un archivo JSON como…"
+
 #: common_utils/librarys.py:46
 msgid "Could not to launch {:s}"
 msgstr "No se pudo iniciar {:s}"
