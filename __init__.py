@@ -14,7 +14,7 @@ from calibre.customize import InterfaceActionBase
 
 
 class ActionCommentsCleaner(InterfaceActionBase):
-    """
+    '''
     This class is a simple wrapper that provides information about the actual
     plugin class. The actual interface plugin class is called InterfacePlugin
     and is defined in the ui.py file, as specified in the actual_plugin field
@@ -22,7 +22,7 @@ class ActionCommentsCleaner(InterfaceActionBase):
     
     The reason for having two classes is that it allows the command line
     calibre utilities to run without needing to load the GUI libraries.
-    """
+    '''
     name                    = 'Comments Cleaner'
     description             = _('Remove the scraps CSS in HTML comments')
     supported_platforms     = ['windows', 'osx', 'linux']
@@ -36,15 +36,14 @@ class ActionCommentsCleaner(InterfaceActionBase):
     actual_plugin           = __name__+'.action:CommentsCleanerAction'
     
     def is_customizable(self):
-        """
+        '''
         This method must return True to enable customization via
         Preferences->Plugins
-        """
+        '''
         return True
     
-    
     def config_widget(self):
-        """
+        '''
         Implement this method and :meth:`save_settings` in your plugin to
         use a custom configuration dialog.
         
@@ -60,7 +59,7 @@ class ActionCommentsCleaner(InterfaceActionBase):
         
         The base class implementation of this method raises NotImplementedError
         so by default no user configuration is possible.
-        """
+        '''
         # It is important to put this import statement here rather than at the
         # top of the module as importing the config class will also cause the
         # GUI libraries to be loaded, which we do not want when using calibre
@@ -70,11 +69,11 @@ class ActionCommentsCleaner(InterfaceActionBase):
             return ConfigWidget()
     
     def save_settings(self, config_widget):
-        """
+        '''
         Save the settings specified by the user with config_widget.
         
         :param config_widget: The widget returned by :meth:`config_widget`.
-        """
+        '''
         config_widget.save_settings()
 
 

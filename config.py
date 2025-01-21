@@ -53,6 +53,7 @@ from .common_utils.widgets import ImageTitleLayout, KeyValueComboBox, SelectNote
 PLUGIN_ICON = 'images/plugin.png'
 NOTES_ICON = 'images/notes.png'
 
+
 class KEY:
     KEEP_URL = 'KeepUrl'
     HEADINGS = 'Headings'
@@ -77,6 +78,7 @@ class KEY:
     CUSTOM_COLUMN = 'CustomColumn'
     
     NOTES_SETTINGS = 'NotesSettings'
+
 
 KEEP_URL = OrderedDict([
                     ('keep', _('Keep URL')),
@@ -239,9 +241,7 @@ class CommonOptions(QWidget):
         self.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
         layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 4, 1)
         
-        
         layoutHTML.addWidget(QLabel(' ', groupboxHTML))
-        
         
         layout_formHTML = QFormLayout()
         layout_formHTML.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
@@ -439,6 +439,7 @@ class NoteConfigDialogButton(QPushButton):
         d = ConfigNotesDialog()
         d.exec()
 
+
 class ConfigNotesDialog(Dialog):
     def __init__(self):
         Dialog.__init__(self,
@@ -460,7 +461,6 @@ class ConfigNotesDialog(Dialog):
         scrollable.setWidgetResizable(True)
         layout = QVBoxLayout()
         scrollcontent.setLayout(layout)
-        
         
         title_layout = ImageTitleLayout(NOTES_ICON, _('Notes Cleaner Options'))
         layout.addLayout(title_layout)

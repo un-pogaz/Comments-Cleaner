@@ -95,10 +95,12 @@ if CALIBRE_VERSIONS_BOLD:
 else:
     FONT_WEIGHT = 'font-weight: 600'
 
+
 def _fix_weight(text):
     if CALIBRE_VERSIONS_BOLD:
         text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     return text
+
 
 def _set_prefs(prefs):
     if not prefs:
@@ -106,6 +108,7 @@ def _set_prefs(prefs):
         prefs = PREFS.copy()
         prefs.pop(KEY.NOTES_SETTINGS, None)
     return prefs
+
 
 def clean_caps_tags(text: str) -> str:
     
@@ -125,6 +128,7 @@ def clean_caps_tags(text: str) -> str:
             text = text[:start] + new_tag + text[end:]
     
     return text
+
 
 # Cleannig based on Calibre 4 and above (QtWebEngine)
 def clean_basic(text: str) -> str:
@@ -195,7 +199,6 @@ def clean_basic(text: str) -> str:
         text = regex.loop(sameSpace, r'<\1\2>\3 ', text)
         text = regex.loop(sameEmpty, r'<\1\2>\3', text)
     
-    
     # space inline
     text = regex.loop(r'\s+((?:<(em|strong|sup|sub|u|s|span|a)(| [^>]*)>)+)\s+', r' \1', text)
     text = regex.loop(r'\s+((?:</(em|strong|sup|sub|u|s|span|a)>)+)\s+', r'\1 ', text)
@@ -224,7 +227,6 @@ def clean_basic(text: str) -> str:
     text = regex.loop(r'<(ol|ul)(| [^>]*)>\s+<li', r'<\1\2><li', text)
     text = regex.loop(r'</li>\s+</(ol|ul)>', r'</li></\1>', text)
     
-    
     # style: del double
     text = regex.loop(r' style="([^"]*);\s*;([^"]*)"', r' style="\1;\2"', text)
     # style: clean space before :
@@ -237,7 +239,6 @@ def clean_basic(text: str) -> str:
     # style: remove last
     text = regex.loop(r' style="([^"]*);\s*"', r' style="\1"', text)
     
-    
     # remove empty attribut
     text = regex.loop(r' ([\w\-]+)="\s*"', r'', text)
     
@@ -248,18 +249,17 @@ def clean_basic(text: str) -> str:
     # empty hyperlink
     text = regex.loop(r'<a\s*>(.*?)</a>', r'\1', text)
     
-    
     ## replaces the invalid triple point
-    #text = regex.simple(r'\.\s*\.\s*\.', r'…', text)
+    # text = regex.simple(r'\.\s*\.\s*\.', r'…', text)
     text = regex.loop(r'\.\s+\.\s*\.', r'…', text)
     text = regex.loop(r'\.\s*\.\s+\.', r'…', text)
-    
     
     text = XMLformat(text)
     
     text = ordered_attributs(text)
     
     return text
+
 
 # Ordered the attributs
 def ordered_attributs(text: str) -> str:
@@ -268,6 +268,7 @@ def ordered_attributs(text: str) -> str:
         text = regex.loop(r'<(\w+)\s+([\w\-]+=[^>]*)\s+'+atr+r'="([^"]*)"', r'<\1 '+atr+r'="\3" \2', text)
     
     return text
+
 
 def XMLformat(text: str) -> str:
     text = '\n'.join([l.rstrip() for l in text.splitlines()])
@@ -285,6 +286,8 @@ def XMLformat(text: str) -> str:
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
 __qwc = QWidget()
+
+
 def calibre_format(text: str) -> str:
     try:
         ce = calibre_format.CommentsEditor
@@ -304,7 +307,6 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     text = text.replace('\r\n', '\n').replace('\r', '\n')
     
     text = clean_caps_tags(text)
-    
     
     # if no tag = plain text
     if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text):  # exclude <br> of the test
@@ -390,7 +392,6 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
             text = regex.loop(r'\s*<img(| [^>]*)>\s*', r' ', text)
             text = regex.loop(r'\s*<(p|li|div)(| [^>]*)> </\1>\s*', r'', text)
         
-        
         if prefs[KEY.DEL_FORMATTING]:
             # Remove Formatting
             text = regex.loop(r'<(/?)(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text)
@@ -403,7 +404,6 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
                 text = regex.loop(r' id="[^"]*"', r'', text)
             if 'class' in prefs[KEY.ID_CLASS]:
                 text = regex.loop(r' class="[^"]*"', r'', text)
-            
             
             # Headings
             if prefs[KEY.HEADINGS] == 'bolder':
@@ -422,11 +422,9 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
             # style standardization: insert space at the start
             text = text.replace(' style="', ' style=" ')
             
-            
             text = clean_align(text, prefs)
             
             text = clean_style(text, prefs)
-            
             
             # Del <sup>/<sub> paragraphe
             text = regex.loop(r'<(p|h\d)(| [^>]*)>\s*<su(p|b)>((?:(?:<br>)|[^<>])*?)</su\3>\s*</\1>', r'<\1\2>\4</\1>', text)
@@ -451,7 +449,6 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
                 r'<div><p\1><\2\3\4>\5</\2></p></div>', text)
             text = regex.loop(r'^\s*<div>\s*<p([^>]*?)font-weight:\s*\d+([^>]*?)><(\w+)([^>]*?)>((?:(?:<br>)|[^<>])*?)</\3></p>\s*</div>\s*$',
                 r'<div><p\1\2><\3\4>\5</\3></p></div>', text)
-        
         
         text = clean_basic(text)
     
@@ -507,15 +504,12 @@ def clean_align(text: str, prefs: Optional[dict]=None) -> str:
             text = regex.loop(r' align="left"', r' align="justify"', text)
         elif prefs[KEY.FORCE_JUSTIFY] == 'all':
             text = regex.loop(r' align="(left|center|right)"', r' align="justify"', text)
-        #else: pass
-        
     
     # del text-align
     text = regex.loop(r' style="([^"]*) text-align:([^;]*);([^"]*)"', r' style="\1\3"', text)
     
     # del justify for <h1>
     text = regex.loop(r'<(h\d) align="justify"', r'<\1', text)
-    
     
     # del text-align left (default value)
     text = regex.loop(r' align="left"', r'', text)
@@ -540,7 +534,6 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
     
     text = regex.loop(r' x-style="([^"]*)" style="[^"]*"', r' style="\1"', text)
     text = regex.loop(r' x-style="[^"]*"', r'', text)
-    
     
     # font-weight
     text = regex.loop(r' style="([^"]*) font-weight: (?!bold|bolder|\d+)[^;]*;([^"]*)"', r' style="\1\2"', text)
@@ -569,7 +562,6 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
         text = regex.loop(r'<(/?)strong(| [^>]*)>', r'<\1span\2>', text)
         text = regex.loop(r' style="([^"]*) font-weight:[^;]*;([^"]*)"', r' style="\1\2"', text)
     
-    
     # font-style
     text = regex.loop(r' style="([^"]*) font-style: (?!oblique|italic)[^;]*;([^"]*)"', r' style="\1\2"', text)
     if prefs[KEY.DEL_ITALIC]:
@@ -577,7 +569,6 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
         text = regex.loop(r' style="([^"]*) font-style:[^;]*;([^"]*)"', r' style="\1\2"', text)
     else:
         text = regex.loop(r' style="([^"]*) font-style: (oblique(?:\s+\d+deg)?);([^"]*)"', r' style="\1 font-style: italic;\3"', text)
-    
     
     # text-decoration
     text = regex.loop(r' style="([^"]* text-decoration:[^;]*) (?:none|blink|overline|inherit|initial|unset)([^;]*;[^"]*)"', r' style="\1\2"', text)
@@ -594,7 +585,6 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
     
     text = regex.loop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text)
     
-    
     ######
     return text
 
@@ -604,7 +594,7 @@ def clean_markdown(text: str) -> str:  # key word: TRY!
     # image
     text = regex.loop(r'!\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<img alt"\1" src="\2">', text)
     # hyperlink
-    text = regex.loop( r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<a href="\2">\1</a>', text)
+    text = regex.loop(r'\[((?:(?!<br>|</p>).)*?)\]\(((?:(?!<br>|</p>).)*?)\)', r'<a href="\2">\1</a>', text)
     
     # heading 1, 2
     for h, n in [('=', '1'),('-', '2')]:

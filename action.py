@@ -100,7 +100,6 @@ class CommentsCleanerAction(InterfaceAction):
         if book_ids:
             self._clean_comments(book_ids)
     
-    
     def clean_comments(self):
         self._clean_comments(get_BookIds_selected(show_error=True))
     
@@ -127,13 +126,13 @@ def debug_text(pre, text=None):
         debug_print(text, pre=None)
     print()
 
+
 class CleanerProgressDialog(ProgressDialog):
     
     def setup_progress(self, **kvargs):
         
         self.used_prefs = PREFS.copy()
         self.used_prefs.pop(KEY.NOTES_SETTINGS, None)
-        
         
         # book comment map
         self.books_comments_map = {'comments':{}}
@@ -227,6 +226,7 @@ class CleanerProgressDialog(ProgressDialog):
         except Exception as e:
             self.exception = e
 
+
 class CleanerNoteProgressDialog(ProgressDialog):
     
     icon = NOTES_ICON
@@ -304,8 +304,6 @@ class CleanerNoteProgressDialog(ProgressDialog):
                     
                     else:
                         debug_text('Empty note '+note_info)
-                
-            
             
             ids = []
             for v in self.field_id_notes.values():
