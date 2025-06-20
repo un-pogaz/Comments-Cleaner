@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.15.1] - 2025/06/20
+
+### Bug fixes
+- Fix a regression that convert line starting by a year to list when a raw text is converted with Markdown
+
 ## [1.15.0] - 2024/09/14
 
 ### Changed
