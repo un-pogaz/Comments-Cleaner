@@ -314,7 +314,10 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
         text = text.replace('--', '—')
         # Markdown
         if prefs[KEY.MARKDOWN] == 'try':
+            text = regex.loop(r'^(\d{4})(\.|:)', r'\1\0\2', text)
+            text = regex.loop(r'\n(\d{4})(\.|:)', r'\n\1\0\2', text)
             text = markdown(text)
+            text = regex.loop(r'\0', r'', text)
             text = regex.loop(r'>\n+<', '><', text)
             text = regex.loop(r'<br(| [^>]*)/?>\s+', '<br>', text)
         
