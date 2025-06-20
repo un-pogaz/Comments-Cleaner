@@ -407,10 +407,10 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
             
             # Headings
             if prefs[KEY.HEADINGS] == 'bolder':
-                text = regex.loop(r'<(h\d+)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text)
-                text = regex.loop(r'<(h\d+)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
+                text = regex.loop(r'<(h\d)([^>]*) style="((?:(?!font-weight)[^"])*)"([^>]*)>', r'<\1\2 style="\3; font-weight: bold"\4>', text)
+                text = regex.loop(r'<(h\d)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
             if prefs[KEY.HEADINGS] == 'conv' or prefs[KEY.HEADINGS] == 'bolder':
-                text = regex.loop(r'<(/?)h\d+(| [^>]*)>', r'<\1p\2>', text)
+                text = regex.loop(r'<(/?)h\d(| [^>]*)>', r'<\1p\2>', text)
             
             # Hyperlink
             if prefs[KEY.KEEP_URL] == 'del':
