@@ -4,6 +4,7 @@ __license__   = 'GPL v3'
 __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 
 
+import unicodedata
 from typing import Optional
 
 try:
@@ -298,6 +299,10 @@ def calibre_format(text: str) -> str:
     ce.html = text
     
     return ce.html.strip()
+
+
+def normalize_comment(text: str) -> str:
+    return unicodedata.normalize('NFC', text)
 
 
 # main function

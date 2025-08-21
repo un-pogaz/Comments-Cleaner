@@ -19,7 +19,7 @@ except ImportError:
 
 from calibre.gui2.actions import InterfaceAction
 
-from .comments_cleaner import clean_comment
+from .comments_cleaner import clean_comment, normalize_comment
 from .common_utils import GUI, PLUGIN_NAME, debug_print, get_icon
 from .common_utils.columns import get_html
 from .common_utils.dialogs import ProgressDialog, custom_exception_dialog
@@ -193,11 +193,15 @@ class CleanerProgressDialog(ProgressDialog):
                     comment = miA.get(field)
                     if comment is not None:
                         debug_text(field+' for '+book_info, comment)
-                        comment_out = clean_comment(comment, self.used_prefs)
+                        comment_norm = normalize_comment(comment)
+                        comment_out = clean_comment(comment_norm, self.used_prefs)
                         if comment == comment_out:
                             debug_text('Unchanged '+field)
                         else:
-                            debug_text(field+' out', comment_out)
+                            if comment != comment_norm:
+                                debug_text('Normalize ' + field)
+                            if comment_norm != comment_out:
+                                debug_text(field+' out', comment_out)
                             self.books_comments_map[field][book_id] = comment_out
                     
                     else:
@@ -294,11 +298,15 @@ class CleanerNoteProgressDialog(ProgressDialog):
                     # process the note
                     if note is not None:
                         debug_text('Note for '+note_info, note)
-                        note_out = clean_comment(note, self.used_prefs)
+                        note_norm = normalize_comment(note)
+                        note_out = clean_comment(note_norm, self.used_prefs)
                         if note == note_out:
                             debug_text('Unchanged note')
                         else:
-                            debug_text('Note out', note_out)
+                            if note != note_norm:
+                                debug_text('Normalize note')
+                            if note_norm != note_out:
+                                debug_text('Note out', note_out)
                             note_data['doc'] = note_out
                             self.field_id_notes[field][item_id] = note_data
                     
