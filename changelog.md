@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.16.0] - 2025/08/21
+
+### Changed
+- Also normalize the comments/notes by using their canonical form defined by the Unicode Standard, a.k.a merge and reorders diacritics
+
 ## [1.15.1] - 2025/06/20
 
 ### Bug fixes
