@@ -218,34 +218,40 @@ class CommonOptions(QWidget):
         layout_gridHTML = QGridLayout()
         layoutHTML.addLayout(layout_gridHTML)
         
-        layout_gridHTML.addWidget(QLabel(_('Hyperlink:'), self), 0, 0)
+        layoutLINK = QHBoxLayout(groupboxHTML)
+        layout_gridHTML.addLayout(layoutLINK, 0, 0)
+        layoutLINK.addWidget(QLabel(_('Hyperlink:')))
         self.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=groupboxHTML)
-        layout_gridHTML.addWidget(self.comboBoxKEEP_URL, 1, 0)
+        self.comboBoxKEEP_URL.setSizePolicy(size_policy)
+        layoutLINK.addWidget(self.comboBoxKEEP_URL)
         
-        layout_gridHTML.addWidget(QLabel(_('Headings:'), self), 0, 1)
+        layoutHEADING = QHBoxLayout(groupboxHTML)
+        layout_gridHTML.addLayout(layoutHEADING, 0, 1)
+        layoutHEADING.addWidget(QLabel(_('Headings:')))
         self.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=groupboxHTML)
-        layout_gridHTML.addWidget(self.comboBoxHEADINGS, 1, 1)
+        self.comboBoxHEADINGS.setSizePolicy(size_policy)
+        layoutHEADING.addWidget(self.comboBoxHEADINGS)
         
-        layout_gridHTML.addWidget(QLabel(' ', self), 2, 0)
+        layout_gridHTML.addWidget(QLabel(' ', self), 1, 0)
         
         self.comboBoxFONT_WEIGHT = KeyValueComboBox(FONT_WEIGHT, prefs[KEY.FONT_WEIGHT], parent=groupboxHTML)
-        layout_gridHTML.addWidget(self.comboBoxFONT_WEIGHT, 3, 0)
+        layout_gridHTML.addWidget(self.comboBoxFONT_WEIGHT, 2, 0)
         
         self.checkBoxDEL_ITALIC = QCheckBox(_('Remove Italic'), groupboxHTML)
         self.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
-        layout_gridHTML.addWidget(self.checkBoxDEL_ITALIC, 3, 1)
+        layout_gridHTML.addWidget(self.checkBoxDEL_ITALIC, 2, 1)
         
         self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), groupboxHTML)
         self.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
-        layout_gridHTML.addWidget(self.checkBoxDEL_UNDER, 4, 0)
+        layout_gridHTML.addWidget(self.checkBoxDEL_UNDER, 3, 0)
         
         self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
         self.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
-        layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 4, 1)
+        layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 3, 1)
         
         self.checkBoxFULL_BOLD = QCheckBox(_('Remove the bold if all paragraphes are it'), groupboxHTML)
         self.checkBoxFULL_BOLD.setChecked(prefs[KEY.FULL_BOLD])
-        layout_gridHTML.addWidget(self.checkBoxFULL_BOLD, 5, 0, 1, 2)
+        layout_gridHTML.addWidget(self.checkBoxFULL_BOLD, 4, 0, 1, 2)
         
         layoutHTML.addWidget(QLabel(' ', groupboxHTML))
         
