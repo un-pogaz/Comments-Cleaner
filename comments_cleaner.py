@@ -418,6 +418,8 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
                 text = regex.loop(r'<(h\d)((?:(?! style=)[^>])*)>', r'<\1\2 style="font-weight: bold;">', text)
             if prefs[KEY.HEADINGS] == 'conv' or prefs[KEY.HEADINGS] == 'bolder':
                 text = regex.loop(r'<(/?)h\d(| [^>]*)>', r'<\1p\2>', text)
+            # remove explicit weight formatting in headings
+            text = regex.loop(r'<(h\d)([^>]*) style="([^"]*)font-weight: [\w\d]+([^"]*)"([^>]*)>', r'<\1\2 style="\3\4"\5>', text)
             
             # Hyperlink
             if prefs[KEY.KEEP_URL] == 'del':
