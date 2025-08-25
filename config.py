@@ -64,6 +64,7 @@ class KEY:
     FORCE_JUSTIFY = 'ForceJustify'
     LIST_ALIGN = 'ListAlign'
     ID_CLASS = 'ID_Class'
+    FULL_BOLD = 'FullBold'
     CSS_KEEP_ACTIVE = 'CSStoKeepActive'
     CSS_KEEP = 'CSStoKeep'
     
@@ -159,6 +160,7 @@ _defaults[KEY.DOUBLE_BR] = 'new'
 _defaults[KEY.SINGLE_BR] = 'none'
 _defaults[KEY.EMPTY_PARA] = 'merge'
 _defaults[KEY.IMG_TAG] = 'del'
+_defaults[KEY.FULL_BOLD] = True
 
 # This is where all preferences for this plugin are stored
 PREFS = PREFS_json()
@@ -240,6 +242,10 @@ class CommonOptions(QWidget):
         self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
         self.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
         layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 4, 1)
+        
+        self.checkBoxFULL_BOLD = QCheckBox(_('Remove the bold if all paragraphes are it'), groupboxHTML)
+        self.checkBoxFULL_BOLD.setChecked(prefs[KEY.FULL_BOLD])
+        layout_gridHTML.addWidget(self.checkBoxFULL_BOLD, 5, 0, 1, 2)
         
         layoutHTML.addWidget(QLabel(' ', groupboxHTML))
         
@@ -358,6 +364,7 @@ class CommonOptions(QWidget):
         prefs[KEY.FORCE_JUSTIFY] = self.comboBoxFORCE_JUSTIFY.selected_key()
         prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
         prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
+        prefs[KEY.FULL_BOLD] = self.checkBoxFULL_BOLD.isChecked()
         
         prefs[KEY.CSS_KEEP_ACTIVE] = self.checkBoxCSS_KEEP_ACTIVE.isChecked()
         if prefs[KEY.CSS_KEEP_ACTIVE]:

@@ -467,6 +467,28 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     
     text = calibre_format(text)
     
+    # clean the bold if all paragraphes are it
+    if prefs[KEY.FULL_BOLD]:
+        edited = False
+        
+        # first check for p and li
+        lst_para = tuple(regex.searchall(r'<(p|li)([^>]*)>', text))
+        lst_bold = tuple(regex.searchall(r'<(p|li)([^>]*)font-weight:([^>]*)>', text))
+        if len(lst_para) == len(lst_bold):
+            text = regex.loop(r'<(p|li)([^>]*)font-weight: [\w\d]+([^>]*)>', r'<\1\2\3>', text)
+            edited = True
+        
+        # second check only p
+        lst_para = tuple(regex.searchall(r'<(p)([^>]*)>', text))
+        lst_bold = tuple(regex.searchall(r'<(p)([^>]*)font-weight:([^>]*)>', text))
+        if len(lst_para) == len(lst_bold):
+            text = regex.loop(r'<(p)([^>]*)font-weight: [\w\d]+([^>]*)>', r'<\1\2\3>', text)
+            edited = True
+        
+        if edited:
+            text = clean_basic(text)
+            text = calibre_format(text)
+    
     # del align for list <li>
     if prefs[KEY.LIST_ALIGN] == 'del':
         text = regex.loop(r'<(ol|ul|li)([^>]*) align="[^"]*"', r'<\1\2', text)
