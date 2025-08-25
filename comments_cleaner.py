@@ -236,7 +236,6 @@ def clean_basic(text: str) -> str:
     text = regex.loop(r' style="([^"]*(?:;|:))\s{2,}([^"]*)"', r' style="\1 \2"', text)
     # style: insert space after :
     text = regex.loop(r' style="([^"]*(?:;|:))([^ ][^"]*)"', r' style="\1 \2"', text)
-    
     # style: remove last
     text = regex.loop(r' style="([^"]*);\s*"', r' style="\1"', text)
     
