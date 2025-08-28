@@ -65,6 +65,7 @@ class KEY:
     LIST_ALIGN = 'ListAlign'
     ID_CLASS = 'ID_Class'
     FULL_BOLD = 'FullBold'
+    FULL_ITALIC = 'FullItalic'
     CSS_KEEP_ACTIVE = 'CSStoKeepActive'
     CSS_KEEP = 'CSStoKeep'
     
@@ -148,6 +149,7 @@ _defaults[KEY.DEL_ITALIC] = False
 _defaults[KEY.DEL_UNDER] = False
 _defaults[KEY.DEL_STRIKE] = False
 _defaults[KEY.FULL_BOLD] = True
+_defaults[KEY.FULL_ITALIC] = False
 _defaults[KEY.FORCE_JUSTIFY] = 'empty'
 _defaults[KEY.LIST_ALIGN] = 'del'
 _defaults[KEY.ID_CLASS] = 'id_class'
@@ -241,17 +243,21 @@ class CommonOptions(QWidget):
         self.checkBoxDEL_ITALIC.setChecked(prefs[KEY.DEL_ITALIC])
         layout_gridHTML.addWidget(self.checkBoxDEL_ITALIC, 2, 1)
         
+        self.checkBoxFULL_BOLD = QCheckBox(_('Remove the bold if all paragraphes are it'), groupboxHTML)
+        self.checkBoxFULL_BOLD.setChecked(prefs[KEY.FULL_BOLD])
+        layout_gridHTML.addWidget(self.checkBoxFULL_BOLD, 3, 0)
+        
+        self.checkBoxFULL_ITALIC = QCheckBox(_('Remove the italic if all paragraphes are it'), groupboxHTML)
+        self.checkBoxFULL_ITALIC.setChecked(prefs[KEY.FULL_ITALIC])
+        layout_gridHTML.addWidget(self.checkBoxFULL_ITALIC, 3, 1)
+        
         self.checkBoxDEL_UNDER = QCheckBox(_('Remove Underline'), groupboxHTML)
         self.checkBoxDEL_UNDER.setChecked(prefs[KEY.DEL_UNDER])
-        layout_gridHTML.addWidget(self.checkBoxDEL_UNDER, 3, 0)
+        layout_gridHTML.addWidget(self.checkBoxDEL_UNDER, 4, 0)
         
         self.checkBoxDEL_STRIKE = QCheckBox(_('Remove Strikethrough'), groupboxHTML)
         self.checkBoxDEL_STRIKE.setChecked(prefs[KEY.DEL_STRIKE])
-        layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 3, 1)
-        
-        self.checkBoxFULL_BOLD = QCheckBox(_('Remove the bold if all paragraphes are it'), groupboxHTML)
-        self.checkBoxFULL_BOLD.setChecked(prefs[KEY.FULL_BOLD])
-        layout_gridHTML.addWidget(self.checkBoxFULL_BOLD, 4, 0, 1, 2)
+        layout_gridHTML.addWidget(self.checkBoxDEL_STRIKE, 4, 1)
         
         layoutHTML.addWidget(QLabel(' ', groupboxHTML))
         
@@ -371,6 +377,7 @@ class CommonOptions(QWidget):
         prefs[KEY.LIST_ALIGN] = self.comboBoxLIST_ALIGN.selected_key()
         prefs[KEY.ID_CLASS] = self.comboBoxID_CLASS.selected_key()
         prefs[KEY.FULL_BOLD] = self.checkBoxFULL_BOLD.isChecked()
+        prefs[KEY.FULL_ITALIC] = self.checkBoxFULL_ITALIC.isChecked()
         
         prefs[KEY.CSS_KEEP_ACTIVE] = self.checkBoxCSS_KEEP_ACTIVE.isChecked()
         if prefs[KEY.CSS_KEEP_ACTIVE]:

@@ -261,6 +261,15 @@ def clean_basic(text: str) -> str:
     return text
 
 
+def standard_style(text: str) -> str:
+    # style standardization:  insert ; at the end
+    text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
+    # style standardization: insert space at the start
+    text = text.replace(' style="', ' style=" ')
+    
+    return text
+
+
 # Ordered the attributs
 def ordered_attributs(text: str) -> str:
     
@@ -426,10 +435,7 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
                 text = regex.loop(r'<a(?:| [^>]*)>(.*?)</a>', r'\1', text)
             
             text = clean_basic(text)
-            # style standardization:  insert ; at the end
-            text = regex.loop(r' style="([^"]*[^";])"', r' style="\1;"', text)
-            # style standardization: insert space at the start
-            text = text.replace(' style="', ' style=" ')
+            text = standard_style(text)
             
             text = clean_align(text, prefs)
             
@@ -468,22 +474,24 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     text = calibre_format(text)
     
     # clean the bold if all paragraphes are it
+    full_check = []
     if prefs[KEY.FULL_BOLD]:
+        full_check.append('font-weight')
+    if prefs[KEY.FULL_ITALIC]:
+        full_check.append('font-style')
+    
+    if full_check:
         edited = False
-        
-        # first check for p and li
-        lst_para = tuple(regex.searchall(r'<(p|li)([^>]*)>', text))
-        lst_bold = tuple(regex.searchall(r'<(p|li)([^>]*)font-weight:([^>]*)>', text))
-        if len(lst_para) == len(lst_bold):
-            text = regex.loop(r'<(p|li)([^>]*)font-weight: [\w\d]+([^>]*)>', r'<\1\2\3>', text)
-            edited = True
-        
-        # second check only p
-        lst_para = tuple(regex.searchall(r'<(p)([^>]*)>', text))
-        lst_bold = tuple(regex.searchall(r'<(p)([^>]*)font-weight:([^>]*)>', text))
-        if len(lst_para) == len(lst_bold):
-            text = regex.loop(r'<(p)([^>]*)font-weight: [\w\d]+([^>]*)>', r'<\1\2\3>', text)
-            edited = True
+        text = standard_style(text)
+        for check in full_check:
+            # first check for p and li
+            # then check only p
+            for m in ['p|li', 'p']:
+                lst_para = tuple(regex.searchall(rf'<({m})(| [^>]*)>', text))
+                lst_bold = tuple(regex.searchall(rf'<({m})(| [^>]*){check}:([^>]*)>', text))
+                if len(lst_para) == len(lst_bold):
+                    text = regex.loop(rf'<({m})(| [^>]*){check}:[^;]*;([^>]*)>', r'<\1\2\3>', text)
+                    edited = True
         
         if edited:
             text = clean_basic(text)
