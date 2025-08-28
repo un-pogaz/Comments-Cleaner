@@ -1,8 +1,15 @@
 # Changelog - Comments Cleaner
 
+## [1.17.0] - 2025/08/28
+
+### Added
+- Remove explicit bold formatting in headings
+- Option to remove the bold if all paragraphs are it
+- Option to remove the italic if all paragraphs are it
+
 ## [1.16.0] - 2025/08/21
 
-### Changed
+### Added
 - Also normalize the comments/notes by using their canonical form defined by the Unicode Standard, a.k.a merge and reorders diacritics
 
 ## [1.15.1] - 2025/06/20

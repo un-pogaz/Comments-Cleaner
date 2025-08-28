@@ -16,6 +16,8 @@ The plugin has the following options:
     * Round the value to the hundred (only below Calibre 6)
     * Round to Bold
 * Remove Strikethrough, Underline and Italic
+* Remove the bold if all paragraphes are it
+* Remove the italic if all paragraphes are it
 * Headings management
     * Converte to a paragraph
     * Converte to a paragraph but keep the bold
