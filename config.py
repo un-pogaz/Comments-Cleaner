@@ -222,14 +222,14 @@ class CommonOptions(QWidget):
         layout_gridHTML = QGridLayout()
         layoutHTML.addLayout(layout_gridHTML)
         
-        layoutLINK = QHBoxLayout(groupboxHTML)
+        layoutLINK = QHBoxLayout()
         layout_gridHTML.addLayout(layoutLINK, 0, 0)
         layoutLINK.addWidget(QLabel(_('Hyperlink:')))
         self.comboBoxKEEP_URL = KeyValueComboBox(KEEP_URL, prefs[KEY.KEEP_URL], parent=groupboxHTML)
         self.comboBoxKEEP_URL.setSizePolicy(size_policy)
         layoutLINK.addWidget(self.comboBoxKEEP_URL)
         
-        layoutHEADING = QHBoxLayout(groupboxHTML)
+        layoutHEADING = QHBoxLayout()
         layout_gridHTML.addLayout(layoutHEADING, 0, 1)
         layoutHEADING.addWidget(QLabel(_('Headings:')))
         self.comboBoxHEADINGS = KeyValueComboBox(HEADINGS, prefs[KEY.HEADINGS], parent=groupboxHTML)
