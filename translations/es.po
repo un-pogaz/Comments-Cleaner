@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-08-28 08:27+0200\n"
-"PO-Revision-Date: 2025-08-28 08:27+0200\n"
+"POT-Creation-Date: 2025-08-28 10:12+0200\n"
+"PO-Revision-Date: 2025-08-28 10:12+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -271,184 +271,188 @@ msgstr "Sin notas"
 msgid "Add New Image…"
 msgstr "Agregar nueva imagen…"
 
-#: config.py:85
+#: config.py:86
 msgid "Keep URL"
 msgstr "Mantener URL"
 
-#: config.py:86
+#: config.py:87
 msgid "Delete URL"
 msgstr "Eliminar URL"
 
-#: config.py:89
+#: config.py:90
 msgid "Converte to a paragraph"
 msgstr "Convertir a un párrafo"
 
-#: config.py:90
+#: config.py:91
 msgid "Converte to a paragraph but keep the bold"
 msgstr "Convertir a un párrafo pero mantener la negrita"
 
-#: config.py:91 config.py:103 config.py:114 config.py:120 config.py:125
-#: config.py:130 config.py:134
+#: config.py:92 config.py:104 config.py:115 config.py:121 config.py:126
+#: config.py:131 config.py:135
 msgid "No change"
 msgstr "Sin cambio"
 
-#: config.py:94
+#: config.py:95
 msgid "Round the Weights value to the hundred"
 msgstr "Redondea el valor de carga a cien"
 
-#: config.py:95
+#: config.py:96
 msgid "Round to Bold (value 'bold')"
 msgstr "Redonda a negrita (valor \"bold\")"
 
-#: config.py:96
+#: config.py:97
 msgid "Do not change the Weights"
 msgstr "No cambie la carga"
 
-#: config.py:97
+#: config.py:98
 msgid "Delete Weights"
 msgstr "Eliminar Cargas"
 
-#: config.py:98
+#: config.py:99
 msgid "Round to Bold (value 600)"
 msgstr "Redonda a negrita (valor 600)"
 
-#: config.py:101
+#: config.py:102
 msgid "Force the justification (replace \"center\" and \"right\")"
 msgstr "Forzar la justificación (reemplazar \"centro\" y \"derecha\")"
 
-#: config.py:102
+#: config.py:103
 msgid "Justification for indeterminate text (keep \"center\" and \"right\")"
 msgstr "Justificación para texto indeterminado (mantenga \"centro\" y \"derecha\")"
 
-#: config.py:104
+#: config.py:105
 msgid "Delete all alignment"
 msgstr "Eliminar toda la alineación"
 
-#: config.py:107
+#: config.py:108
 msgid "Use the 'Justification' setting"
 msgstr "Utilice la configuración de 'Justificación'"
 
-#: config.py:108
+#: config.py:109
 msgid "Delete the alignment in lists"
 msgstr "Eliminar la alineación en listas"
 
-#: config.py:111
+#: config.py:112
 msgid "Delete \"id\" attribut"
 msgstr "Eliminar atributo \"id\""
 
-#: config.py:112
+#: config.py:113
 msgid "Delete \"class\" attribut"
 msgstr "Eliminar el atributo \"class\""
 
-#: config.py:113
+#: config.py:114
 msgid "Delete \"id\" and \"class\" attribut"
 msgstr "Eliminar el atributo \"id\" y \"class\""
 
-#: config.py:118
+#: config.py:119
 msgid "Convert in all comments (not recomanded)"
 msgstr "Convertir en todos los comentarios (no recomendado)"
 
-#: config.py:119
+#: config.py:120
 msgid "Convert only from a plain text comment"
 msgstr "Convertir solo desde un comentario de texto sin formato"
 
-#: config.py:123
+#: config.py:124
 msgid "Create a empty paragraph"
 msgstr "Crea un párrafo vacío"
 
-#: config.py:124 config.py:128
+#: config.py:125 config.py:129
 msgid "Create a new paragraph"
 msgstr "Crea un nuevo párrafo"
 
-#: config.py:129
+#: config.py:130
 msgid "Replace with space"
 msgstr "Reemplazar con espacio"
 
-#: config.py:133
+#: config.py:134
 msgid "Merge in a single empty paragraph"
 msgstr "Combinar en un solo párrafo vacío"
 
-#: config.py:135
+#: config.py:136
 msgid "Delete empty paragraph"
 msgstr "Eliminar párrafo vacío"
 
-#: config.py:138
+#: config.py:139
 msgid "Keep images"
 msgstr "Mantener imágenes"
 
-#: config.py:139
+#: config.py:140
 msgid "Delete images"
 msgstr "Eliminar imágenes"
 
-#: config.py:223
+#: config.py:227
 msgid "Hyperlink:"
 msgstr "Hipervinculo:"
 
-#: config.py:230
+#: config.py:234
 msgid "Headings:"
 msgstr "Encabezados:"
 
-#: config.py:240
+#: config.py:244
 msgid "Remove Italic"
 msgstr "Quitar cursiva"
 
-#: config.py:244
-msgid "Remove Underline"
-msgstr "Quitar subrayado"
-
 #: config.py:248
-msgid "Remove Strikethrough"
-msgstr "Quitar tachado"
-
-#: config.py:252
 msgid "Remove the bold if all paragraphes are it"
 msgstr "Eliminar negritas si todos los párrafos la tienen"
 
-#: config.py:264
+#: config.py:252
+msgid "Remove the italic if all paragraphes are it"
+msgstr "Eliminar cursiva si todos los párrafos la tienen"
+
+#: config.py:256
+msgid "Remove Underline"
+msgstr "Quitar subrayado"
+
+#: config.py:260
+msgid "Remove Strikethrough"
+msgstr "Quitar tachado"
+
+#: config.py:272
 msgid "Justification:"
 msgstr "Justificación:"
 
-#: config.py:268
+#: config.py:276
 msgid "List alignment:"
 msgstr "Alineación de lista:"
 
-#: config.py:272
+#: config.py:280
 msgid "ID & CLASS attributs:"
 msgstr "ID & CLASS atributos:"
 
-#: config.py:277
-msgid "CSS rule to keep:"
-msgstr "Regla CSS para mantener:"
-
-#: config.py:282
+#: config.py:285
 msgid "Custom CSS rules to keep in addition to the basic ones. Rules separated by a space."
 msgstr "Reglas CSS personalizadas para mantener además de las básicas. Reglas separadas por un espacio."
 
-#: config.py:294
+#: config.py:286
+msgid "CSS rule to keep:"
+msgstr "Regla CSS para mantener:"
+
+#: config.py:303
 msgid "All CSS rules are keep."
 msgstr "Todas las reglas CSS se mantienen."
 
-#: config.py:318
+#: config.py:313
 msgid "Remove all formatting"
 msgstr "Eliminar todo el formato"
 
-#: config.py:336
+#: config.py:331
 msgid "Markdown:"
 msgstr "Markdown:"
 
-#: config.py:337
+#: config.py:332
 msgid "Try to convert the Markdown strings to HTML"
 msgstr "Intenta convertir las cadenas de Markdown a HTML"
 
-#: config.py:341
+#: config.py:336
 msgid "Multiple 'Line Return' in a paragraph:"
 msgstr "Múltiples 'Retorno de línea' en un párrafo:"
 
-#: config.py:345
+#: config.py:340
 msgid "Single 'Line Return' in a paragraph:"
 msgstr "'Retorno de línea' único en un párrafo:"
 
-#: config.py:347
+#: config.py:342
 msgid ""
 "This operation is applied after \"Multiple 'Line Return' in a paragraph\"\n"
 "and before \"Multiple empty paragraph\""
@@ -456,54 +460,54 @@ msgstr ""
 "Esta operación se aplica después de \"Múltiples 'Retorno de línea' en un párrafo\"\n"
 "y antes de \"Varios párrafos vacíos\""
 
-#: config.py:353
+#: config.py:348
 msgid "Multiple empty paragraph:"
 msgstr "Múltiples párrafos vacíos:"
 
-#: config.py:357
+#: config.py:352
 msgid "Images:"
 msgstr "Imágenes:"
 
-#: config.py:410
+#: config.py:406
 msgid "Comments Cleaner Options"
 msgstr "Comments Cleaner Opciones"
 
-#: config.py:418
+#: config.py:414
 msgid "Apply to others custom HTML columns"
 msgstr "Aplicar a otros columnas HTML personalizadas"
 
-#: config.py:447 config.py:478
+#: config.py:443 config.py:474
 msgid "Notes Cleaner Options"
 msgstr "Notes Cleaner Opciones"
 
-#: config.py:448
+#: config.py:444
 msgid "Edit the options for the notes cleaner action"
 msgstr "Edite las opciones para la acción de limpieza de notas"
 
-#: config.py:459
+#: config.py:455
 msgid "Customize"
 msgstr "Personalizar"
 
-#: config.py:459
+#: config.py:455
 msgid "Notes Cleaner"
 msgstr "Limpiador de notas"
 
-#: config.py:510
+#: config.py:506
 msgid "Select Notes to clean"
 msgstr "Seleccione Notas para limpiar"
 
-#: config.py:521
+#: config.py:517
 msgid "Subset of Notes associate to the currently selected books"
 msgstr "Subconjunto de notas asociadas a los libros seleccionados actualmente"
 
-#: config.py:522
+#: config.py:518
 msgid "No books selected"
 msgstr "No hay libros seleccionados"
 
-#: config.py:523
+#: config.py:519
 msgid "No notes for {:d} selected books"
 msgstr "No hay notas para {:d} libros seleccionados"
 
-#: config.py:524
+#: config.py:520
 msgid "Notes for {:d} selected books"
 msgstr "Notas para {:d} libros seleccionados"
