@@ -172,6 +172,8 @@ PREFS.defaults[KEY.NOTES_SETTINGS] = _defaults.copy()
 PREFS.defaults[KEY.NOTES_SETTINGS][KEY.IMG_TAG] = 'keep'
 PREFS.defaults[KEY.NOTES_SETTINGS][KEY.CSS_KEEP] = 'float'
 
+CSS_DEFAULT = 'text-align font-weight font-style text-decoration'
+
 
 # fix a imcompatibility betwen multiple Calibre version
 CALIBRE_VERSIONS_BOLD = CALIBRE_VERSION < (4,0,0) or CALIBRE_VERSION >= (6,0,0)
@@ -280,14 +282,15 @@ class CommonOptions(QWidget):
         
         layout_formHTML.addWidget(QLabel(' ', self))
         
+        css_keep_tooltip = _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
         self.checkBoxCSS_KEEP_ACTIVE = QCheckBox(_('CSS rule to keep:'), groupboxHTML)
+        self.checkBoxCSS_KEEP_ACTIVE.setToolTip(css_keep_tooltip)
         self.lineEditCSS_KEEP = QLineEdit(groupboxHTML)
         layout_formHTML.addRow(self.checkBoxCSS_KEEP_ACTIVE, self.lineEditCSS_KEEP)
         self.lineEditCSS_KEEP_initial_text = self.lineEditCSS_KEEP_last_text = prefs[KEY.CSS_KEEP]
-        self.lineEditCSS_KEEP.setToolTip(
-            _('Custom CSS rules to keep in addition to the basic ones. Rules separated by a space.')
-        )
+        self.lineEditCSS_KEEP.setToolTip(css_keep_tooltip)
         self.lineEditCSS_KEEP.setSizePolicy(size_policy)
+        self.lineEditCSS_KEEP.setPlaceholderText(CSS_DEFAULT)
         
         def action_checkBoxCSS_KEEP_ACTIVE(num):
             b = self.checkBoxCSS_KEEP_ACTIVE.isChecked()

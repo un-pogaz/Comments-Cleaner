@@ -15,7 +15,7 @@ except ImportError:
 from calibre.library.comments import markdown
 
 from .common_utils import regex
-from .config import CALIBRE_VERSIONS_BOLD, KEY, css_clean_rules
+from .config import CALIBRE_VERSIONS_BOLD, CSS_DEFAULT, KEY, css_clean_rules
 
 NBSP = '\xA0'
 
@@ -565,8 +565,7 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
     text = text.replace(' style="', ' x-style="" style=" ')
     
     if prefs[KEY.CSS_KEEP_ACTIVE]:
-        rule_default = 'text-align font-weight font-style text-decoration'
-        for rule in css_clean_rules(rule_default +' '+ prefs[KEY.CSS_KEEP]).split(' '):
+        for rule in css_clean_rules(CSS_DEFAULT +' '+ prefs[KEY.CSS_KEEP]).split(' '):
             text = regex.loop(r' x-style="([^"]*)" style="([^"]*) '+rule+r'\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 '+rule+r': \3;" style="\2 \4"', text)
     else:
         text = regex.loop(r' x-style="([^"]*)" style="([^"]*) ([\w\-]+?)\s*:\s*([^;]*?)\s*;([^"]*)"', r' x-style="\1 \3: \4;" style="\2 \5"', text)
