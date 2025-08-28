@@ -213,7 +213,7 @@ class CommonOptions(QWidget):
         self.setLayout(layout)
         
         # -- options HTML --
-        groupboxHTML = QGroupBox(self)
+        self.groupboxHTML = groupboxHTML = QGroupBox(self)
         layout.addWidget(groupboxHTML)
         
         layoutHTML = QVBoxLayout(groupboxHTML)
@@ -292,7 +292,7 @@ class CommonOptions(QWidget):
         self.lineEditCSS_KEEP.setSizePolicy(size_policy)
         self.lineEditCSS_KEEP.setPlaceholderText(CSS_DEFAULT)
         
-        def action_checkBoxCSS_KEEP_ACTIVE(num):
+        def action_checkBoxCSS_KEEP_ACTIVE(state):
             b = self.checkBoxCSS_KEEP_ACTIVE.isChecked()
             
             self.lineEditCSS_KEEP.setEnabled(b)
@@ -307,22 +307,8 @@ class CommonOptions(QWidget):
         action_checkBoxCSS_KEEP_ACTIVE(-1)
         self.lineEditCSS_KEEP_last_text = self.lineEditCSS_KEEP_initial_text
         
-        def action_checkBoxDEL_FORMATTING(num):
-            b = not self.checkBoxDEL_FORMATTING.isChecked()
-            
-            self.comboBoxKEEP_URL.setEnabled(b)
-            self.comboBoxHEADINGS.setEnabled(b)
-            self.comboBoxFONT_WEIGHT.setEnabled(b)
-            self.checkBoxDEL_ITALIC.setEnabled(b)
-            self.checkBoxDEL_UNDER.setEnabled(b)
-            self.checkBoxDEL_STRIKE.setEnabled(b)
-            self.comboBoxFORCE_JUSTIFY.setEnabled(b)
-            self.comboBoxLIST_ALIGN.setEnabled(b)
-            self.comboBoxID_CLASS.setEnabled(b)
-            self.checkBoxCSS_KEEP_ACTIVE.setEnabled(b)
-            self.lineEditCSS_KEEP.setEnabled(self.checkBoxCSS_KEEP_ACTIVE.isChecked())
-            if not b:
-                self.lineEditCSS_KEEP.setEnabled(False)
+        def action_checkBoxDEL_FORMATTING(state):
+            self.groupboxHTML.setEnabled(not self.checkBoxDEL_FORMATTING.isChecked())
         
         self.checkBoxDEL_FORMATTING = QCheckBox(_('Remove all formatting'), self)
         self.checkBoxDEL_FORMATTING.stateChanged.connect(action_checkBoxDEL_FORMATTING)
