@@ -147,6 +147,7 @@ _defaults[KEY.FONT_WEIGHT] = 'bold'
 _defaults[KEY.DEL_ITALIC] = False
 _defaults[KEY.DEL_UNDER] = False
 _defaults[KEY.DEL_STRIKE] = False
+_defaults[KEY.FULL_BOLD] = True
 _defaults[KEY.FORCE_JUSTIFY] = 'empty'
 _defaults[KEY.LIST_ALIGN] = 'del'
 _defaults[KEY.ID_CLASS] = 'id_class'
@@ -160,7 +161,6 @@ _defaults[KEY.DOUBLE_BR] = 'new'
 _defaults[KEY.SINGLE_BR] = 'none'
 _defaults[KEY.EMPTY_PARA] = 'merge'
 _defaults[KEY.IMG_TAG] = 'del'
-_defaults[KEY.FULL_BOLD] = True
 
 # This is where all preferences for this plugin are stored
 PREFS = PREFS_json()
