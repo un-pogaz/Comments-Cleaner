@@ -1,6 +1,8 @@
 # Changelog - Comments Cleaner
 
 ## [1.17.1] - 2025/09/29
+
+### Bug fixes
 - fix fatal freeze on linux
 
 ## [1.17.0] - 2025/08/28
