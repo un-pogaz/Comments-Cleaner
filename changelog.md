@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.17.3] - 2025/10/09
+
+### Bug fixes
+- fix previous patch
+
 ## [1.17.2] - 2025/10/09
 
 ### Bug fixes
