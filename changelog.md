@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.17.2] - 2025/10/09
+
+### Bug fixes
+- fix edge case for malformed comments custom columns
+
 ## [1.17.1] - 2025/09/29
 
 ### Bug fixes
