@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.18.0] - 2025/12/19
+
+### Changed
+- use calibre internal function for 'Remove all formatting' action
+
 ## [1.17.3] - 2025/10/09
 
 ### Bug fixes
