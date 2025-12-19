@@ -294,15 +294,13 @@ def XMLformat(text: str) -> str:
 
 # passe the comment in the Calibre comment editor
 # fix some last errors, better interpolarity Calibre <> plugin
-__qwc = QWidget()
-
-
 def calibre_format(text: str) -> str:
     try:
         ce = calibre_format.CommentsEditor
     except AttributeError:
         from calibre.gui2.comments_editor import Editor
-        ce = calibre_format.CommentsEditor = Editor(__qwc)
+        ce = calibre_format.CommentsEditor = Editor()
+        ce.setVisible(False)
     
     ce.html = text
     
