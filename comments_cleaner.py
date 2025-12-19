@@ -7,11 +7,6 @@ __copyright__ = '2020, un_pogaz <un.pogaz@gmail.com>'
 import unicodedata
 from typing import Optional
 
-try:
-    from qt.core import QWidget
-except ImportError:
-    from PyQt5.Qt import QWidget
-
 from calibre.library.comments import markdown
 
 from .common_utils import regex
@@ -292,18 +287,31 @@ def XMLformat(text: str) -> str:
     return text
 
 
-# passe the comment in the Calibre comment editor
-# fix some last errors, better interpolarity Calibre <> plugin
-def calibre_format(text: str) -> str:
+def calibre_editor():
     try:
-        ce = calibre_format.CommentsEditor
+        ce = calibre_editor.CommentsEditor
     except AttributeError:
         from calibre.gui2.comments_editor import Editor
-        ce = calibre_format.CommentsEditor = Editor()
+        ce = calibre_editor.CommentsEditor = Editor()
         ce.setVisible(False)
-    
+    return ce
+
+
+def calibre_format(text: str) -> str:
+    '''
+    pass the comment in the Calibre comment editor
+    fix some last errors, better interpolarity Calibre <> plugin
+    '''
+    ce = calibre_editor()
     ce.html = text
-    
+    return ce.html.strip()
+
+
+def calibre_remove_format(text: str) -> str:
+    ce = calibre_editor()
+    ce.html = text
+    ce.editor.do_select_all()
+    ce.editor.do_remove_format()
     return ce.html.strip()
 
 
@@ -408,9 +416,7 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
         
         if prefs[KEY.DEL_FORMATTING]:
             # Remove Formatting
-            text = regex.loop(r'<(/?)(i|b|em|strong|sup|sub|u|s|span|a|ol|ul|hr|dl|code)(|\s[^>]*)>', r'', text)
-            text = regex.loop(r'<(/?)(h\d|li|pre|dt|dd)(|\s[^>]*)>', r'<\1p>', text)
-            text = regex.loop(r'<p\s[^>]*>', r'<p>', text)
+            text = calibre_remove_format(text)
             
         else:
             # ID and CLASS attributs
