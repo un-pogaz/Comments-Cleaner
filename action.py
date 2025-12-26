@@ -39,7 +39,7 @@ class CommentsCleanerAction(InterfaceAction):
     accepts_drops = True
 
     def genesis(self):
-        self.menu = QMenu(GUI)
+        self.menu = QMenu()
         self.qaction.setMenu(self.menu)
         self.qaction.setIcon(get_icon(PLUGIN_ICON))
         self.qaction.triggered.connect(self.toolbar_triggered)
