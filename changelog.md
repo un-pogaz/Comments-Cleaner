@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.18.2] - 2026/01/31
+
+### Changed
+- various improvement and Calibre 9 support
+
 ## [1.18.1] - 2025/12/26
 
 ### Bug fixes
