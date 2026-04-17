@@ -327,26 +327,15 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
     
     text = clean_caps_tags(text)
     
-    # if no tag = plain text
-    if not regex.search(r'<(?!br)\w+(| [^>]*)/?>', text):  # exclude <br> of the test
-        # Convert two hyphens to emdash
-        text = text.replace('--', '—')
-        # Markdown
-        if prefs[KEY.MARKDOWN] == 'try':
-            text = regex.loop(r'^(\d{4})(\.|:)', r'\1\0\2', text)
-            text = regex.loop(r'\n(\d{4})(\.|:)', r'\n\1\0\2', text)
-            text = markdown(text)
-            text = regex.loop(r'\0', r'', text)
-            text = regex.loop(r'>\n+<', '><', text)
-            text = regex.loop(r'<br(| [^>]*)/?>\s+', '<br>', text)
-        
-        text = regex.loop(r'<br(| [^>]*)/?>', r'\n', text)
-        text = '<div><p>' + regex.loop(r'\n{2,}', r'</p><p>', text) + '</p></div>'
-        text = regex.loop(r'\n', r'<br>', text)
-        text = regex.loop(r'(<p>|<br>)\s+', r'\1', text)
-        text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
-        
-        text = calibre_format(text)
+    # if plain text (no tag)
+    if not regex.search(r'<\w+(| [^>]*)/?>', text):
+        text = convert_plain(text)
+    
+    # if basic html text
+    # html without <p> or <div> (qt style)
+    if regex.search(r'<\w+(| [^>]*)/?>', text) and not regex.search(r'<(p|div)(| [^>]*)>', text):
+        text = regex.loop(r'\s*<br(| [^>]*)/?>\s*', '\n\n', text)  # Calibre format
+        text = convert_plain(text)
     
     # double passe
     # Empirical tests have shown that it was necessary for some very rare and specific cases.
@@ -627,8 +616,33 @@ def clean_style(text: str, prefs: Optional[dict]=None) -> str:
     
     text = regex.loop(r' style="([^"]*) text-decoration:\s*;([^"]*)"', r' style="\1\2"', text)
     
-    ######
     return text
+
+
+def convert_plain(text: str, prefs: Optional[dict]=None) -> str:
+    prefs = _set_prefs(prefs)
+    
+    # Convert two hyphens to emdash
+    text = text.replace('--', '—')
+    # Markdown
+    if prefs[KEY.MARKDOWN] == 'try':
+        text = regex.loop(r'^(\d{4})(\.|:)', r'\1\0\2', text)
+        text = regex.loop(r'\n(\d{4})(\.|:)', r'\n\1\0\2', text)
+        text = markdown(text)
+        text = regex.loop(r'\0', r'', text)
+        text = regex.loop(r'>\n+<', '><', text)
+        text = regex.loop(r'<br(| [^>]*)/?>\s+', r'<br>', text)
+        text = regex.loop(r'\s+<br(| [^>]*)/?>', r'<br>', text)
+    
+    text = regex.loop(r'<br(| [^>]*)/?>', r'\n', text)
+    text = '<div><p>' + regex.loop(r'\n{2,}', r'</p><p>', text) + '</p></div>'
+    text = regex.loop(r'<p>\s*<p>', r'<p>', text)
+    text = regex.loop(r'</p>\s*</p>', r'</p>', text)
+    text = regex.loop(r'\n', r'<br>', text)
+    text = regex.loop(r'(<p>|<br>)\s+', r'\1', text)
+    text = regex.loop(r'\s+(<p>|<br>)', r'\1', text)
+    
+    return calibre_format(text)
 
 
 # Try to convert Markdown to HTML
