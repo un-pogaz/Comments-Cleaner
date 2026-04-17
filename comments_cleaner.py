@@ -92,12 +92,6 @@ else:
     FONT_WEIGHT = 'font-weight: 600'
 
 
-def _fix_weight(text):
-    if CALIBRE_VERSIONS_BOLD:
-        text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
-    return text
-
-
 def _set_prefs(prefs):
     if not prefs:
         from .config import PREFS
@@ -460,7 +454,9 @@ def clean_comment(text: str, prefs: Optional[dict]=None) -> str:
         
         text = clean_basic(text)
     
-    text = _fix_weight(text)
+    # fix weight
+    if CALIBRE_VERSIONS_BOLD:
+        text = regex.loop(r' style="([^"]*)'+FONT_WEIGHT+r'([^"]*)"', r' style="\1font-weight: bold\2"', text)
     
     text = regex.loop(r'<p( [^>]*)style="[^"]*"([^>]*)>'+NBSP+r'</p>', r'<p\1\2>'+NBSP+r'</p>', text)
     
