@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.19.0] - 2026/04/17
+
+### Changed
+- improve support of basic html text (comment with html tag but no `<p>` or `<div>`)
+
 ## [1.18.2] - 2026/01/31
 
 ### Changed
