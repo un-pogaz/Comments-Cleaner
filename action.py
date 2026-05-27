@@ -219,7 +219,7 @@ class CleanerProgressDialog(ProgressDialog):
                 
                 self.books_clean = books_edit_count
                 
-                with self.dbAPI.backend.conn:
+                with self.dbAPI.write_lock, self.dbAPI.backend.conn:
                     for field,id_val in self.books_comments_map.items():
                         self.dbAPI.set_field(field,id_val)
                 
@@ -322,7 +322,7 @@ class CleanerNoteProgressDialog(ProgressDialog):
                 debug_print(f'Update the database for {note_edit_count} notes…\n')
                 self.set_value(-1, text=_('Update the library for {:d} notes…').format(note_edit_count))
                 
-                with self.dbAPI.backend.conn:
+                with self.dbAPI.write_lock, self.dbAPI.backend.conn:
                     for field,values in self.field_id_notes.items():
                         for item_id,note_data in values.items():
                             self.dbAPI.set_notes_for(
