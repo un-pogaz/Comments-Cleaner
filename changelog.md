@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.19.1] - 2026/05/28
+
+### Bug fixes
+- fix ThreadingViolationError exception
+
 ## [1.19.0] - 2026/04/17
 
 ### Changed
