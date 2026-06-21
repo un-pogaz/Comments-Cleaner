@@ -1,5 +1,10 @@
 # Changelog - Comments Cleaner
 
+## [1.19.2] - 2026/06/21
+
+### Bug fixes
+- fix that various dialogs doesn't pass the focus properly
+
 ## [1.19.1] - 2026/05/28
 
 ### Bug fixes
